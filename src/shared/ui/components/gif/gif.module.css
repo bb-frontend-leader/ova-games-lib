@@ -1,0 +1,29 @@
+.gif {
+    margin-inline: auto;
+    max-width: var(--gif-max-width, auto);
+}
+
+.gif {
+    position: relative;
+    padding: .625rem;
+}
+
+.gif video {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+}
+
+.gif__figcaption {
+    margin-top: .9375rem;
+    text-align: center;
+    font-style: italic;
+}
+
+.gif__figcaption > * {
+    display: inline;
+}
+
+.gif__figcaption p::first-letter {
+    text-transform: uppercase;
+}

@@ -1,0 +1,176 @@
+.container-element {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 4rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+html[data-dark-mode='true'] .container-element {
+    opacity: 0.8;
+}
+
+.card-element {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  border: 2px solid #6072a5;
+  border-radius: 2rem;
+  background-color: #fefad4;
+  padding: 1rem 2rem;
+  align-items: center;
+  width: 80%;
+
+  min-height: 20rem;
+  justify-content: space-around;
+}
+
+.number-question-container {
+  --size--element: 60px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  position: absolute;
+  top: -2rem;
+  left: -2rem;
+
+  border: 0.3rem solid #fff;
+  border-radius: 50%;
+  background-color: #893461;
+  min-width: var(--size--element);
+  min-height: var(--size--element);
+}
+
+.number-question {
+  color: #fff;
+  font-size: var(--fs-500);
+  font-weight: bold;
+}
+
+/* Question de la actividad */
+
+.question {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.question p {
+  font-size: var(--fs-300);
+}
+
+/* Opciones de la actividad */
+
+.container-options {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  gap: 1rem;
+  justify-items: center;
+  margin-top: 1rem;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.radioOption {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.container-options > div:focus-within label {
+  outline: none;
+}
+
+.container-options > div input:focus-visible + label {
+  outline: 2px solid #0a707f;
+  outline-offset: 4px;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.6rem 2rem;
+  min-width: 6rem;
+  background-color: #0a707f;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+
+.button:hover {
+  background-color: #238998;
+}
+
+.container-options > div:not(.disabled) .radioOption:checked + label {
+  background-color: #084650;
+}
+
+.wrong {
+  background-color: #c40000;
+  position: relative;
+}
+
+.success {
+  background-color: #188900;
+  position: relative;
+}
+
+.success::after {
+  content: '✔';
+  color: var(--clr-activity-success);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.wrong::after {
+  content: '✖';
+  color: var(--clr-activity-wrong);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+@media screen and (max-width: 720px) {
+  .container-element {
+    padding: 1rem;
+  }
+}
+
+/*** Dark mode ***/
+
+html[data-dark-mode='true'] .card-element {
+  color: var(--clr-dark-mode);
+}

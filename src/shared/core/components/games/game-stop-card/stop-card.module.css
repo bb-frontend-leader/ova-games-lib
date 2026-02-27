@@ -1,0 +1,270 @@
+/* container game */
+.stop-game-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 30ch;
+  justify-content: center;
+  align-content: center;
+}
+
+/* buttons */
+.stop-game-button {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.35rem solid white;
+}
+
+.stop-game-button span {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.orange {
+  background-color: #ec651a;
+}
+
+.blue {
+  background-color: #0081c3;
+}
+
+.purple {
+  background-color: #6f3b83;
+}
+
+.green {
+  background-color: #007b71;
+}
+
+.fullScreen__button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Container initial message  */
+.stop-game-container-question {
+  background-color: #fffef0;
+  border: 4px solid #8080b3;
+  border-radius: 13px;
+  padding: 0.5rem;
+  width: 100%;
+  min-height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    text-align: center;
+  }
+}
+
+/* Container button validate and check */
+.stop-game-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* radio */
+.radio-wrapper {
+  background-color: #2e2b57;
+  padding: 1rem;
+  display: grid;
+  align-items: center;
+  gap: 1.5rem;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.radio-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: #3c518c;
+  border: 2px solid white;
+  padding: 1.5rem 0.5rem;
+  border-radius: 0.8rem;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  place-content: center;
+  position: relative;
+  transition: background-color 0.4s ease;
+
+  input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+}
+
+.radio-input:has(input:checked[data-state='correct']) {
+  background-color: #498c43;
+  font-weight: 600;
+}
+
+.radio-input:has(input:checked[data-state='incorrect']) {
+  background-color: var(--clr-activity-wrong);
+  font-weight: 600;
+}
+
+.radio-input:has(input:checked[data-state='incorrect'])::before {
+  content: '✖';
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  width: 1.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  background-color: var(--clr-background);
+  color: var(--clr-activity-wrong);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  font-weight: 800;
+  z-index: 10;
+}
+
+.radio-input:has(input:checked[data-state='correct'])::before {
+  content: '✔';
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  width: 1.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  background-color: var(--clr-background);
+  color: var(--clr-activity-success);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  font-weight: 800;
+  z-index: 10;
+}
+
+.radio-input:focus-within {
+  background-color: var(--clr-brand);
+}
+
+/* buttons */
+.stop-game-initial-button {
+  background-color: #e61919;
+  padding: 0.5rem;
+  width: 12.5rem;
+  border: 4px solid #fffef0;
+  border-radius: 13px;
+  color: #fffef0;
+  font-size: 1.9rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.stop-game-initial-button:hover {
+  background-color: #d63d3d;
+}
+
+.stop-game-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@keyframes move {
+  0% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.01;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.25;
+    filter: blur(2px) brightness(1.2);
+  }
+  50% {
+    opacity: 0.85;
+    filter: blur(6px) brightness(1.9);
+  }
+  100% {
+    opacity: 0.25;
+    filter: blur(2px) brightness(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .move-image {
+    animation: move 0.8s infinite ease-in-out;
+  }
+
+  /* capa de brillo (va detrás) */
+  html:not([data-stop-animations='true']) .markerGlow {
+    animation: glowPulse 900ms ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* para que la capa glow no capture eventos */
+  html:not([data-stop-animations='true']) .markerGlow {
+    pointer-events: none;
+  }
+}
+
+html[data-dark-mode='true'] .stop-game-container-question {
+  color: #000;
+}
+
+/* Responsive */
+@media screen and (max-width: 1219px) {
+  .stop-game-container {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-wrapper {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+}
+
+@media screen and (max-width: 1219px) and (orientation: landscape) {
+  .stop-game-container[data-fullscreen] {
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: 50ch 1fr;
+    place-content: start;
+  }
+
+  .radio-wrapper {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .stop-game-container[data-fullscreen] .radio-input {
+    min-height: fit-content;
+    padding: 0.4rem;
+
+    span {
+      font-size: 0.6rem;
+    }
+  }
+}

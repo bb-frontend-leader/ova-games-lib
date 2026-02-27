@@ -1,0 +1,239 @@
+.question-wrapper {
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.background {
+  --money-drop: 140px;
+
+  position: relative;
+  width: 100%;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  padding: 1rem;
+  display: grid;
+  align-items: center;
+}
+
+html[data-dark-mode='true'] .background {
+  opacity: 0.8;
+}
+
+.fullScreen__button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.grid-overlay {
+  width: 100%;
+  height: auto;
+}
+
+.options-container {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  justify-content: center;
+  align-items: start;
+}
+
+
+
+/** Opciones **/
+
+.disabled {
+  pointer-events: none;
+}
+
+.radio {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.options-container>div{
+  height: 100%;
+}
+
+.options-container > div:focus-within label {
+  outline: none;
+}
+
+.options-container > div input:focus-visible + label {
+  outline: 2px solid var(--clr-background);
+  outline-offset: 4px;
+}
+
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  background: #fff8c7;
+  border: 3px solid var(--clr-background);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  margin: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.3s, border 0.3s;
+  height: 100%;
+}
+
+.button {
+  color: #121212;
+  font-weight: bold;
+}
+
+.options-container > div:not(.disabled) .radio:checked + label {
+  background-color: #d1e7dd;
+  border-color: #0f5132;
+}
+
+.success {
+  background-color: #a5c965;
+  border-color: var(--clr-background);
+}
+
+.success::after {
+  content: '✔';
+  color: white;
+  background-color: #899e2e;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 18px;
+}
+
+.wrong {
+  background-color: #f8d7da;
+  border-color: var(--clr-background);
+}
+
+.wrong::after {
+  content: '✖';
+  color: white;
+  background-color: var(--clr-activity-wrong);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 18px;
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+}
+
+.character-container {
+  position: relative;
+  display: flex;
+  height: clamp(100px, 80vw, 340px);
+}
+
+.character {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 100%;
+}
+
+.money {
+  position: absolute;
+  top: 0;
+  width: 30px;
+
+  /* estado base */
+  opacity: 0;
+  transform: translate(-50%, 0);
+  will-change: transform, opacity;
+}
+
+.moneyFall {
+  opacity: 1;
+}
+
+.question-text {
+  font-size: 1rem;
+  background: #c9ea81;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 4px solid #8fb741;
+  font-weight: bold;
+  color: #121212;
+}
+
+/* Media queries */
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .character {
+    transition: left 1s ease-in-out;
+  }
+
+  html:not([data-stop-animations='true']) .money.moneyFall {
+    animation: moneyFall 0.8s ease-in-out forwards;
+  }
+}
+
+@keyframes moneyFall {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, var(--money-drop)); /* ajusta la distancia según tu escena */
+  }
+}
+
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+  .character-container {
+    height: clamp(100px, 15vw, 300px);
+  }
+
+  .question-text {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  .background {
+    --money-drop: 90px;
+  }
+
+  .money {
+    width: 20px;
+  }
+}
+
+@media screen and (max-width: 700px) and (orientation: landscape) {
+  .character-container {
+    height: 120px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .character-container {
+    height: clamp(100px, 65vw, 300px);
+  }
+}

@@ -1,0 +1,10 @@
+.image__figcaption {
+    margin-inline: auto;
+    max-width: var(--image-max-width, auto);
+    font-style: italic;
+    text-align: center;
+}
+
+.image__figcaption>* {
+    display: inline;
+}

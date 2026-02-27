@@ -1,0 +1,15 @@
+.c-image-container {
+    --width: 100%;
+    --height: auto;
+    --border-size: 20px;
+    --img-background: url('assets/images/wood.png');
+    z-index: 1;
+    position: relative;
+    width: var(--width);
+    height: var(--height);
+    border: var(--border-size) solid;
+    border-style: solid;
+    border-image-source: var(--img-background);
+    border-image-slice: 100 fill;
+    image-rendering: -webkit-optimize-contrast;
+}

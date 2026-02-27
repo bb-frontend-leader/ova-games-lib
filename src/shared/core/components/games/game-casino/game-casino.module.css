@@ -1,0 +1,310 @@
+.casino {
+  --casino-question-bg: #3b153a;
+  --casino-answer-bg: #10635b;
+  position: relative;
+  background-image: var(--casino-bg);
+  background-repeat: round;
+  background-size: cover; /* Cubre todo el contenedor sin deformar */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: var(--clr-text-secondary);
+  padding: 1rem;
+}
+
+.casino-point {
+  --rounded: 0.75rem;
+  position: absolute;
+  top: 0;
+  right: 0.5rem;
+  color: inherit;
+  background-color: var(--casino-answer-bg);
+  width: 5.625rem;
+  padding-block: 0.5rem;
+  border-bottom-left-radius: var(--rounded);
+  border-bottom-right-radius: var(--rounded);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.casino-question {
+  --casino-question-rounded: 1rem;
+  --casino-question-size-die: 3rem;
+
+  border-radius: var(--casino-question-rounded);
+  border: 0.3rem dotted #f2f2f2;
+  width: 100%;
+  max-width: 60ch;
+  aspect-ratio: 16 / 3;
+  position: relative;
+  padding: 0.5rem;
+  margin-block: 1.125rem;
+}
+
+.casino-question::after,
+.casino-question::before {
+  content: '';
+  position: absolute;
+  width: var(--casino-question-size-die);
+  height: var(--casino-question-size-die);
+  background-image: url('./assets/images/game-casino-dc.webp');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.casino-question::before {
+  top: -1.5rem;
+  right: -1.5rem;
+}
+
+.casino-question::after {
+  bottom: -1.5rem;
+  left: -1.5rem;
+  transform: rotate(180deg);
+}
+
+.casino-questino-background {
+  width: 100%;
+  height: 100%;
+  background-color: var(--casino-question-bg);
+  border-radius: var(--casino-question-rounded);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  font-size: var(--fs-200);
+  font-weight: bold;
+  text-align: left;
+  padding-inline: 1rem;
+}
+
+.casino-elements-wrapper {
+  --gap: 2.5rem; /* Aumentamos el gap de 1rem a 2.5rem */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: var(--gap);
+  margin-top: 2rem; /* Espacio extra respecto a la pregunta */
+  padding-inline: 1rem;
+}
+
+.casino-element {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  article {
+    position: relative;
+    display: grid;
+    place-content: center;
+    grid-gap: 0.5rem;
+    height: 100%;
+    width: 100%;
+    min-height: 13ch;
+    background-color: var(--casino-answer-bg);
+    border-radius: 1rem;
+    padding: 0.8rem 1rem;
+    color: inherit;
+    transition: background-color 0.4s ease;
+    text-align: center;
+
+    label {
+      font-weight: bold;
+    }
+
+    /* Letras en esquina izquierda (para la mayoría) */
+    &::before,
+    &[data-label^='B']::after,
+    &[data-label^='D']::after {
+      --size: 2.8125rem;
+      content: attr(data-label);
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      width: var(--size);
+      height: var(--size);
+      background-color: #f2f2f2;
+      border: 1px solid var(--casino-answer-bg);
+      color: var(--casino-answer-bg);
+      border-radius: 100%;
+      font-size: var(--fs-300);
+      z-index: 1;
+    }
+
+    /* Letras en esquina derecha (solo para B y D) */
+    &::before {
+      left: -20px;
+      top: -10px;
+    }
+
+    /* Letras en esquina derecha (solo para B y D) */
+    &[data-label^='B']::after,
+    &[data-label^='D']::after {
+      right: -25px;
+      top: -10px;
+    }
+
+    /* Oculta ::before cuando usamos ::after (B/D) */
+    &[data-label^='B']::before,
+    &[data-label^='D']::before {
+      display: none;
+    }
+
+    /* Íconos de validación - Base (ocultos por defecto) */
+    &::after {
+      content: '';
+      position: absolute;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Mostrar íconos solo al validar */
+    &.success::after,
+    &.wrong::after {
+      display: flex;
+      top: -20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.6rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Posición por defecto (derecha) */
+    &.success::after,
+    &.wrong::after {
+      right: -20px;
+      left: auto;
+    }
+
+    /* Estilo para éxito */
+    &.success::after {
+      content: '✔';
+      background-color: var(--clr-activity-success);
+      color: inherit;
+    }
+
+    /* Estilo para error */
+    &.wrong::after {
+      content: '✖';
+      background-color: var(--clr-activity-wrong);
+      color: inherit;
+    }
+  }
+}
+
+.hidden-input {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}
+
+.casino-element-amount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.casino-element-amount button {
+  background: none;
+  border: 0.125rem solid transparent;
+  display: flex;
+  column-gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  background-color: color-mix(in srgb, var(--casino-answer-bg) 100%, #121212 30%);
+  color: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in;
+}
+
+.casino-element-amount button img {
+  width: 1rem;
+  height: auto;
+}
+
+.casino-element-amount button:focus-within {
+  background-color: #016156;
+}
+
+.casino-element button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.casino-element-amount button.selected {
+  background-color: color-mix(in srgb, var(--casino-answer-bg) 100%, #f2f2f2 10%);
+  border: 0.125rem solid #f2f2f2;
+}
+
+/* game-casino-init */
+.button-init {
+  display: grid;
+  place-content: center;
+}
+
+.button-init button {
+  border-radius: 36px;
+  border: 8px solid #88d8c3;
+  padding: 0.5rem 2.5rem;
+  color: #fff;
+  background-color: #3b1638;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+}
+
+.button-init-game {
+  --background-color: #0c524b;
+  --color: #f2f2f2;
+  background-color: var(--background-color);
+  border: 1px solid var(--color);
+  color: var(--color);
+  cursor: pointer;
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 120ms ease-in-out;
+}
+
+.button-init-game:hover {
+  background-color: color-mix(in srgb, var(--background-color) 100%, var(--color) 10%);
+}
+
+@media (max-width: 768px) {
+  .casino-elements-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 426px) {
+  .casino-question {
+    height: 12.5rem;
+    padding: 20px;
+
+    p {
+      text-align: center;
+      font-size: clamp(0.6rem, 2.5vw, 0.9rem);
+    }
+  }
+}
+
+.casino-figcaption {
+  text-align: center;
+}

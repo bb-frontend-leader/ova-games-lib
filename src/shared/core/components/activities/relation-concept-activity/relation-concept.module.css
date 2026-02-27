@@ -1,0 +1,133 @@
+.grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    url('assets/images/Ova_02_sld_15-1.webp'),
+    linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.fullScreen__button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.grid-title {
+  text-align: center;
+  color: var(--clr-text-secondary);
+  background-color: var(--clr-brand-light);
+  padding: 5px 20px;
+  border-radius: 50px;
+}
+
+.grid-title h2 {
+  font-size: var(--fs-400);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  justify-items: center;
+}
+
+.grid-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  border: 2px solid var(--clr-text-secondary);
+  border-radius: 20px;
+  padding: 10px;
+  background: linear-gradient(to right, #354a81, #435c9c);
+  color: var(--clr-text-secondary);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 9rem;
+  font-size: 0.8rem;
+}
+
+.card.selected {
+  background: var(--clr-accent-dark);
+  color: #121212;
+}
+
+.card.correct,
+.card.incorrect {
+  position: relative;
+}
+
+.card.correct {
+  background: #398431;
+}
+
+.card.correct::after {
+  content: '✔';
+  background-color: #85a321;
+}
+
+.card.incorrect {
+  background: var(--clr-activity-wrong);
+}
+
+.card.incorrect::after {
+  content: '✖';
+  background-color: #c12d41;
+}
+
+.card.correct::after,
+.card.incorrect::after {
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 18px;
+  z-index: 1;
+}
+
+/* Responsivo */
+@media screen and (max-width: 1200px) {
+  .grid-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}

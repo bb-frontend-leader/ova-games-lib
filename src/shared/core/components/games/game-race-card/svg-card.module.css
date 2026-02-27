@@ -1,0 +1,470 @@
+/* Game container */
+.game {
+  --clr-primary: #fefbdb;
+  --clr-secondary: #555792;
+  --clr-secondary-dark: #2d2b56;
+}
+
+.game-wrapper {
+  place-content: center;
+  display: grid;
+  gap: 0.5em;
+  grid-template-columns: 1fr;
+}
+
+@media screen and (max-width: 1219px) {
+  .game-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .game-wrapper__options {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)) !important;
+  }
+}
+
+.game-wrapper__options {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 0.5rem;
+  background-color: var(--container-bg-clr, var(--clr-secondary-dark));
+  position: relative;
+}
+
+.game-wrapper__scene {
+  width: 100%;
+}
+
+@media screen and (max-width: 1219px) and (orientation: landscape) {
+  .game-wrapper[data-fullscreen] {
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: 30ch 1fr;
+    place-content: start;
+  }
+
+  .game-wrapper[data-fullscreen] .radio__svg label {
+    min-height: auto;
+  }
+
+  .game-wrapper[data-fullscreen] .game-wrapper__options {
+    order: -1;
+  }
+}
+
+/* Radio activity */
+.radio__svg {
+  position: relative;
+  width: 100%;
+}
+
+.radio__svg input {
+  inset: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.radio__svg label {
+  --grandient-start: #2f4070;
+  --grandient-end: #5166a0;
+  --border-color: #ffffff;
+
+  place-content: center;
+  padding-block: 0.5rem;
+  padding-inline: 0.8rem;
+  display: grid;
+  position: relative;
+  min-height: 11.6ch;
+  background-image: linear-gradient(90deg, var(--grandient-start) 0%, var(--grandient-end) 60%);
+  background-size: 200% 200%;
+  border: 2px solid var(--border-color);
+  border-radius: 0.8rem;
+  font-size: clamp(0.1rem, -0.25rem + 3.333vw, 0.8rem);
+  font-weight: 500;
+  color: var(--border-color);
+}
+
+.radio__svg label:hover {
+  animation: background-gradient-move 3s linear infinite forwards;
+}
+
+@keyframes background-gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.radio__svg input:checked + label {
+  --grandient-start: var(--clr-primary);
+  --grandient-end: var(--clr-primary);
+  --border-color: var(--clr-secondary);
+}
+
+.radio__svg input:checked:is([data-state='correct'], [data-state='incorrect']) + label {
+  --border-color: #ffff;
+  color: #121212;
+  background-image: none;
+}
+
+.radio__svg input:checked[data-state='correct'] + label {
+  background-color: var(--clr-activity-success);
+}
+
+.radio__svg input:checked[data-state='incorrect'] + label {
+  background-color: var(--clr-activity-wrong);
+}
+
+.radio__svg input:checked:is([data-state='correct'], [data-state='incorrect']) + label::before {
+  aspect-ratio: 1;
+  place-content: center;
+  display: grid;
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 100vw;
+  border: 1px solid #ffffff;
+  box-shadow: 2px 2px 3px 0px #60606057;
+  font-size: 1rem;
+}
+
+.radio__svg input:checked[data-state='incorrect'] + label::before {
+  content: '✖';
+  background-color: var(--clr-background);
+  color: var(--clr-activity-wrong);
+}
+
+.radio__svg input:checked[data-state='correct'] + label::before {
+  content: '✔';
+  background-color: var(--clr-background);
+  color: var(--clr-activity-success);
+}
+
+.button-play-again {
+  padding: 0.3rem;
+  background-color: var(--clr-brand);
+  cursor: pointer;
+  border: 3px solid white;
+  border-radius: 8px;
+  color: white;
+}
+
+.box-questions {
+  place-content: center;
+  display: grid;
+  overflow-y: auto;
+  height: 7.475rem;
+  font-size: 0.9rem;
+}
+
+.question__validation-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+/* Car animations*/
+.car-transition {
+  transition: transform var(--transition-time, 500ms) ease-in-out;
+}
+
+/* Tracks */
+.race-card__track {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .race-card__track--up {
+      animation: move-track-up var(--track-move-time, 3s) linear infinite;
+    }
+
+    .race-card__track--behind {
+      animation: move-track-behind var(--track-move-time, 3s) linear infinite;
+    }
+  }
+}
+
+@keyframes move-track-up {
+  0% {
+    transform: translateX(0);
+    /* Pista 1 empieza en la posición inicial */
+  }
+
+  100% {
+    transform: translateX(-215%);
+  }
+}
+
+@keyframes move-track-behind {
+  0% {
+    transform: translateX(215%);
+    /* Pista 2 comienza fuera del viewport a la derecha */
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Wheels */
+.wheel {
+  transform-origin: var(--wheel-origin-x, 50%) var(--wheel-origin-y, 50%);
+}
+
+.wheel--1 {
+  --wheel-origin-x: 53px;
+  --wheel-origin-y: 252.8px;
+}
+
+.wheel--2 {
+  --wheel-origin-x: 219.9px;
+  --wheel-origin-y: 252.8px;
+}
+
+.wheel--3 {
+  --wheel-origin-x: 73.6px;
+  --wheel-origin-y: 368.3px;
+}
+
+.wheel--4 {
+  --wheel-origin-x: 240.6px;
+  --wheel-origin-y: 368.3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .wheel {
+      animation: wheelsRotation var(--wheel-rotate-time, 200ms) infinite linear;
+    }
+  }
+}
+
+@keyframes wheelsRotation {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* svg-initial */
+.instructions-container,
+.box-questions {
+  display: grid;
+  place-content: center;
+  padding-inline: 1rem;
+  padding-block: 0.8rem;
+  width: 100%;
+  background-color: var(--clr-primary);
+  border: 4px solid var(--clr-secondary);
+  border-radius: 1.125rem;
+  font-weight: bold;
+  color: #121212;
+  text-align: center;
+}
+
+.instructions-container {
+  height: 100%;
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+.instructions__button {
+  --button-clr: #771928;
+  --outline-color: var(--button-clr);
+  padding-inline: 1rem;
+  padding-block: 0.2rem;
+  margin-block-end: 0.5rem;
+  margin-inline: auto;
+  display: block;
+  transition: background-color 200ms ease-in-out;
+  background-color: var(--button-clr);
+  border: 1px solid transparent;
+  border-radius: 0.2rem;
+  font-size: var(--fs-400);
+  font-weight: bold;
+  color: #f2f2f2;
+}
+
+.instructions__button:hover {
+  background-color: color-mix(in srgb, var(--button-clr) 100%, #ffffff 20%);
+}
+
+/* Feedback */
+.reference-score {
+  padding-block: 0.2rem;
+  padding-inline: 2rem 0.5rem;
+  margin-block: 1em;
+  margin-inline: auto;
+  position: relative;
+  max-width: 15ch;
+  background-color: #2c1f51;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: bold;
+  color: #f2f2f2;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.reference-score__img {
+  position: absolute;
+  top: -0.5rem;
+  left: -1.5rem;
+  max-width: 3.8rem;
+}
+
+@media (min-width: 1200px) {
+  .button-play-again {
+    position: relative;
+    bottom: 80px;
+  }
+}
+
+.alert {
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.575rem 0.8rem;
+  border-radius: 0.5rem;
+  background-color: #fff4e5;
+  color: #663c00;
+  animation: bounding-alert 1s ease-in-out infinite;
+}
+
+.alert code {
+  font-weight: bold;
+  color: #663c00;
+}
+
+@keyframes bounding-alert {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.card-final-feedback {
+  --card-bg-color: #fffbda;
+  --card-border-color: #fedd00;
+
+  display: grid;
+  place-items: center;
+  grid-template-columns: 1fr 2fr;
+  padding: 1rem;
+  background-color: var(--card-bg-color);
+  border-radius: 1.875rem;
+  border: 0.25rem solid var(--card-border-color);
+  font-size: 0.8rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.card-final-feedback__header {
+  display: inline-block;
+  position: relative;
+  font-size: var(--fs-300);
+  font-weight: bold;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.card-final-feedback__header div {
+  padding: 0.8rem 1rem;
+  background-color: var(--header-bg-color);
+  border: 0.25rem solid var(--clr-background);
+  border-radius: 0.8125rem;
+}
+
+.card-final-feedback__header::before,
+.card-final-feedback__header::after {
+  --outside: 85%;
+  --size: 0.4;
+  position: absolute;
+  top: -30%;
+  z-index: -1;
+  transform: scale(var(--size));
+  transform-origin: center;
+}
+
+.card-final-feedback__header::before {
+  right: var(--outside);
+}
+
+.card-final-feedback__header::after {
+  left: var(--outside);
+  transform: scale(var(--size)) rotateY(180deg);
+}
+
+.card-final-feedback__header p {
+  padding-inline: 0.3rem;
+  color: var(--clr-background);
+  border-radius: 0.125rem;
+  background-color: color-mix(in srgb, var(--header-bg-color) 70%, #121212 30%);
+}
+
+.card-final-feedback__header--success {
+  --header-bg-color: var(--clr-activity-success);
+}
+
+.card-final-feedback__header--failure {
+  --header-bg-color: var(--clr-activity-wrong);
+}
+
+.card-final-feedback__image {
+  width: 100%;
+  max-width: 10rem;
+}
+
+.card-final-feedback__text {
+  font-size: var(--fs-300);
+  font-weight: bold;
+}
+
+.card-final-feedback__header::before,
+.card-final-feedback__header::after {
+  content: url('data:image/webp;base64,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');
+}
+
+/* =========================
+   STOP ANIMATIONS ON GAME OVER
+   ========================= */
+
+#svg-sld14-game[data-game-over='true'] .race-card__track--up,
+#svg-sld14-game[data-game-over='true'] .race-card__track--behind,
+#svg-sld14-game[data-game-over='true'] .wheel {
+  animation: none !important;
+}
+
+/* Si tus carros se mueven con transition */
+#svg-sld14-game[data-game-over='true'] .car-transition {
+  transition: none !important;
+}
+
+/* Opcional: si hay otros elementos animados dentro del svg */
+#svg-sld14-game[data-game-over='true'] * {
+  animation: none !important;
+}

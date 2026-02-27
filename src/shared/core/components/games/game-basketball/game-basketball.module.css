@@ -1,0 +1,250 @@
+.radios__container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+html[data-dark-mode='true'] .radios__container {
+    opacity: 0.8;
+}
+
+.radio__options {
+  background-image: var(--bg-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  place-content: center;
+  padding: 2rem 1rem;
+  min-height: 16rem;
+  position: relative;
+}
+
+.radio__options_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  justify-items: center;
+  gap: 1rem;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.radio__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.radio__option > :first-child {
+  flex: 0 0 auto; /* fit-content */
+}
+
+.radio__option > :last-child {
+  flex: 1 1 0; /* ocupa todo el espacio restante */
+  min-width: 0; /* importante para que no desborde */
+}
+
+.radio_red {
+  position: relative;
+  width: fit-content;
+  z-index: 2;
+}
+
+.radio_red span {
+  font-size: var(--fs-500);
+  color: rgb(139, 51, 46);
+  font-weight: bold;
+  position: absolute;
+  right: 45%;
+  top: 23%;
+}
+
+/** Radio button **/
+
+.radio_button {
+  transform: none;
+  margin-left: -10%;
+  margin-top: -10%;
+}
+
+.radioButton {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+/* Quitar el outline genérico */
+.radio__options_container > div:focus-within label {
+  outline: none;
+}
+
+/* Mostrar outline solo cuando el foco es "visible" (teclado) */
+.radio__options_container > div input:focus-visible + label {
+  outline: 2px solid var(--clr-background);
+  outline-offset: 4px;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.2rem 0;
+  border: 0.15rem solid #d84a36;
+  border-radius: 2rem;
+  background: white;
+  color: #333333;
+  min-width: 14rem;
+  cursor: pointer;
+  text-align: center;
+  padding-left: 3rem;
+  padding-right: 0.6rem;
+  font-weight: bold;
+  font-size: var(--fs-300);
+}
+
+.button:hover {
+  border: 0.15rem solid #6072a5;
+}
+
+.radioButton:checked + .button {
+  border: 0.18rem solid #6072a5;
+}
+
+.success {
+  background-color: var(--clr-activity-success);
+  border: 3px solid var(--clr-background) !important;
+  color: var(--clr-background);
+  position: relative;
+}
+
+.success::after {
+  content: '✔';
+  color: var(--clr-activity-success);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.wrong {
+  background-color: var(--clr-activity-wrong);
+  border: 0.18rem solid var(--clr-background) !important;
+  color: var(--clr-background);
+  position: relative;
+}
+
+.wrong::after {
+  content: '✖';
+  color: var(--clr-activity-wrong);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+/** Question **/
+
+.radio__question {
+  background-color: black;
+  color: white;
+  padding: 0.8rem 1rem;
+}
+
+.radio__question_container {
+  display: flex;
+  align-items: center;
+  border: 0.1rem solid #ffffff;
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  gap: 1rem;
+}
+
+.radio__question_container span {
+  flex: 1;
+}
+
+/** Ball animation **/
+
+@media (prefers-reduced-motion: no-preference) {
+  .ball {
+    position: absolute;
+    width: 30px;
+    left: 50%;
+    top: 28%;
+    transform: translateX(-50%);
+    z-index: 3;
+  }
+
+  html:not([data-stop-animations='true']) .ball__success {
+    top: -65px;
+    animation: bounce 2s ease forwards;
+  }
+
+  html:not([data-stop-animations='true']) .ball__fail {
+    top: 0;
+    animation: fall 1s ease-in forwards;
+  }
+
+  @keyframes fall {
+    0% {
+      top: -40px;
+    }
+    50% {
+      top: 40px; /* primera caída (impacto en el suelo) */
+    }
+    70% {
+      top: 0px; /* rebote hacia arriba */
+    }
+    100% {
+      top: 40px; /* caída final y queda en el suelo */
+    }
+  }
+
+  @keyframes bounce {
+    0% {
+      top: -20px;
+      opacity: 1;
+    }
+    100% {
+      top: 110px;
+      opacity: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .button {
+    min-width: auto;
+    padding-left: 1.5rem;
+  }
+  .radio__options_container {
+    grid-template-columns: 1fr;
+  }
+  .radio__question_container {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,88 @@
+.wrapper-radios {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  width: 100%;
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  /* box-shadow: -1px 2px 39px -1px rgb(228, 192, 192); */
+
+  .wrapper-radio {
+    background-color: var(--clr-brand);
+    color: #f7f7f7;
+    border-radius: 12px;
+    padding: 0.4rem;
+    min-width: 7.5rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-style: italic;
+    font-weight: bold;
+
+    input {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      opacity: 0;
+    }
+  }
+}
+
+.wrapper-radio:focus-within,
+.wrapper-radio:has(input:checked) {
+  background-color: var(--clr-accent, #19578d);
+}
+
+.wrapper-radio:has(input[data-state='right']) {
+  color: var(--clr-brand);
+  background-color: transparent;
+  border: 3px solid var(--clr-activity-success);
+}
+
+.wrapper-radio:has(input[data-state='wrong']) {
+  background-color: transparent;
+  border: 3px solid var(--clr-activity-wrong);
+  color: var(--clr-brand);
+}
+
+.wrapper-radio:has(input[data-state='right'])::before {
+  content: '✔';
+  color: var(--clr-activity-success);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.wrapper-radio:has(input[data-state='wrong'])::before {
+  content: '✖';
+  color: var(--clr-activity-wrong);
+  background-color: var(--clr-background);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
