@@ -122,7 +122,7 @@ export default function GameBotlesPage() {
                     de error).
                   </li>
                   <li>
-                    e abre un modal indicando que la respuesta no es correcta y
+                    Se abre un modal indicando que la respuesta no es correcta y
                     feedback si lo desea.
                   </li>
                   <li>Se habilita la opción de reiniciar.</li>

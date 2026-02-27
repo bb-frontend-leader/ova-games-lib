@@ -44,7 +44,7 @@ export default function GameMemoryCardPage() {
                   Descripción de la actividad:
                 </h3>
                 <p>
-                  es una actividad interactiva donde el estudiante debe
+                  Es una actividad interactiva donde el estudiante debe
                   relacionar correctamente pares de cartas utilizando pistas
                   visuales y textuales.
                 </p>

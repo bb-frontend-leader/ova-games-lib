@@ -68,7 +68,7 @@ export default function GameThisOrThatPage() {
                 </p>
                 <p>
                   El estudiante debe analizar la pregunta, seleccionar una de
-                  las dos opciones disponibles y presionar el botón “Validar”
+                  las dos opciones disponibles y presionar el botón "Comprobar"
                   para confirmar su elección.
                 </p>
               </div>

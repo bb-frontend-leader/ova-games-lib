@@ -69,7 +69,7 @@ export default function GameQuestionPage() {
                 </p>
                 <p>
                   Una vez seleccionada la opción, el estudiante debe presionar
-                  el botón “Validar” para confirmar su respuesta.
+                  el botón "Comprobar" para confirmar su respuesta.
                 </p>
                 <p>
                   El instructor puede configurar la cantidad de opciones que
@@ -101,7 +101,7 @@ export default function GameQuestionPage() {
                     seleccionada.
                   </li>
                   <li>Se despliega un modal de felicitación.</li>
-                  <li>Si lo desea se puede incluir retroalimentación</li>
+                  <li>Si lo desea se puede incluir retroalimentación.</li>
                 </ul>
               </div>
             </div>

@@ -51,7 +51,7 @@ return (
                   Descripción de la actividad:
                 </h3>
                 <p>
-                  es una actividad interactiva ambientada en el fondo del mar,
+                  Es una actividad interactiva ambientada en el fondo del mar,
                   donde el estudiante debe completar una frase seleccionando la
                   palabra adecuada entre varias opciones representadas por
                   peces.

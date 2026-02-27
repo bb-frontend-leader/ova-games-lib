@@ -120,7 +120,7 @@ export default function GamePairLogicItemsPage() {
                   </li>
                   <li>Se abre un modal y se muestra una retroalimentación.</li>
                   <li>
-                    El estudiante vueleve a intentarlo hasta acertar. todas las
+                    El estudiante vuelve a intentarlo hasta acertar todas las
                     parejas para finalizar.
                   </li>
                 </ul>

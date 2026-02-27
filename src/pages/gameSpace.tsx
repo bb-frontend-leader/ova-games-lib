@@ -76,7 +76,7 @@ export default function GameSpacePage() {
                 <p>
                   El estudiante debe analizar cuidadosamente la pregunta,
                   seleccionar la respuesta correcta y presionar el botón
-                  “Validar” para confirmar su elección.
+                  "Comprobar" para confirmar su elección.
                 </p>
               </div>
             </div>

@@ -71,7 +71,7 @@ export default function GamePhraseAndImagePage() {
                       Descripción de la actividad:
                     </h3>
                     <p>
-                      es una actividad interactiva donde el estudiante debe
+                      Es una actividad interactiva donde el estudiante debe
                       relacionar correctamente una descripción textual con su
                       imagen correspondiente.
                     </p>
@@ -108,7 +108,7 @@ export default function GamePhraseAndImagePage() {
                   </div>
                   <div className="text-green-800">
                     <p>
-                      Si la respuesta es <strong> correcta </strong>,
+                      Si la respuesta es <strong> correcta</strong>:
                     </p>
                     <ul className="list-disc">
                       <li>Todas las cartas se resaltan en color verde.</li>
@@ -241,7 +241,7 @@ export default function GamePhraseAndImagePage() {
                       Descripción de la actividad:
                     </h3>
                     <p>
-                      es una actividad interactiva donde el estudiante debe
+                      Es una actividad interactiva donde el estudiante debe
                       relacionar correctamente un enunciado principal con el
                       texto que mejor lo complementa o explica.
                     </p>
@@ -471,12 +471,12 @@ export default function GamePhraseAndImagePage() {
                     <p>
                       En pantalla se presentan varias cartas con una consigna,
                       pregunta o frase base. Al hacer clic sobre una carta, se
-                      abre un modal que contiene varias opciones de texto. El
+                      abre un modal que contiene varias opciones de audio. El
                       estudiante debe analizar cuidadosamente y seleccionar la
                       opción que corresponda correctamente.
                     </p>
                     <p>
-                      Una vez elegida, el texto seleccionado se muestra
+                      Una vez elegida, el audio seleccionado se muestra
                       automáticamente en la carta correspondiente. El proceso
                       continúa hasta completar todas las cartas.
                     </p>

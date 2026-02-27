@@ -68,7 +68,8 @@ export default function GameRaceCardPage() {
                         Descripción de la actividad:
                       </h3>
                       <p>
-                        es una actividad interactiva que combina aprendizaje y
+
+                        Es una actividad interactiva que combina aprendizaje y
                         competencia en una emocionante carrera automovilística.
                       </p>
                       <p>
@@ -79,7 +80,7 @@ export default function GameRaceCardPage() {
                       </p>
                       <p>
                         El estudiante debe analizar la pregunta, seleccionar la
-                        opción correcta y presionar el botón “Validar” para
+                        opción correcta y presionar el botón "Comprobar" para
                         confirmar su respuesta. Cada decisión influye
                         directamente en el avance de la carrera.
                       </p>
