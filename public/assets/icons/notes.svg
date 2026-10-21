@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33.35 33.35">
+  <g>
+    <path fill="currentColor" stroke="currentColor" strokeWidth="0.5"
+      d="M0,.85v31.66c0,.47.38.85.85.85h18.18c.47,0,.85-.38.85-.85v-11.79c0-.47.38-.85.85-.85h11.79c.47,0,.85-.38.85-.85V.85c0-.47-.38-.85-.85-.85H.85c-.47,0-.85.38-.85.85Z" />
+    <path fill="currentColor" stroke="currentColor" strokeWidth="1"
+      d="M23.25,33.05v-8.96c0-.47.38-.85.85-.85h8.96c.11,0,.17.13.09.21l-9.68,9.68c-.08.08-.21.02-.21-.09Z" />
+  </g>
+</svg>

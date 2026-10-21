@@ -1,9 +1,11 @@
 
 import { useState } from "react";
 import {  Col, Row } from "books-ui";
-import { ModalFeedback } from '@core/components';
-import {StopCard} from "@core/components/games";
-import { Panel } from "@ui/components";
+
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { StopCard } from '@/shared/components/games/game-stop-card';
+import { Panel } from '@/shared/components/layouts';
+
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 
 

@@ -1,12 +1,12 @@
-import {  Col, Row } from "books-ui"
-import { Button } from "@ui/components";
-import css from "../styles/stylesheet/phraseAndImage.module.css";
-import {
-  GameQuestion,
-  ModalFeedback,
-} from "@core/components";
 import { useState } from "react";
+import {  Col, Row } from "books-ui"
+
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameQuestion } from '@/shared/components/games/game-question';
+import { Button } from '@/shared/components/ui';
+
+import css from "../styles/stylesheet/phraseAndImage.module.css";
 
 export default function GameQuestionPage() {
     const [isOpen, setIsOpen] = useState<string | null>(null);

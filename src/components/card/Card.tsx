@@ -1,6 +1,6 @@
+import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollToPlugin);
 

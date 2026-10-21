@@ -1,1 +1,0 @@
-export { Inputs } from './input-activity';

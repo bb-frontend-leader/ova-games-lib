@@ -48,14 +48,6 @@ export const games: Game[] = [
     link: "/gamePairLogicItems",
   },
   {
-    url: "./assets/images/imgsGames/phraseAndImage.png",
-    title: "Relaciona la Frase con la Imagen",
-    description:
-      "Lee cuidadosamente y selecciona la imagen que mejor represente la frase. ¡Pon a prueba tu comprensión y atención!",
-    alt: "imagen del juego phraseAndImage",
-    link: "/gamePhraseAndImage",
-  },
-  {
     url: "./assets/images/imgsGames/question.png",
     title: "Desafía tu Conocimiento",
     description:

@@ -1,11 +1,13 @@
 
 import { useState } from "react";
 import { Col, Row } from "books-ui";
-import { SectionNavigation } from "@core/utils/section-navigation";
 
-import { GameFish, ModalFeedback } from "@/shared/core/components";
-import { Button, Panel } from "@/shared/ui/components";
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameFish } from '@/shared/components/games/game-fish';
+import { Panel } from '@/shared/components/layouts';
+import { Button } from '@/shared/components/ui';
+import { SectionNavigation } from '@/shared/utils/section-navigation';
 
 export  default function GameFishPage () {
     const [isOpen, setIsOpen] = useState<string | null>(null);

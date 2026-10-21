@@ -1,9 +1,10 @@
-import { Row, Col } from "books-ui";
-import { GameMoney } from "@core/components/games";
-import { Button } from "@ui/components";
 import { useState } from "react";
-import { ModalFeedback } from "@/shared/core/components";
+import { Col,Row } from "books-ui";
+
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameMoney } from '@/shared/components/games/game-money';
+import { Button } from '@/shared/components/ui';
 
 const MODALS = {
   TRUE: "modal-correct-activity",

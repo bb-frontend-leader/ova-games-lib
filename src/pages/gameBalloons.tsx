@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Col, Row } from "books-ui";
-import { GameBalloons } from "@core/components/games";
-import { ModalFeedback } from "@core/components";
-import { Button } from "@ui/components";
+
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameBalloons } from '@/shared/components/games/game-balloons';
+import { Button } from '@/shared/components/ui';
 
 
 const MODALS = {

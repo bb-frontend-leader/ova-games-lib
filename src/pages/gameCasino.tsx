@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Col, Row } from "books-ui";
-import { SectionNavigation } from "@core/utils/section-navigation";
 
-import { GameCasino, ModalFeedback } from "@/shared/core/components";
-import { Button, Panel } from "@/shared/ui/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameCasino } from '@/shared/components/games/game-casino';
+import { Panel } from '@/shared/components/layouts';
+import { Button } from '@/shared/components/ui';
+import { SectionNavigation } from '@/shared/utils/section-navigation';
+
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 
 export default function GameCasinoPage() {

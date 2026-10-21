@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { useActivityContext } from "../context";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
+
+import { useActivityContext } from "../context";
 
 export const Main = () => {
   const { games } = useActivityContext();

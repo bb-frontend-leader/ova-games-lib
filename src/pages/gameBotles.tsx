@@ -1,8 +1,10 @@
-import { Row, Col  } from "books-ui";
-import { GameBottle, ModalFeedback } from "@/shared/core/components";
-import { Button } from "@ui/components";
 import { useState } from "react";
+import { Col,Row  } from "books-ui";
+
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameBottle } from '@/shared/components/games/game-bottles';
+import { Button } from '@/shared/components/ui';
 
 const MODALS = {
   MODAL_1_CORRECT: "MODAL_1_CORRECT",

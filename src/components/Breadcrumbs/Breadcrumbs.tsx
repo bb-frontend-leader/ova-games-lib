@@ -1,5 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
+
 import { games } from "../../data/dataGames";
 export function Breadcrumbs() {
   const location = useLocation();

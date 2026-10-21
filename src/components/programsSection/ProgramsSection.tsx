@@ -1,13 +1,15 @@
-import { Card } from "../card/Card";
-import { games } from "../../data/dataGames";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { /*Autoplay, FreeMode, */ Navigation } from "swiper/modules";
-import "swiper/swiper.css";
-import gsap from "gsap";
-import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
-import { useActivityContext } from "../context";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
+import { /*Autoplay, FreeMode, */ Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import { games } from "../../data/dataGames";
+import { Card } from "../card/Card";
+import { useActivityContext } from "../context";
+
+import "swiper/swiper.css";
+import "swiper/swiper-bundle.css";
 gsap.registerPlugin();
 
 export const ProgramsSection = () => {

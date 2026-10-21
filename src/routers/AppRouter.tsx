@@ -1,21 +1,22 @@
-import {  Routes, Route } from "react-router-dom";
+import {  Route,Routes } from "react-router-dom";
+
 import { OvaProvider } from "../context/ova-context";
-import Home from "../pages/Home";
+import AllGames from "../pages/allGames";
 import GameBalloonsPage from "../pages/gameBalloons";
 import GameBasketballPage from "../pages/gameBasketball";
 import GameBotles from "../pages/gameBotles";
+import GameCasinoPage from "../pages/gameCasino";
+import GameFishPage from "../pages/gameFish";
+import GameMemoryCardPage from "../pages/gameMemoryCard";
 import GameMoneyPage from "../pages/gameMoney";
 import GamePairLogicItemsPage from "../pages/gamePairLogicItems";
-import GamePhraseAndImagePage from "../pages/gamePhraseAndImage";
 import GameQuestionPage from "../pages/gameQuestion";
 import GameRaceCardPage from "../pages/gameRaceCard";
 import GameSpacePage from "../pages/gameSpace";
-import GameThisOrThatPage from "../pages/gameThisOrThat";
-import GameFishPage from "../pages/gameFish";
-import GameCasinoPage from "../pages/gameCasino";
-import GameMemoryCardPage from "../pages/gameMemoryCard";
 import GameStopCardPage from "../pages/gameStopCard";
-import AllGames from "../pages/allGames";
+import GameThisOrThatPage from "../pages/gameThisOrThat";
+import Home from "../pages/Home";
+
 import type { Language } from "../types/types";
 export default function AppRouter() {
   function getPageLanguage() {
@@ -34,10 +35,6 @@ export default function AppRouter() {
           <Route
             path="/gamePairLogicItems"
             element={<GamePairLogicItemsPage />}
-          />
-          <Route
-            path="/gamePhraseAndImage"
-            element={<GamePhraseAndImagePage />}
           />
           <Route path="/gameQuestion" element={<GameQuestionPage />} />
           <Route path="/gameRaceCard" element={<GameRaceCardPage />} />

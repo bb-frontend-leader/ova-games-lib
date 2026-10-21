@@ -1,0 +1,4 @@
+[submodule "src/shared"]
+	path = src/shared
+	url = git@github.com:625-OVAs-2027/core.git
+	branch = develop

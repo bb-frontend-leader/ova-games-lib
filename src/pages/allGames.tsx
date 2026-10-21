@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import { useEffect,useMemo, useState } from "react";
+
 import { Breadcrumbs, Card } from "@/components";
 import { games } from "@/data/dataGames";
 

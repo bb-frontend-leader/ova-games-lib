@@ -1,9 +1,10 @@
 import { useState } from "react";
 import {  Col, Row } from "books-ui";
-import { Panel } from "@ui/components";
 
-import { ModalFeedback, RaceCard } from "@/shared/core/components";
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { RaceCard } from '@/shared/components/games/game-race-card';
+import { Panel } from '@/shared/components/layouts';
 
 
 const MODALS = {

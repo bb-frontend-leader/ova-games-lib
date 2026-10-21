@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Col, Row } from "books-ui";
-import {
-  GameSpace,
-  ModalFeedback
-} from "@core/components";
-import { Button } from "@ui/components";
+
 import { Breadcrumbs } from "@/components";
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameSpace } from '@/shared/components/games/game-space';
+import { Button } from '@/shared/components/ui';
 
 const MODALS = {
    TRUE: "modal-correct-activity",

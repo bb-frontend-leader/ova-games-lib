@@ -1,25 +1,72 @@
-import { Col, Row, Image, Button } from "books-ui";
 import { useState } from "react";
+import { Col, Row } from "books-ui";
 
-import { Button as ButtonActions } from "@ui/components";
-import { ModalFeedback } from "@/shared/core/components";
-import css from "../styles/stylesheet/gamePairLogic.module.css";
-import {
-  RamdomSplitAnimation,
-  RandomImagesAnimation,
-} from "@core/components/activities/pair-logic/animations/RandomImagesAnimation";
-import { PairLogicItems } from "@/shared/core/components/activities/pair-logic/pair-logic-items";
 import { Breadcrumbs } from "@/components";
+import type {
+  OnResultData,
+  PairLogicPair,
+} from '@/shared/components/activities/pair-logic-activity';
+import { PairLogicActivity } from '@/shared/components/activities/pair-logic-activity';
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { Button } from '@/shared/components/ui';
 
 const MODALS = {
   TRUE: "modal-correct-activity",
-  FALSE: "modal-wrong-activity",
 };
+
+// La imagen y el texto de una pareja van juntos; la actividad mezcla el orden de los textos.
+const PAIRS: PairLogicPair[] = [
+  {
+    id: "caballo",
+    image: {
+      src: "assets/images/imagesGameJoinItems/caballo.webp",
+      alt: "Caballo galopando",
+    },
+    text: "caballo",
+  },
+  {
+    id: "elefante",
+    image: {
+      src: "assets/images/imagesGameJoinItems/elefante.webp",
+      alt: "Elefante",
+    },
+    text: "elefante",
+  },
+  {
+    id: "gato",
+    image: {
+      src: "assets/images/imagesGameJoinItems/gato.webp",
+      alt: "Gato acostado",
+    },
+    text: "gato",
+  },
+  {
+    id: "jirafa",
+    image: {
+      src: "assets/images/imagesGameJoinItems/jirafa.webp",
+      alt: "Jirafa acostada",
+    },
+    text: "jirafa",
+  },
+  {
+    id: "perro",
+    image: { src: "assets/images/imagesGameJoinItems/perro.webp", alt: "Perro" },
+    text: "perro",
+  },
+  {
+    id: "tigre",
+    image: { src: "assets/images/imagesGameJoinItems/tigre.webp", alt: "Tigre" },
+    text: "tigre",
+  },
+];
 export default function GamePairLogicItemsPage() {
   const [isOpen, setIsOpen] = useState<string | null>(null);
-  const handleResult = (result: boolean /*id: string | null*/) => {
-    const activityResult = result.toString().toUpperCase();
-    setIsOpen(MODALS[activityResult as keyof typeof MODALS]);
+  /**
+   * Se ejecuta con cada comprobación. El veredicto de cada intento se muestra en el tablero;
+   * el modal de felicitación se abre al resolver la última pareja.
+   */
+  const handleResult = ({ complete }: OnResultData) => {
+    if (complete) setIsOpen(MODALS.TRUE);
   };
 
   const closeModal = () => setIsOpen(null);
@@ -88,10 +135,11 @@ export default function GamePairLogicItemsPage() {
                   Si la respuesta es <strong>correcta </strong>:
                 </p>
                 <ul className="list-disc">
-                  <li>Se desabilita los elemento seleccionados.</li>
-                  <li>Se muestra una animación o efecto positivo.</li>
+                  <li>La pareja queda resuelta y sus tarjetas se deshabilitan.</li>
+                  <li>El tablero muestra un mensaje de acierto.</li>
                   <li>
-                    El estudiante continúa hasta completar todas las parejas.
+                    El estudiante continúa hasta completar todas las parejas y
+                    se abre un modal de felicitación.
                   </li>
                 </ul>
               </div>
@@ -114,110 +162,40 @@ export default function GamePairLogicItemsPage() {
                   Si la respuesta es <strong>incorrecta</strong>:
                 </p>
                 <ul className="list-disc">
+                  <li>El tablero muestra un mensaje indicando que no es la pareja.</li>
                   <li>
-                    Los items quedan nuevamente habilitados para un nuevo
-                    intento.
+                    El estudiante puede cambiar la imagen o el texto elegido y
+                    volver a comprobar.
                   </li>
-                  <li>Se abre un modal y se muestra una retroalimentación.</li>
                   <li>
-                    El estudiante vuelve a intentarlo hasta acertar todas las
-                    parejas para finalizar.
+                    Al resolver todas las parejas se habilita Reiniciar para
+                    volver a jugar.
                   </li>
                 </ul>
               </div>
             </div>
 
-            <div className="md:col-span-2 p-4">
-              {/* aqui van las preguntas */}
-              <PairLogicItems onResult={handleResult}>
-                <PairLogicItems.Images>
-                  <RandomImagesAnimation />
-                  <Button className={`${css.buttonImage} gsap-item`} id="1">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen de un caballo  galopando"
-                      src="assets/images/imagesGameJoinItems/caballo.webp"
-                      size="100%"
-                    />
-                  </Button>
-                  <Button className={`${css.buttonImage} gsap-item`} id="2">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen de un elefante"
-                      src="assets/images/imagesGameJoinItems/elefante.webp"
-                      size="100%"
-                    />
-                  </Button>
-                  <Button className={`${css.buttonImage} gsap-item`} id="3">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen gato acostado"
-                      src="assets/images/imagesGameJoinItems/gato.webp"
-                      size="100%"
-                    />
-                  </Button>
-                  <Button className={`${css.buttonImage} gsap-item`} id="4">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen jirafa acostada"
-                      src="assets/images/imagesGameJoinItems/jirafa.webp"
-                      size="100%"
-                    />
-                  </Button>
-                  <Button className={`${css.buttonImage} gsap-item`} id="5">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen de un perro"
-                      src="assets/images/imagesGameJoinItems/perro.webp"
-                      size="100%"
-                    />
-                  </Button>
-                  <Button className={`${css.buttonImage} gsap-item`} id="6">
-                    <Image
-                      addClass={`${css.imageButton} `}
-                      noCaption
-                      alt="imagen de un tigre"
-                      src="assets/images/imagesGameJoinItems/tigre.webp"
-                      size="100%"
-                    />
-                  </Button>
-                </PairLogicItems.Images>
-                <PairLogicItems.Items>
-                  <RamdomSplitAnimation mode="lines" />
-                  <Button className={`${css.buttonTexto} gsap-text`} id="5">
-                    <p>perro</p>
-                  </Button>
-                  <Button className={`${css.buttonTexto} gsap-text`} id="3">
-                    <p>gato</p>
-                  </Button>
-                  <Button className={`${css.buttonTexto} gsap-text`} id="1">
-                    <p>caballo</p>
-                  </Button>
-                  <Button className={`${css.buttonTexto} gsap-text`} id="2">
-                    <p>elefante</p>
-                  </Button>
-                  <Button className={`${css.buttonTexto} gsap-text`} id="4">
-                    <p>jirafa</p>
-                  </Button>
-                  <Button className={`${css.buttonTexto} gsap-text`} id="6">
-                    <p>tigre</p>
-                  </Button>
-                </PairLogicItems.Items>
-                {/* Ejemplo de disparadores */}
-                <div className={css.containerButtons}>
-                  <PairLogicItems.Button>
-                    <ButtonActions label="Comprobar" />
-                  </PairLogicItems.Button>
-                  <PairLogicItems.Button type="reset">
-                    <ButtonActions label="Reiniciar" />
-                  </PairLogicItems.Button>
-                </div>
-              </PairLogicItems>
+            <div className="md:col-span-2 p-4 u-text-center">
+              <p className="u-font-bold">
+                Seleccione una imagen y el texto que le corresponde; después
+                pulse Comprobar.
+              </p>
+              <PairLogicActivity pairs={PAIRS} onResult={handleResult}>
+                <PairLogicActivity.Board />
+                <Row
+                  justifyContent="center"
+                  alignItems="center"
+                  addClass="u-gap-x-4 u-mt-2"
+                >
+                  <PairLogicActivity.Button>
+                    <Button label="Comprobar" />
+                  </PairLogicActivity.Button>
+                  {/* Se habilita al resolver todas las parejas. */}
+                  <PairLogicActivity.Button type="reset">
+                    <Button label="Reiniciar" />
+                  </PairLogicActivity.Button>
+                </Row>
+              </PairLogicActivity>
             </div>
           </div>
         </Col>
@@ -235,19 +213,6 @@ export default function GamePairLogicItemsPage() {
             ¡Muy bien! Es correcta la respuesta. Cada componente eléctrico tiene
             un único fin.
           </p>
-        </ModalFeedback>
-
-        <ModalFeedback
-          type="wrong"
-          isOpen={isOpen === MODALS.FALSE}
-          onClose={closeModal}
-          audio="assets/audios/aud_ova-2_g2_sld-17 (Incorrecto).mp3"
-          finalFocusRef=".js-modal-wrong"
-          interpreter={{
-            contentURL: "vid_int_ova-2_sld-17_equis.mp4",
-          }}
-        >
-          <p className="mb-4">¡Ups! Al parecer algo no quedo bien.</p>
         </ModalFeedback>
       </Row>
     </>

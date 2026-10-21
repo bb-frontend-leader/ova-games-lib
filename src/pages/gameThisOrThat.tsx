@@ -1,14 +1,13 @@
-import { Col, Row } from "books-ui";
 import { useState } from "react";
-import { Button } from "@ui/components";
+import { Col, Row } from "books-ui";
+
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { GameThisOrThat } from '@/shared/components/games/game-this-or-that';
+import { Button } from '@/shared/components/ui';
 const MODALS = {
   TRUE: "modal-correct-activity",
   FALSE: "modal-wrong-activity",
 };
-import {
-  GameThisOrThat,
-  ModalFeedback,
-} from "@core/components";
 import { Breadcrumbs } from "@/components";
 
 export default function GameThisOrThatPage() {

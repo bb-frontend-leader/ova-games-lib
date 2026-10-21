@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {  Col, Row } from "books-ui";
-import { Button } from "@/shared/ui/components";
-import { MemoryCardActivity } from "@/shared/core/components/games";
-import { ModalFeedback } from "@/shared/core/components";
+
+import { ModalFeedback } from '@/shared/components/features/modal-feedback';
+import { MemoryCardActivity } from '@/shared/components/games/game-memory-card';
+import { Button } from '@/shared/components/ui';
+
 import { Breadcrumbs } from '../components/Breadcrumbs/Breadcrumbs';
 
 export default function GameMemoryCardPage() {
