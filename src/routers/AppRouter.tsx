@@ -49,6 +49,14 @@ const GameRaceCardPage = lazy(() => import('../pages/gameRaceCard'));
 const GameSpacePage = lazy(() => import('../pages/gameSpace'));
 const GameStopCardPage = lazy(() => import('../pages/gameStopCard'));
 const GameThisOrThatPage = lazy(() => import('../pages/gameThisOrThat'));
+const GameRoulettePage = lazy(() => import('../pages/gameRoulette'));
+const GameJeopardyPage = lazy(() => import('../pages/gameJeopardy'));
+const GamePlinkoPage = lazy(() => import('../pages/gamePlinko'));
+const GameSlotsPage = lazy(() => import('../pages/gameSlots'));
+const GameMinesweeperPage = lazy(() => import('../pages/gameMinesweeper'));
+const GameNavalBattlePage = lazy(() => import('../pages/gameNavalBattle'));
+const GameTowerBlocksPage = lazy(() => import('../pages/gameTowerBlocks'));
+const GameEscapeRoomPage = lazy(() => import('../pages/gameEscapeRoom'));
 
 const ActivityCheckboxPage = lazy(() => import('../pages/activityCheckbox'));
 const ActivityCrosswordPage = lazy(() => import('../pages/activityCrossword'));
@@ -87,6 +95,14 @@ export default function AppRouter() {
           <Route path="/juegos/mision-espacial" element={<GameSpacePage />} />
           <Route path="/juegos/paradas-del-saber" element={<GameStopCardPage />} />
           <Route path="/juegos/cual-prefieres" element={<GameThisOrThatPage />} />
+          <Route path="/juegos/ruleta" element={<GameRoulettePage />} />
+          <Route path="/juegos/tablero-de-preguntas" element={<GameJeopardyPage />} />
+          <Route path="/juegos/plinko" element={<GamePlinkoPage />} />
+          <Route path="/juegos/tragamonedas" element={<GameSlotsPage />} />
+          <Route path="/juegos/buscaminas" element={<GameMinesweeperPage />} />
+          <Route path="/juegos/batalla-naval" element={<GameNavalBattlePage />} />
+          <Route path="/juegos/torre-de-bloques" element={<GameTowerBlocksPage />} />
+          <Route path="/juegos/escape-room" element={<GameEscapeRoomPage />} />
 
           <Route path="/actividades/seleccion-multiple" element={<ActivityCheckboxPage />} />
           <Route path="/actividades/crucigrama" element={<ActivityCrosswordPage />} />

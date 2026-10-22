@@ -149,6 +149,79 @@ export const games: Game[] = [
     category: 'questions'
   },
   {
+    link: '/juegos/ruleta',
+    kind: 'game',
+    title: 'La Ruleta del Saber',
+    description: 'Gira la ruleta, responde la pregunta que salga y suma puntos con comodines y rachas.',
+    url: 'assets/images/imgsGames/roulette.png',
+    alt: 'Ruleta de colores con casillas numeradas',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/tablero-de-preguntas',
+    kind: 'game',
+    title: 'El Tablero del Saber',
+    description:
+      'Elige casillas de un tablero por categorías: más puntos, más difícil. ¿Te animas con la apuesta doble?',
+    url: 'assets/images/imgsGames/jeopardy.png',
+    alt: 'Tablero de categorías con casillas de puntos',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/plinko',
+    kind: 'game',
+    title: 'Plinko del Saber',
+    description: 'Cada acierto gana una ficha para soltar sobre los clavos: ¿hasta qué premio llegará?',
+    url: 'assets/images/imgsGames/plinko.png',
+    alt: 'Tablero de clavos con una ficha cayendo hacia los premios',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/tragamonedas',
+    kind: 'game',
+    title: 'Tragamonedas del Saber',
+    description: 'Acierta para ganar tiradas de la máquina y busca los tres diamantes del jackpot.',
+    url: 'assets/images/imgsGames/slots.png',
+    alt: 'Máquina tragamonedas con tres carretes',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/buscaminas',
+    kind: 'game',
+    title: 'Buscaminas del Saber',
+    description: 'Despeja las casillas seguras respondiendo preguntas y esquiva las minas escondidas.',
+    url: 'assets/images/imgsGames/minesweeper.png',
+    alt: 'Campo de casillas con minas escondidas',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/batalla-naval',
+    kind: 'game',
+    title: 'Batalla Naval del Saber',
+    description: 'Cada respuesta correcta es un disparo: encuentra y hunde la flota enemiga.',
+    url: 'assets/images/imgsGames/navalBattle.png',
+    alt: 'Mar cuadriculado con barcos enemigos escondidos',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/torre-de-bloques',
+    kind: 'game',
+    title: 'Torre de Bloques del Saber',
+    description: 'Construye la torre colocando con la grúa un bloque por cada respuesta correcta.',
+    url: 'assets/images/imgsGames/towerBlocks.png',
+    alt: 'Grúa colocando un bloque sobre una torre',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/escape-room',
+    kind: 'game',
+    title: 'Escape Room del Saber',
+    description: 'Abre los candados con tus respuestas y descubre el código para escapar de la sala.',
+    url: 'assets/images/imgsGames/escapeRoom.png',
+    alt: 'Sala con objetos con candado y una puerta con código',
+    category: 'questions'
+  },
+  {
     link: '/actividades/seleccion-unica',
     kind: 'activity',
     title: 'Selección única',

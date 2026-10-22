@@ -1,0 +1,938 @@
+/* Tragamonedas: casino de terciopelo granate, marquesina de focos dorados, carretes color crema y panel de preguntas */
+
+.slots,
+.init {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  color: #ffffff;
+  background: radial-gradient(circle at 85% 0%, rgb(255 210 63 / 0.22), transparent 45%),
+    radial-gradient(circle at 0% 100%, rgb(255 90 120 / 0.2), transparent 50%),
+    linear-gradient(165deg, #5a0f2c, #1e0510 80%);
+  border-radius: 1.25rem;
+  container-type: inline-size;
+}
+
+.slots {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+/* Marcador */
+.hud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hud-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon label'
+    'icon value';
+  column-gap: 0.55rem;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  background: rgb(0 0 0 / 0.35);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 0.75rem;
+}
+
+.hud-icon {
+  grid-area: icon;
+  font-size: 1.6rem;
+  color: #ffd23f;
+}
+
+.hud-item[data-id='streak'] .hud-icon {
+  font-size: 2rem;
+  color: #ff9a55;
+}
+
+.hud-item[data-id='pulls'] .hud-icon {
+  color: #ffb81c;
+}
+
+.hud-item[data-id='solved'] .hud-icon {
+  color: #8df08d;
+}
+
+.hud-label {
+  grid-area: label;
+  font-size: 0.75rem;
+  line-height: 1.1;
+  color: #f5dce3;
+}
+
+.hud-value {
+  grid-area: value;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffd23f;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Máquina y panel */
+.play {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+  justify-items: center;
+}
+
+.machine-wrap {
+  width: min(100%, 24rem);
+}
+
+.side {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.machine {
+  --cell: min(4.4rem, 19cqw);
+
+  position: relative;
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.5rem 0.9rem 0.9rem;
+  color: #ffffff;
+  background: linear-gradient(180deg, #d4153f, #8c0b29 55%, #62071f);
+  border: 4px solid #ffd23f;
+  border-radius: 1.4rem;
+  box-shadow:
+    0 0.4rem 0 rgb(0 0 0 / 0.4),
+    inset 0 0 0 3px #a56a00;
+}
+
+/* Focos de la marquesina: dos juegos que se alternan */
+.bulbs {
+  position: absolute;
+  top: 0.35rem;
+  right: 1.2rem;
+  left: 1.2rem;
+  height: 0.7rem;
+}
+
+.bulbs::before,
+.bulbs::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #fff3b0 38%, #ffb81c 45%, transparent 55%) 0 0 / 1.6rem 100% repeat-x;
+}
+
+.bulbs::after {
+  background-position: 0.8rem 0;
+  opacity: 0.45;
+}
+
+.machine-title {
+  margin: 0;
+  padding: 0.3rem 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-align: center;
+  color: #ffd23f;
+  text-shadow: 0 0 0.6rem rgb(255 210 63 / 0.6);
+  background: #2b0a14;
+  border-radius: 0.6rem;
+}
+
+.machine-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.6rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.window {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.3rem;
+  padding: 0.4rem;
+  background: #2b0a14;
+  border-radius: 0.8rem;
+  box-shadow: inset 0 0 0 2px #a56a00;
+}
+
+.reel {
+  height: calc(var(--cell) * 3);
+  overflow: hidden;
+  background: linear-gradient(#d9ccae, #fff8e6 28%, #fff8e6 72%, #d9ccae);
+  border-radius: 0.5rem;
+  box-shadow:
+    inset 0 0.6rem 0.6rem -0.4rem rgb(0 0 0 / 0.5),
+    inset 0 -0.6rem 0.6rem -0.4rem rgb(0 0 0 / 0.5);
+}
+
+.strip {
+  display: grid;
+  grid-auto-rows: var(--cell);
+  will-change: transform;
+}
+
+.sym {
+  display: grid;
+  place-items: center;
+  height: var(--cell);
+  padding: 0.35rem;
+}
+
+.sym svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* La línea de premio cruza el centro de los carretes */
+.payline {
+  position: absolute;
+  top: 50%;
+  right: 0.15rem;
+  left: 0.15rem;
+  height: 0;
+  border-top: 3px solid #ff2d55;
+  border-radius: 2px;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+
+.machine[data-win='triple'] .payline,
+.machine[data-win='jackpot'] .payline,
+.machine[data-win='pair'] .payline {
+  border-top-color: #ffd23f;
+  box-shadow: 0 0 0.6rem #ffd23f;
+}
+
+.machine[data-win='jackpot'] {
+  border-color: #fff3b0;
+}
+
+/* Palanca */
+.lever {
+  position: relative;
+  align-self: stretch;
+  min-height: calc(var(--cell) * 3);
+}
+
+.lever[data-active] {
+  cursor: pointer;
+}
+
+.lever-base {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1.3rem;
+  background: linear-gradient(180deg, #ffd23f, #a56a00);
+  border-radius: 0.5rem;
+}
+
+.lever-arm {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  width: 0.55rem;
+  height: calc(100% - 2.2rem);
+  background: linear-gradient(90deg, #8a8fa0, #f1f3f8, #8a8fa0);
+  border-radius: 0.3rem;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+}
+
+.lever-ball {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2.1rem;
+  height: 2.1rem;
+  background: radial-gradient(circle at 35% 30%, #ff9aa8, #e0182d 55%, #7a0a16);
+  border-radius: 50%;
+  box-shadow: 0 0.2rem 0 rgb(0 0 0 / 0.35);
+  translate: -50% 0;
+}
+
+/* Tabla de premios */
+.paytable {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  background: #2b0a14;
+  border-radius: 0.7rem;
+}
+
+.pay-item {
+  display: grid;
+  gap: 0.1rem;
+  justify-items: center;
+  min-width: 0;
+}
+
+.pay-symbol {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.pay-symbol svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pay-values {
+  display: grid;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  text-align: center;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-values b {
+  color: #ffd23f;
+}
+
+/* Tarjetas del panel */
+.card {
+  --ghost-ink: #2b0a14;
+
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  color: #2b0a14;
+  background: #fff8ec;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.card[data-summary],
+.card[data-landed] {
+  justify-items: center;
+  text-align: center;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: #b3123f;
+  border-radius: 999px;
+}
+
+.card-question {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.card-question:focus-visible,
+.pull-title:focus-visible,
+.rules-title:focus-visible {
+  outline: 3px solid #2b0a14;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.answers {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.answer {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.9rem 0.6rem 0.6rem;
+  background: #ffffff;
+  border: 2px solid #f0c7d2;
+  border-radius: 0.85rem;
+  cursor: pointer;
+}
+
+.answer:hover {
+  border-color: #b3123f;
+}
+
+.answer[data-picked] {
+  background: #ffe9ee;
+  border-color: #b3123f;
+}
+
+.answer:has(.answer-input:focus-visible) {
+  outline: 3px solid #2b0a14;
+  outline-offset: 3px;
+}
+
+.answer[data-discarded] {
+  background: #efe7ea;
+  border-color: #dccfd4;
+  cursor: default;
+}
+
+.answer[data-discarded] .answer-text {
+  text-decoration: line-through;
+  color: #5c4a52;
+}
+
+.answer[data-state='ok'] {
+  background: #dff5e1;
+  border-color: #2e7d32;
+}
+
+.answer[data-state='ko'] {
+  background: #fde3e3;
+  border-color: #c62828;
+}
+
+.answer[data-state] .answer-text {
+  text-decoration: none;
+  color: inherit;
+}
+
+.answer-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #b3123f;
+  border-radius: 50%;
+}
+
+.answer-text {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.answer-mark {
+  font-size: 1.4rem;
+}
+
+.answer[data-state='ok'] .answer-mark {
+  color: #2e7d32;
+}
+
+.answer[data-state='ko'] .answer-mark {
+  color: #c62828;
+}
+
+.verdict {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  color: #5a1010;
+  background: #fdeaea;
+  border-left: 0.4rem solid #c62828;
+  border-radius: 0.5rem;
+}
+
+.verdict[data-ok] {
+  color: #14351a;
+  background: #e6f7e8;
+  border-left-color: #2e7d32;
+}
+
+.verdict-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.verdict-coin {
+  margin-left: auto;
+  font-size: 1.6rem;
+  color: #a56a00;
+}
+
+.verdict-coin[data-gold] {
+  color: #d99500;
+}
+
+.verdict-hint {
+  margin: 0;
+}
+
+/* Palanca y premio */
+.pull-title {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.card[data-tier='jackpot'] .pull-title {
+  color: #a30f35;
+}
+
+.pull-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card[data-landed] .pull-chips,
+.card[data-summary] .pull-chips {
+  justify-content: center;
+}
+
+.chip {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #2b0a14;
+  background: #f9dfe6;
+  border-radius: 999px;
+}
+
+.chip[data-gold] {
+  color: #3d2800;
+  background: #ffe48a;
+}
+
+.pull-text {
+  max-width: 34rem;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.5rem;
+  font: inherit;
+  font-weight: 800;
+  color: #1b1b1b;
+  background: #ffd23f;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 0.25rem 0 #a56a00;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn:active:not(:disabled) {
+  translate: 0 0.2rem;
+  box-shadow: 0 0.05rem 0 #a56a00;
+}
+
+.btn:disabled {
+  color: #f1e3e8;
+  background: #7a5463;
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn[data-variant='ghost'] {
+  color: var(--ghost-ink, #ffffff);
+  background: transparent;
+  border-color: currentcolor;
+  box-shadow: none;
+}
+
+.btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 9px #1e0510;
+}
+
+.card .btn:focus-visible,
+.rules .btn:focus-visible {
+  outline-color: #2b0a14;
+  box-shadow: 0 0 0 9px #fff8ec;
+}
+
+/* Progreso */
+.track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track-item {
+  display: grid;
+  place-items: center;
+  min-width: 2.4rem;
+  height: 1.8rem;
+  padding-inline: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #ffd23f;
+  background: #7a1a3d;
+  border: 2px solid #f0a3b9;
+  border-radius: 999px;
+}
+
+.track-item[data-state='solved'] {
+  color: #ffffff;
+  background: #2e7d32;
+  border-color: #9cf59c;
+}
+
+.track-item[data-state='review'] {
+  border-style: dashed;
+  border-color: #ffffff;
+}
+
+/* Resumen */
+.medal {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 2.6rem;
+  color: #7a4a00;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc928 55%, #d68a00);
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 0 #a56a00;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+}
+
+.stat {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.6rem;
+  background: #ffffff;
+  border: 2px solid #f0c7d2;
+  border-radius: 0.75rem;
+}
+
+.stat dt {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #5c4a52;
+}
+
+.stat dd {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+/* Efectos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spark,
+.coin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--fx-color);
+}
+
+.coin {
+  box-shadow: inset 0 0 0 2px rgb(165 106 0 / 0.6);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5rem;
+  height: 5rem;
+  border: 4px solid;
+  border-radius: 50%;
+}
+
+.float {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffd23f;
+  text-shadow: 0 2px 0 #7a4a00;
+}
+
+/* Inicio */
+.init-frame {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.init {
+  /* El fondo es una ilustración SVG propia del juego (slots-init-bg); aquí solo el color de base. */
+  background: #1e0510;
+  display: grid;
+  place-items: center;
+  min-height: 44rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.init-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.init-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  width: min(100%, 36rem);
+}
+
+.init-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6cqw, 2.4rem);
+  line-height: 1.1;
+  color: #ffd23f;
+  text-shadow: 0 0.15rem 0 rgb(0 0 0 / 0.4);
+}
+
+.init-text {
+  max-width: 28rem;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.init-machine {
+  width: min(100%, 20rem);
+}
+
+.rules {
+  --ghost-ink: #2b0a14;
+
+  display: grid;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 1.25rem;
+  text-align: left;
+  color: #2b0a14;
+  background: #fff8ec;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.rules-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+  line-height: 1.4;
+}
+
+/* Movimiento: solo si el sistema lo permite y el estudiante no detuvo las animaciones */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .answer {
+      transition:
+        translate 0.15s,
+        border-color 0.15s,
+        background-color 0.15s;
+    }
+
+    .answer:hover:not([data-discarded]) {
+      translate: 0.2rem 0;
+    }
+
+    .hud-item[data-hot] .hud-icon {
+      animation: flame 0.9s ease-in-out infinite alternate;
+    }
+
+    .bulbs::before {
+      animation: bulbs 1s steps(1, end) infinite;
+    }
+
+    .bulbs::after {
+      animation: bulbs 1s steps(1, end) infinite reverse;
+    }
+
+    .machine[data-win='jackpot'] .payline {
+      animation: payline 0.4s ease-in-out 6;
+    }
+
+    .machine[data-win='triple'] .payline,
+    .machine[data-win='pair'] .payline {
+      animation: payline 0.4s ease-in-out 3;
+    }
+
+    .init-content {
+      animation: init-in 0.5s ease-out both;
+    }
+  }
+}
+
+@keyframes flame {
+  to {
+    scale: 1.2;
+    rotate: -6deg;
+  }
+}
+
+@keyframes bulbs {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes payline {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes init-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+/* Pantalla ancha: la máquina a la izquierda y la pregunta (o la palanca) a la derecha */
+@container (min-width: 44rem) {
+  .play {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .machine-wrap {
+    width: 100%;
+  }
+
+  .init {
+    min-height: 40.5rem;
+  }
+}
+
+/* Pantalla estrecha: mientras se responde, la pregunta va arriba y la máquina (solo de adorno) debajo */
+@container (max-width: 43.99rem) {
+  .slots:is([data-phase='question'], [data-phase='checked']) .side {
+    order: -1;
+  }
+}
+
+@media (max-width: 30rem) {
+  .slots {
+    padding: 1rem 0.75rem;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card,
+  .rules {
+    padding: 1rem;
+  }
+
+  .card-question {
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions .btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .card,
+  .rules,
+  .answer,
+  .btn,
+  .hud-item {
+    border: 2px solid ButtonText;
+  }
+
+  .answer:has(.answer-input:focus-visible),
+  .btn:focus-visible {
+    outline-color: Highlight;
+  }
+}

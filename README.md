@@ -57,6 +57,6 @@ Los juegos del core se copian a mano:
 
 1. Copie el directorio del juego a `src/games/` (o la actividad a `src/activities/`).
 2. Ajuste sus importaciones a los módulos locales: `@/hooks`, `@/constants`, `@/utils`, `@/components/ui` y `@/games/lib/fx`.
-3. Reemplace `useOvaStore((s) => s.lang)` por `useLang()`, y quite lo que no se use aquí (audio, intérprete, gamificación).
+3. Reemplace `useOvaStore((s) => s.lang)` por `useLang()`, y quite lo que no se use aquí (audio, intérprete, gamificación). Los juegos de preguntas del core más recientes traen `QuestionMedia` (audio e intérprete de la pregunta): quite su import y su etiqueta, y el `extends QuestionMediaFields` de los tipos.
 4. Si el CSS usa clases `hud-*` del core, cámbielas por `surface`, `tag` o `rule` (ver `base.css`).
 5. Siga los pasos de «Agregar un juego al catálogo».
