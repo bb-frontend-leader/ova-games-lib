@@ -52,6 +52,9 @@ const GameThisOrThatPage = lazy(() => import('../pages/gameThisOrThat'));
 const GameRoulettePage = lazy(() => import('../pages/gameRoulette'));
 const GameJeopardyPage = lazy(() => import('../pages/gameJeopardy'));
 const GamePlinkoPage = lazy(() => import('../pages/gamePlinko'));
+const GameCastlePage = lazy(() => import('../pages/gameCastle'));
+const GameLegoPage = lazy(() => import('../pages/gameLego'));
+const GameMillionsPage = lazy(() => import('../pages/gameMillions'));
 const GameSlotsPage = lazy(() => import('../pages/gameSlots'));
 const GameMinesweeperPage = lazy(() => import('../pages/gameMinesweeper'));
 const GameNavalBattlePage = lazy(() => import('../pages/gameNavalBattle'));
@@ -98,6 +101,9 @@ export default function AppRouter() {
           <Route path="/juegos/ruleta" element={<GameRoulettePage />} />
           <Route path="/juegos/tablero-de-preguntas" element={<GameJeopardyPage />} />
           <Route path="/juegos/plinko" element={<GamePlinkoPage />} />
+          <Route path="/juegos/castillo" element={<GameCastlePage />} />
+          <Route path="/juegos/construye-la-respuesta" element={<GameLegoPage />} />
+          <Route path="/juegos/quien-quiere-ser-millonario" element={<GameMillionsPage />} />
           <Route path="/juegos/tragamonedas" element={<GameSlotsPage />} />
           <Route path="/juegos/buscaminas" element={<GameMinesweeperPage />} />
           <Route path="/juegos/batalla-naval" element={<GameNavalBattlePage />} />

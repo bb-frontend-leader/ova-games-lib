@@ -177,6 +177,33 @@ export const games: Game[] = [
     category: 'questions'
   },
   {
+    link: '/juegos/castillo',
+    kind: 'game',
+    title: 'Castillo del Saber',
+    description: 'Elige el bloque con la respuesta correcta para que el héroe abra la puerta del castillo.',
+    url: 'assets/images/imgsGames/castle.png',
+    alt: 'Castillo con un héroe frente a la puerta y bloques con respuestas',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/construye-la-respuesta',
+    kind: 'game',
+    title: 'Construye la Respuesta',
+    description: 'Completa el modelo de piezas de colores eligiendo la pieza que encaja con la respuesta correcta.',
+    url: 'assets/images/imgsGames/lego.png',
+    alt: 'Modelo de piezas de colores al que le falta una pieza',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/quien-quiere-ser-millonario',
+    kind: 'game',
+    title: 'Quién quiere ser millonario',
+    description: 'Responde una pregunta tras otra y suma un millón por cada acierto.',
+    url: 'assets/images/imgsGames/millions.png',
+    alt: 'Pregunta con cuatro respuestas y un contador de dinero acumulado',
+    category: 'questions'
+  },
+  {
     link: '/juegos/tragamonedas',
     kind: 'game',
     title: 'Tragamonedas del Saber',

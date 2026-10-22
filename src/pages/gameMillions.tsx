@@ -1,0 +1,172 @@
+import { useState } from 'react';
+
+import type { ResultState } from '@/components';
+import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import { Button, Panel } from '@/components/ui';
+import { GameMilions } from '@/games/game-millions';
+
+type Answer = { label: string; state: 'success' | 'wrong' };
+
+const QUESTIONS: { question: string; answers: Answer[]; explanation: string }[] = [
+  {
+    question: '¿Cuál es la capital de Francia?',
+    answers: [
+      { label: 'Roma', state: 'wrong' },
+      { label: 'París', state: 'success' },
+      { label: 'Madrid', state: 'wrong' },
+      { label: 'Lisboa', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! París es la capital de Francia.'
+  },
+  {
+    question: 'El agua hierve a ___ grados centígrados.',
+    answers: [
+      { label: '50', state: 'wrong' },
+      { label: '80', state: 'wrong' },
+      { label: '100', state: 'success' },
+      { label: '150', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! A nivel del mar, el agua hierve a 100 grados centígrados.'
+  },
+  {
+    question: '¿Cuántos continentes hay en el mundo?',
+    answers: [
+      { label: 'Cinco', state: 'wrong' },
+      { label: 'Seis', state: 'wrong' },
+      { label: 'Siete', state: 'success' },
+      { label: 'Ocho', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! Los continentes son siete, según la división más usada.'
+  }
+];
+
+export default function GameMillionsPage() {
+  const [feedback, setFeedback] = useState<ResultState>(null);
+  const [current, setCurrent] = useState(0);
+  const [money, setMoney] = useState(0);
+  const [solved, setSolved] = useState<number[]>([]);
+  const [finished, setFinished] = useState(false);
+  const [round, setRound] = useState(0);
+
+  const isLast = current === QUESTIONS.length - 1;
+
+  const handleResult = ({ result }: { result: boolean }) => {
+    if (result) setSolved((prev) => (prev.includes(current) ? prev : [...prev, current]));
+    setFeedback(result ? 'success' : 'wrong');
+  };
+
+  const restart = () => {
+    setCurrent(0);
+    setMoney(0);
+    setSolved([]);
+    setFinished(false);
+    setRound((value) => value + 1);
+  };
+
+  return (
+    <GamePage
+      link="/juegos/quien-quiere-ser-millonario"
+      description={
+        <>
+          <p>
+            Un concurso de preguntas con un contador de dinero. Cada respuesta correcta suma un millón al dinero
+            acumulado y el contador sube con una lluvia de monedas.
+          </p>
+          <p>
+            El juego empieza con una pantalla de inicio con las reglas. Las preguntas van una tras otra con «Siguiente»
+            y, al terminar la última, aparece una pantalla final con el total y los aciertos.
+          </p>
+        </>
+      }
+      correct={
+        <ul>
+          <li>La respuesta se marca como correcta y suma el premio al dinero acumulado.</li>
+          <li>Se abre el modal de acierto.</li>
+          <li>Se habilita «Siguiente» (o «Finalizar» en la última pregunta).</li>
+        </ul>
+      }
+      incorrect={
+        <ul>
+          <li>La respuesta se marca como incorrecta y el dinero no cambia.</li>
+          <li>Se abre el modal de error.</li>
+          <li>Se puede volver a responder con «Reintentar».</li>
+        </ul>
+      }
+      recommendations={
+        <ul>
+          <li>
+            La página lleva el control de la partida: la pregunta actual, el <code>money</code> acumulado y cuáles ya se
+            resolvieron (<code>solved</code>), para que «Atrás» muestre la respuesta correcta ya marcada.
+          </li>
+          <li>Usa entre 3 y 5 respuestas por pregunta, con una sola correcta.</li>
+          <li>
+            Puedes escribir la pregunta como una frase por completar con <code>___</code>: la respuesta elegida cae en
+            el espacio.
+          </li>
+          <li>
+            Pasa <code>onFinish</code> en la última pregunta para mostrar <code>GameMilions.End</code>, con el total y
+            «Jugar de nuevo».
+          </li>
+          <li>
+            Usa un <code>id</code> distinto por cada respuesta y un <code>name</code> distinto por cada pregunta.
+          </li>
+        </ul>
+      }
+    >
+      <Panel>
+        <Panel.Section>
+          <Stage center>
+            <GameMilions.Init textInit="Responde bien y suma un millón por cada acierto: ¿cuánto dinero te llevarás?" />
+          </Stage>
+        </Panel.Section>
+
+        <Panel.Section>
+          <Stage size="wide">
+            {finished ? (
+              <GameMilions.End money={money} correct={solved.length} total={QUESTIONS.length} onRestart={restart} />
+            ) : (
+              <GameMilions
+                key={`${round}-${current}`}
+                question={QUESTIONS[current].question}
+                money={money}
+                alt={`Pregunta ${current + 1} de ${QUESTIONS.length}.`}
+                solved={solved.includes(current)}
+                autoFocus={current > 0}
+                onResult={handleResult}
+                onMoneyChange={setMoney}
+                onPrevious={current > 0 ? () => setCurrent(current - 1) : undefined}
+                onNext={isLast ? undefined : () => setCurrent(current + 1)}
+                onFinish={isLast ? () => setFinished(true) : undefined}
+              >
+                {QUESTIONS[current].answers.map((answer, i) => (
+                  <GameMilions.Element
+                    key={answer.label}
+                    id={`millions-${current + 1}-${i + 1}`}
+                    name={`millions-${current + 1}`}
+                    label={answer.label}
+                    state={answer.state}
+                  />
+                ))}
+                <GameActions>
+                  <GameMilions.Button type="check">
+                    <Button label="Comprobar" />
+                  </GameMilions.Button>
+                  <GameMilions.Button type="reset">
+                    <Button label="Reintentar" />
+                  </GameMilions.Button>
+                </GameActions>
+              </GameMilions>
+            )}
+          </Stage>
+        </Panel.Section>
+      </Panel>
+
+      <ResultModals
+        open={feedback}
+        onClose={() => setFeedback(null)}
+        success={QUESTIONS[current].explanation}
+        wrong="Esa no es la respuesta. Lee la pregunta con calma y elige otra."
+      />
+    </GamePage>
+  );
+}

@@ -1,0 +1,835 @@
+/* ¿Quién quiere ser millonario?: hexágonos de concurso sobre fondo violeta, premio dorado y logo luminoso */
+
+.container {
+  --clr-font: #ffffff;
+  --gold: #fccc19;
+  --ink: #2b1700;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 31rem;
+  padding: 2.25rem clamp(0.75rem, 3vw, 2rem) 1.75rem;
+  overflow: hidden;
+  color: var(--clr-font);
+  background-image: url('public/assets/game-million-background.webp');
+  background-size: cover;
+  background-position: center;
+  container-type: inline-size;
+}
+
+/* Solo para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Cabecera: logo al centro y premio a la derecha (debajo del logo si no cabe) */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.logo-wrap {
+  position: relative;
+  grid-column: 2;
+  display: grid;
+  place-items: center;
+}
+
+/* Resplandor detrás del logo */
+.logo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  background: radial-gradient(circle, rgb(252 204 25 / 0.55), transparent 65%);
+  opacity: 0.6;
+}
+
+.logo {
+  position: relative;
+  width: clamp(6.5rem, 30cqi, 10rem);
+  height: auto;
+}
+
+.counter {
+  grid-column: 3;
+  justify-self: end;
+  min-width: 10.5rem;
+  margin: 0;
+  padding: 0.7rem 2.2rem;
+  background-image: url('public/assets/Contenedor_Dinero.webp');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (max-width: 34rem) {
+  .header {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .logo-wrap,
+  .counter {
+    grid-column: 1;
+    justify-self: center;
+  }
+}
+
+/* Hexágonos: pregunta y respuestas. El marco (.frame) lo recorta clip-path y su relleno va dentro. */
+.question,
+.answer,
+.plaque,
+.nav-button {
+  --tip: 1.5rem;
+  --rim-w: 2px;
+  --rim: #ffffff;
+  --fill: #271a40;
+  --shade: #0b0214;
+  --hex: polygon(
+    var(--tip) 0,
+    calc(100% - var(--tip)) 0,
+    100% 50%,
+    calc(100% - var(--tip)) 100%,
+    var(--tip) 100%,
+    0 50%
+  );
+
+  position: relative;
+  isolation: isolate;
+}
+
+/* La línea de la pantalla del concurso: cruza por detrás de cada hexágono */
+.question::before,
+.answer::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -1rem;
+  right: -1rem;
+  z-index: -1;
+  height: 1px;
+  background-color: rgb(255 255 255 / 0.55);
+}
+
+.question::before {
+  left: -100vw;
+  right: -100vw;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: var(--rim);
+  clip-path: var(--hex);
+}
+
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: var(--rim-w);
+  background-color: var(--fill);
+  background-image: linear-gradient(180deg, transparent, var(--shade));
+  clip-path: var(--hex);
+}
+
+/* Aro de foco: un hexágono dorado un poco más grande, sobre el violeta se ve con mucho contraste */
+.halo {
+  position: absolute;
+  inset: -6px;
+  z-index: 0;
+  background-color: var(--gold);
+  clip-path: polygon(
+    calc(var(--tip) - 4px) 0,
+    calc(100% - var(--tip) + 4px) 0,
+    100% 50%,
+    calc(100% - var(--tip) + 4px) 100%,
+    calc(var(--tip) - 4px) 100%,
+    0 50%
+  );
+  opacity: 0;
+}
+
+/* Pregunta */
+.wrapper-question {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend.question {
+  display: block;
+  max-width: 100%;
+  margin-inline: auto;
+  margin-bottom: 1.25rem;
+  padding: 1rem calc(var(--tip) + 1.25rem);
+  text-align: center;
+}
+
+.question-text {
+  position: relative;
+  z-index: 2;
+  display: block;
+  font-size: clamp(1rem, 0.9rem + 0.6cqi, 1.3rem);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+/* La palabra elegida cae en el espacio en blanco */
+.blank {
+  display: inline-block;
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+/* Respuestas */
+.wrapper-answer {
+  counter-reset: option;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem 2rem;
+  width: min(100%, 54rem);
+  margin-inline: auto;
+  padding-inline: 0.5rem;
+}
+
+@container (min-width: 36rem) {
+  .wrapper-answer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Con un número impar, la última queda sola en el centro, como en el programa */
+  .answer:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 1rem);
+  }
+}
+
+@container (max-width: 30rem) {
+  .question,
+  .answer {
+    --tip: 1.1rem;
+  }
+
+  .answer {
+    min-height: 4rem;
+  }
+}
+
+.answer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  padding: 0.35rem calc(var(--tip) + 0.5rem);
+  cursor: pointer;
+}
+
+/* El radio es real (teclado y lector de pantalla) pero no se ve: lo muestra el hexágono */
+.answer-input {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.letter,
+.text,
+.icon {
+  position: relative;
+  z-index: 2;
+}
+
+/* A, B, C… con un contador de CSS (decorativo) */
+.letter {
+  counter-increment: option;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.letter::before {
+  content: counter(option, upper-alpha) / '';
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  padding-block: 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: start;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* Estados */
+.answer:not(:has(.answer-input:disabled)):hover {
+  --rim: var(--gold);
+  --fill: #3a2468;
+}
+
+.answer:has(.answer-input:disabled) {
+  cursor: not-allowed;
+}
+
+/* Las respuestas que no se eligieron quedan atenuadas al comprobar */
+.answer:not([data-state]):has(.answer-input:disabled),
+.answer[data-state='']:has(.answer-input:disabled) {
+  opacity: 0.65;
+}
+
+.answer[data-state='select'] {
+  --fill: #923e12;
+  --shade: rgb(0 0 0 / 0.25);
+  --rim: #ffffff;
+}
+
+.answer[data-state='select'] .letter {
+  background-color: var(--gold);
+  color: var(--ink);
+}
+
+.answer[data-state='success'] {
+  --fill: #2a6122;
+  --shade: rgb(0 0 0 / 0.25);
+}
+
+.answer[data-state='wrong'] {
+  --fill: #a82433;
+  --shade: rgb(0 0 0 / 0.25);
+}
+
+.answer:has(.answer-input:focus-visible) .halo,
+.answer[data-state='success'] .halo {
+  opacity: 1;
+}
+
+.answer[data-state='success'] .halo {
+  background-color: #9be58f;
+}
+
+.icon {
+  display: none;
+  flex: none;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.answer[data-state='success'] .icon--success,
+.answer[data-state='wrong'] .icon--wrong {
+  display: block;
+}
+
+/* Navegación dentro del juego: Atrás a la izquierda, Siguiente a la derecha */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-inline: 0.5rem;
+}
+
+.nav-button {
+  --tip: 1.1rem;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  min-width: 8.5rem;
+  min-height: 3rem;
+  padding: 0.4rem calc(var(--tip) + 0.9rem);
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  color: var(--clr-font);
+  cursor: pointer;
+}
+
+.nav-button[data-nav='next'] {
+  margin-inline-start: auto;
+}
+
+.nav-label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-button:not(:disabled):hover {
+  --rim: var(--gold);
+  --fill: #3a2468;
+}
+
+/* "Siguiente" se enciende en dorado cuando la pregunta está resuelta (y los botones principales de inicio y final) */
+.nav-button[data-nav='next']:not(:disabled),
+.nav-button--gold {
+  --rim: #ffffff;
+  --fill: var(--gold);
+  --shade: #f5a623;
+
+  color: var(--ink);
+}
+
+.nav-button[data-nav='next']:not(:disabled):hover,
+.nav-button--gold:hover {
+  --fill: #ffe27a;
+  --shade: var(--gold);
+}
+
+.nav-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.nav-button:focus-visible {
+  outline: none;
+}
+
+.nav-button:focus-visible .halo {
+  opacity: 1;
+}
+
+/* Inicio y final: logo, placa hexagonal con el título, texto y botones centrados */
+.screen {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  text-align: center;
+}
+
+.screen .logo-wrap,
+.screen .counter {
+  grid-column: auto;
+  justify-self: center;
+}
+
+.plaque {
+  max-width: 100%;
+  padding: 0.9rem calc(var(--tip) + 1.25rem);
+}
+
+/* El aro va detrás (en el propio .plaque) y el relleno es el fondo del marco: el texto se apoya en un fondo real */
+.plaque::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--rim);
+  clip-path: var(--hex);
+}
+
+.plaque .frame {
+  inset: var(--rim-w);
+  background-color: var(--fill);
+}
+
+.plaque .frame::before {
+  inset: 0;
+  background-color: transparent;
+}
+
+.plaque-text {
+  position: relative;
+  z-index: 2;
+  display: block;
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.6cqi, 1.3rem);
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.plaque--title .plaque-text {
+  font-size: clamp(1.3rem, 1rem + 1.4cqi, 2rem);
+  font-weight: 800;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.screen-text {
+  max-width: 34rem;
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.6cqi, 1.25rem);
+  font-weight: 600;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.screen-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.screen-actions .nav-button {
+  margin-inline-start: 0;
+}
+
+.rules-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  width: min(100%, 38rem);
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+  counter-reset: rule;
+}
+
+.rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  counter-increment: rule;
+}
+
+.rules-list li::before {
+  content: counter(rule) / '';
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+/* Capa de efectos de JS (monedas, ondas, premio en vuelo): encima de todo y sin eventos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5rem;
+  height: 5rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+.flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 100vw;
+  background-color: var(--gold);
+  box-shadow: 0 0.2rem 0 rgb(0 0 0 / 0.35);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Movimiento: solo si el usuario lo permite */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .logo {
+      animation: logo-in 600ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+    }
+
+    .logo-wrap::before {
+      animation: glow 3.2s ease-in-out infinite alternate;
+    }
+
+    .counter {
+      animation: drop-in 500ms cubic-bezier(0.2, 0.9, 0.3, 1.3) 150ms backwards;
+    }
+
+    legend.question,
+    .plaque {
+      animation: q-in 520ms cubic-bezier(0.2, 0.8, 0.3, 1) 120ms backwards;
+    }
+
+    .screen-text,
+    .rules-list,
+    .screen-actions {
+      animation: drop-in 500ms cubic-bezier(0.2, 0.9, 0.3, 1.3) 300ms backwards;
+    }
+
+    .answer {
+      transition: transform 150ms ease-out;
+    }
+
+    .answer:nth-child(odd) {
+      animation: a-in-l 480ms cubic-bezier(0.2, 0.8, 0.3, 1) var(--delay, 0ms) backwards;
+    }
+
+    .answer:nth-child(even) {
+      animation: a-in-r 480ms cubic-bezier(0.2, 0.8, 0.3, 1) var(--delay, 0ms) backwards;
+    }
+
+    .answer:nth-child(1) {
+      --delay: 280ms;
+    }
+
+    .answer:nth-child(2) {
+      --delay: 360ms;
+    }
+
+    .answer:nth-child(3) {
+      --delay: 440ms;
+    }
+
+    .answer:nth-child(4) {
+      --delay: 520ms;
+    }
+
+    .answer:not(:has(.answer-input:disabled)):hover {
+      transform: translateY(-2px) scale(1.015);
+    }
+
+    .answer:not(:has(.answer-input:disabled)):active {
+      transform: scale(0.98);
+    }
+
+    .nav-button {
+      transition: transform 150ms ease-out;
+    }
+
+    .nav-button:not(:disabled):hover {
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .nav-button:not(:disabled):active {
+      transform: scale(0.97);
+    }
+
+    .nav-button[data-nav='next']:not(:disabled) {
+      animation: win 700ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    .answer[data-state='select'] {
+      animation: pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+    }
+
+    .answer[data-state='select'] .letter {
+      animation: letter-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
+    }
+
+    .answer[data-state='success'] {
+      animation: win 700ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    .answer[data-state='success'] .halo {
+      animation: halo-pulse 700ms ease-in-out 2;
+    }
+
+    .answer[data-state='wrong'] {
+      animation: shake 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    .answer[data-state='success'] .icon--success,
+    .answer[data-state='wrong'] .icon--wrong {
+      animation: icon-pop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.6) 120ms backwards;
+    }
+
+    .blank {
+      animation: blank-in 360ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+    }
+  }
+}
+
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-10deg);
+  }
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.35;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+}
+
+@keyframes q-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.55);
+  }
+}
+
+@keyframes a-in-l {
+  from {
+    opacity: 0;
+    transform: translateX(-2.5rem);
+  }
+}
+
+@keyframes a-in-r {
+  from {
+    opacity: 0;
+    transform: translateX(2.5rem);
+  }
+}
+
+@keyframes pop {
+  40% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes letter-pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+@keyframes win {
+  30% {
+    transform: scale(1.06);
+  }
+
+  55% {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes halo-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes shake {
+  15%,
+  55% {
+    transform: translateX(-0.7rem);
+  }
+
+  35%,
+  75% {
+    transform: translateX(0.7rem);
+  }
+}
+
+@keyframes icon-pop {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-120deg);
+  }
+}
+
+@keyframes blank-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(-0.6rem) scale(1.3);
+  }
+}
+
+/* Alto contraste del sistema: los hexágonos se vuelven cajas con borde y el estado se marca con el borde */
+@media (forced-colors: active) {
+  .frame,
+  .halo,
+  .fx {
+    display: none;
+  }
+
+  .question,
+  .answer,
+  .plaque,
+  .nav-button {
+    border: 2px solid ButtonText;
+    border-radius: 0.5rem;
+  }
+
+  .nav-button:focus-visible {
+    outline: 3px solid Highlight;
+  }
+
+  .answer:has(.answer-input:focus-visible) {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .answer[data-state] {
+    border-color: Highlight;
+  }
+}
