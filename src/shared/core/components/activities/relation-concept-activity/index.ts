@@ -1,1 +1,0 @@
-export { RelationConcept } from './relation-concept-activity'

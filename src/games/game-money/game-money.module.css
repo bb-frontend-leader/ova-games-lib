@@ -1,0 +1,603 @@
+.question-wrapper {
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.background {
+  --money-drop: 140px;
+
+  position: relative;
+  width: 100%;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  padding: 1rem;
+  display: grid;
+  align-items: center;
+}
+
+html[data-dark-mode='true'] .background {
+  opacity: 0.8;
+}
+
+.fullScreen__button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.grid-overlay {
+  width: 100%;
+  height: auto;
+}
+
+.options-container {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  justify-content: center;
+  align-items: start;
+}
+
+/** Opciones **/
+
+.disabled {
+  pointer-events: none;
+}
+
+.radio {
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.options-container > div {
+  height: 100%;
+}
+
+.options-container > div:focus-within label {
+  outline: none;
+}
+
+/* Foco visible solo con teclado: dos tonos para que se vea sobre la bóveda y sobre la opción */
+.options-container > div input:focus-visible + label {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #4a2f12;
+}
+
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  background: #fff8c7;
+  border: 3px solid var(--white);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  margin: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color 0.3s,
+    border 0.3s;
+  height: 100%;
+  min-height: 2.75rem;
+}
+
+.button {
+  color: #121212;
+  font-weight: bold;
+  text-align: center;
+}
+
+.options-container > div:not(.disabled) .radio:checked + label {
+  background-color: #d1e7dd;
+  border-color: #0f5132;
+  box-shadow: 0 0 0 3px #f5b82e;
+}
+
+.success {
+  background-color: #a5c965;
+  border-color: var(--white);
+}
+
+.success::after {
+  content: '✔' / '';
+  color: white;
+  background-color: #899e2e;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 18px;
+}
+
+.wrong {
+  background-color: #f8d7da;
+  border-color: var(--white);
+}
+
+.wrong::after {
+  content: '✖' / '';
+  color: white;
+  background-color: var(--wrong);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 18px;
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+}
+
+.character-container {
+  position: relative;
+  display: flex;
+  height: clamp(100px, 80vw, 340px);
+}
+
+/* El banquero: camina (`left`) hasta la opción elegida; el cuerpo es lo que anima gsap */
+.hero {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.hero-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.character {
+  display: block;
+  max-height: 100%;
+}
+
+/* Resplandor tras el banquero: dorado al acertar, rojizo al fallar */
+.glow {
+  --halo: rgb(255 211 90 / 80%);
+
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  z-index: 0;
+  width: 18rem;
+  margin-left: -9rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--halo) 0, transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.character-container[data-mood='success'] .glow {
+  opacity: 1;
+}
+
+.character-container[data-mood='wrong'] .glow {
+  --halo: rgb(238 138 129 / 65%);
+
+  opacity: 1;
+}
+
+/* Efectos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 7; /* Por encima de la pantalla final (6) */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6rem;
+  height: 6rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+.coin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 2px solid #b8860b;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff1a8, #f5b82e 60%, #d89a14);
+  color: #7a5200;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.money {
+  position: absolute;
+  top: 0;
+  width: 30px;
+
+  /* estado base */
+  opacity: 0;
+  transform: translate(-50%, 0);
+  will-change: transform, opacity;
+}
+
+.moneyFall {
+  opacity: 1;
+}
+
+.question-text {
+  background: #c9ea81;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 4px solid #8fb741;
+  font-weight: bold;
+  color: #121212;
+  text-align: center;
+}
+
+/* Inicio, reglas y pantalla final: oro y marrón de la caja fuerte */
+
+.init {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 36rem; /* Misma altura que el nivel, para que el panel no cambie de tamaño al empezar */
+  padding: 1rem;
+  box-sizing: border-box;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+html[data-dark-mode='true'] .init {
+  opacity: 0.8;
+}
+
+.init-welcome {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.init-title,
+.rules-title,
+.end-title {
+  margin: 0;
+  color: #4a2f12;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.init-title {
+  padding: 0.6rem 1.5rem;
+  background: #fff8c7;
+  border: 4px solid #f5b82e;
+  border-radius: 1rem;
+}
+
+.init-hero {
+  position: relative;
+  height: clamp(150px, 46vw, 280px);
+}
+
+.init-banker {
+  display: block;
+  height: 100%;
+}
+
+.sparkle {
+  position: absolute;
+  width: 1.1rem;
+  aspect-ratio: 1;
+  background: #ffd35a;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+
+.init-text {
+  max-width: 34rem;
+  margin: 0;
+}
+
+.gold-button {
+  min-height: 2.75rem;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(#ffe083, #f5b82e);
+  border: 3px solid var(--white);
+  border-radius: 999px;
+  color: #4a2f12;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #b8860b;
+  transition:
+    translate 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.gold-button--ghost {
+  background: #fff8c7;
+}
+
+/* Foco visible solo con teclado: dos tonos para que se vea sobre la bóveda y sobre el botón */
+.gold-button:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #4a2f12;
+}
+
+.rules,
+.end-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  width: min(100%, 34rem);
+  box-sizing: border-box;
+  padding: 1.25rem;
+  background: #fff8c7;
+  border: 4px solid #f5b82e;
+  border-radius: 1rem;
+  color: #4a2f12;
+  text-align: center;
+}
+
+/* El título recibe el foco al abrir las reglas: basta un contorno */
+.rules-title:focus-visible {
+  outline: 3px solid #4a2f12;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  counter-reset: rule;
+}
+
+.rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  counter-increment: rule;
+}
+
+.rules-list li::before {
+  content: counter(rule);
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: #4a2f12;
+  border-radius: 50%;
+  color: #ffe083;
+  font-weight: 800;
+}
+
+.rules-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.end {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: radial-gradient(circle, rgb(255 211 90 / 30%), rgb(30 15 5 / 72%));
+}
+
+.end-money {
+  width: 3.5rem;
+}
+
+.end-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.35rem 1rem;
+  background: #fff;
+  border: 2px solid #f5b82e;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.end-stats dd {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+@media (forced-colors: active) {
+  .button,
+  .question-text,
+  .init-title,
+  .rules,
+  .end-card,
+  .gold-button {
+    border: 2px solid CanvasText;
+  }
+
+  .gold-button:focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
+
+/* Media queries */
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .hero {
+    transition: left 1s ease-in-out;
+  }
+
+  html:not([data-stop-animations='true']) .options-container > div:not(.disabled) .button:hover {
+    translate: 0 -3px;
+  }
+
+  html:not([data-stop-animations='true']) .money.moneyFall {
+    animation: moneyFall 0.8s ease-in-out forwards;
+  }
+
+  html:not([data-stop-animations='true']) {
+    .init-title {
+      animation: dropIn 0.5s ease-out both;
+    }
+
+    .init-banker {
+      animation: sway 3.2s ease-in-out infinite;
+    }
+
+    .sparkle {
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+
+    .rules,
+    .end-card {
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .gold-button:hover {
+      translate: 0 -2px;
+    }
+  }
+}
+
+/* Solo `translate`, `scale` y `opacity`: la transformación de lo que anima gsap queda libre */
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    translate: 0 -16px;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+}
+
+@keyframes sway {
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    scale: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes moneyFall {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, var(--money-drop)); /* ajusta la distancia según tu escena */
+  }
+}
+
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+  .character-container {
+    height: clamp(100px, 15vw, 300px);
+  }
+
+  .question-text {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  .background {
+    --money-drop: 90px;
+  }
+
+  .money {
+    width: 20px;
+  }
+}
+
+@media screen and (max-width: 700px) and (orientation: landscape) {
+  .character-container {
+    height: 120px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .character-container {
+    height: clamp(100px, 65vw, 300px);
+  }
+}

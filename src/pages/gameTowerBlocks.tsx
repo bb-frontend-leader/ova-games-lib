@@ -1,0 +1,127 @@
+import { useState } from 'react';
+
+import type { ResultState } from '@/components';
+import { GamePage, ResultModals, Stage } from '@/components';
+import { Panel } from '@/components/ui';
+import type { TowerQuestion } from '@/games/game-tower-blocks';
+import { GameTowerBlocks } from '@/games/game-tower-blocks';
+
+const QUESTIONS: TowerQuestion[] = [
+  {
+    id: 'tower-1',
+    question: '¿Qué estación del año sigue al invierno?',
+    answers: [
+      { label: 'Primavera', state: 'success' },
+      { label: 'Verano', state: 'wrong' },
+      { label: 'Otoño', state: 'wrong' }
+    ]
+  },
+  {
+    id: 'tower-2',
+    question: '¿Cuántos meses tiene un año?',
+    answers: [
+      { label: 'Doce', state: 'success' },
+      { label: 'Diez', state: 'wrong' },
+      { label: 'Catorce', state: 'wrong' }
+    ]
+  },
+  {
+    id: 'tower-3',
+    question: '¿A qué temperatura hierve el agua?',
+    answers: [
+      { label: '100 °C', state: 'success' },
+      { label: '50 °C', state: 'wrong' },
+      { label: '0 °C', state: 'wrong' }
+    ]
+  },
+  {
+    id: 'tower-4',
+    question: '¿Quién escribió «Cien años de soledad»?',
+    answers: [
+      { label: 'Gabriel García Márquez', state: 'success' },
+      { label: 'Jorge Isaacs', state: 'wrong' },
+      { label: 'Pablo Neruda', state: 'wrong' }
+    ]
+  },
+  {
+    id: 'tower-5',
+    question: '¿Cuántos jugadores de un equipo hay en la cancha en un partido de fútbol?',
+    answers: [
+      { label: 'Once', state: 'success' },
+      { label: 'Nueve', state: 'wrong' },
+      { label: 'Siete', state: 'wrong' }
+    ]
+  }
+];
+
+export default function GameTowerBlocksPage() {
+  const [feedback, setFeedback] = useState<ResultState>(null);
+
+  const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
+
+  return (
+    <GamePage
+      link="/juegos/torre-de-bloques"
+      description={
+        <>
+          <p>
+            Una torre que crece con cada respuesta correcta. El estudiante recibe un bloque que cuelga de una grúa, lo
+            mueve con un deslizador y lo suelta sobre la torre. El viento lo empuja mientras cae.
+          </p>
+          <p>
+            Lo que sobresale de la torre se corta y el siguiente bloque es más estrecho; encajar justo da bonus. El
+            juego empieza con una pantalla de inicio con las reglas.
+          </p>
+        </>
+      }
+      correct={
+        <ul>
+          <li>Se gana un bloque para colocar en la torre.</li>
+          <li>Encajarlo justo da bonus; cada tres encajes seguidos la torre se ensancha.</li>
+          <li>Se abre el modal de acierto.</li>
+        </ul>
+      }
+      incorrect={
+        <ul>
+          <li>La respuesta elegida queda descartada.</li>
+          <li>Sin acierto no hay bloque.</li>
+          <li>Se abre el modal de error.</li>
+        </ul>
+      }
+      recommendations={
+        <ul>
+          <li>
+            La partida termina cuando <strong>todas las preguntas están acertadas</strong> y se colocó el último bloque.
+          </li>
+          <li>Cada pregunta es un bloque: con 5 a 8 preguntas la torre queda alta y la partida no se alarga.</li>
+          <li>Cada tres aciertos seguidos se gana una carga de calma que apaga el viento en un bloque.</li>
+          <li>
+            Cada pregunta necesita un <code>id</code> único y estable.
+          </li>
+          <li>Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida.</li>
+        </ul>
+      }
+    >
+      <Panel>
+        <Panel.Section>
+          <Stage center>
+            <GameTowerBlocks.Init textInit="Cada respuesta correcta te da un bloque: suéltalo con la grúa y construye la torre más alta." />
+          </Stage>
+        </Panel.Section>
+
+        <Panel.Section>
+          <Stage size="wide">
+            <GameTowerBlocks questions={QUESTIONS} onResult={handleResult} />
+          </Stage>
+        </Panel.Section>
+      </Panel>
+
+      <ResultModals
+        open={feedback}
+        onClose={() => setFeedback(null)}
+        success="¡Correcto! Ganaste un bloque: colócalo sobre la torre."
+        wrong="Esa no es la respuesta. La opción queda descartada: ¡inténtalo de nuevo para ganar el bloque!"
+      />
+    </GamePage>
+  );
+}

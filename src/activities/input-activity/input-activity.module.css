@@ -1,0 +1,80 @@
+/* Campo de texto de la actividad — placa de terminal con chaflán (lenguaje HUD de hud.css).
+   books-ui pinta el campo (`TextField`) y sus estados (`data-state="right|wrong"`, icono ✔/✖ y mensaje para el
+   lector de pantalla); aquí solo se viste:
+   · El trazo y el relleno los dibuja la placa `.c-text-field__control` (chaflán arriba-izquierda y abajo-derecha);
+     el <input> queda transparente y sin borde encima.
+   · Correcto/incorrecto cambia el trazo y el relleno, además del icono que pone la librería: no solo el color.
+   · El foco de teclado se dibuja dentro de la placa: clip-path recorta el outline exterior.
+   Todo es CSS estático, sin animaciones.
+
+   La clase se aplica con `addClass` al contenedor del campo; las clases de books-ui se alcanzan con `:global`. */
+
+span.field {
+  --field-cut: 0.5rem;
+  --field-edge-w: 2px;
+  --field-edge: var(--edge-strong);
+  --field-tint: var(--edge-strong);
+
+  /* Variables de books-ui (TextField): el trazo y el relleno los pone la placa, no el <input>. */
+  --text-field-color: var(--text-main);
+  --text-field-bg: transparent;
+  --text-field-border: transparent;
+  --text-field-radius: 0;
+  --text-field-hint-color: color-mix(in srgb, var(--text-main) 75%, var(--card));
+  --text-field-placeholder: color-mix(in srgb, var(--text-main) 70%, var(--card));
+  --text-field-right: var(--success);
+  --text-field-wrong: var(--wrong);
+}
+
+span.field[data-state='right'] {
+  --field-edge: var(--success);
+  --field-tint: var(--success);
+}
+
+span.field[data-state='wrong'] {
+  --field-edge: var(--wrong);
+  --field-tint: var(--wrong);
+}
+
+/* ─── Placa (receta de chaflán de .hud-cut) ────────────────────────────────────
+   El trazo es un inset box-shadow más dos degradados duros para la diagonal. clip-path recorta outline y
+   sombras exteriores: nada de sombras exteriores. */
+span.field :global(.c-text-field__control) {
+  background-color: color-mix(in srgb, var(--field-tint) 4%, var(--card));
+  box-shadow: inset 0 0 0 var(--field-edge-w) var(--field-edge);
+  border-radius: var(--surface-radius, 0.55rem);
+}
+
+span.field:has(:global(.c-text-field__input):not(:disabled)) :global(.c-text-field__control):hover {
+  background-color: color-mix(in srgb, var(--field-tint) 9%, var(--card));
+}
+
+/* Tras comprobar el campo queda bloqueado, pero la respuesta se tiene que seguir leyendo bien. */
+span.field :global(.c-text-field__input):disabled {
+  color: var(--text-main);
+  background-color: transparent;
+  cursor: default;
+}
+
+/* ─── Foco ─────────────────────────────────────────────────────────────────── */
+
+span.field :global(.c-text-field__input):focus-visible {
+  outline: 2px solid var(--primary-700);
+  outline-offset: -5px;
+}
+
+/* Indicador de foco mejorado (a11y.css): su outline exterior y su sombra de 6px caerían fuera del clip-path. */
+html[data-focus-indicator='true'] span.field :global(.c-text-field__input):focus-visible {
+  outline-offset: -5px !important;
+  box-shadow: none !important;
+}
+
+/* ─── Contraste forzado ────────────────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  span.field :global(.c-text-field__control) {
+    clip-path: none;
+    border: 1px solid ButtonText;
+    forced-color-adjust: auto;
+  }
+}

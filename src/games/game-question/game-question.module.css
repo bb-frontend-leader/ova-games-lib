@@ -1,0 +1,521 @@
+/*
+ * GameQuestion: una tarjeta de estudio sobre un escritorio. Estilo propio (mesa verde, hoja crema, notas
+ * adhesivas), no el HUD de la plantilla. Los textos llevan colores fijos sobre papel claro: se leen igual en modo oscuro.
+ */
+.desk {
+  --ink: #1f2a37;
+  --paper: #fffdf2;
+  --green: #1f7a35;
+  --red: #b3261e;
+
+  position: relative;
+  isolation: isolate;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 5vw, 3rem) clamp(0.75rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2.5rem);
+  background-color: #1f6f68;
+  background-image: linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 0 4px #164f4a;
+  color: var(--ink);
+}
+
+.desk[data-custom-bg] {
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+html[data-dark-mode='true'] .desk {
+  background-color: #154d48;
+}
+
+/* Hoja con cinta y margen rojo */
+.paper {
+  position: relative;
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: 0.6rem clamp(1rem, 4vw, 2rem) 1.6rem clamp(1.7rem, 6vw, 3.2rem);
+  background-color: var(--paper);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 0.35rem 0 rgb(0 0 0 / 0.18),
+    0 1rem 2rem rgb(0 0 0 / 0.3);
+  rotate: -0.4deg;
+  text-align: left;
+}
+
+.paper::before {
+  content: '' / '';
+  position: absolute;
+  inset-block: 0;
+  left: clamp(1.1rem, 4vw, 2.3rem);
+  width: 2px;
+  background-color: #e6a3a3;
+}
+
+.paper::after {
+  content: '' / '';
+  position: absolute;
+  top: -0.9rem;
+  left: 50%;
+  width: 7rem;
+  height: 1.8rem;
+  translate: -50% 0;
+  rotate: -2deg;
+  background-color: rgb(255 226 140 / 0.9);
+  box-shadow: 0 0.1rem 0.3rem rgb(0 0 0 / 0.2);
+}
+
+.head {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 3rem;
+}
+
+.number {
+  position: absolute;
+  top: -1.2rem;
+  left: -1rem;
+  display: grid;
+  place-items: center;
+  min-width: 3.4rem;
+  min-height: 3.4rem;
+  margin: 0;
+  background-color: #893461;
+  border: 0.25rem solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.3);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+  z-index: 2;
+}
+
+/* Sello de resultado */
+.stamp {
+  margin: 0;
+  padding: 0.15rem 0.8rem;
+  border: 4px double currentColor;
+  border-radius: 0.5rem;
+  font-size: clamp(1.1rem, 1rem + 1vw, 1.6rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  rotate: -9deg;
+  pointer-events: none;
+}
+
+.stamp[data-result='ok'] {
+  color: var(--green);
+}
+
+.stamp[data-result='ko'] {
+  color: var(--red);
+}
+
+/* Enunciado */
+.question {
+  margin: 0;
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.6;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* El hueco: marcado con resaltador */
+.blank {
+  display: inline-block;
+  min-width: 6ch;
+  padding-inline: 0.4rem;
+  background-color: #fff08a;
+  border-bottom: 3px solid var(--ink);
+  text-align: center;
+}
+
+.blank[data-state='chosen'] {
+  background-color: #ffe15c;
+}
+
+.blank[data-state='ok'] {
+  background-color: #b9efc2;
+  border-bottom-color: var(--green);
+}
+
+.blank[data-state='ko'] {
+  background-color: #ffc9c4;
+  border-bottom-color: var(--red);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* Imagen: una foto pegada */
+.photo {
+  max-width: 24rem;
+  margin: 1rem auto 0;
+  padding: 0.5rem 0.5rem 1.3rem;
+  background-color: #ffffff;
+  box-shadow: 0 0.3rem 0.8rem rgb(0 0 0 / 0.25);
+  rotate: 1deg;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  max-height: 16rem;
+  object-fit: cover;
+}
+
+/* Pista */
+.hint-area {
+  margin-top: 0.9rem;
+}
+
+.hint-toggle {
+  min-height: 2.25rem;
+  padding: 0.2rem 0.9rem;
+  background-color: transparent;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.hint-toggle:hover {
+  background-color: #fff08a;
+}
+
+.hint {
+  max-width: 28rem;
+  margin: 0.7rem 0 0;
+  padding: 0.7rem 0.9rem;
+  background-color: #fff08a;
+  box-shadow: 0.2rem 0.4rem 0.6rem rgb(0 0 0 / 0.2);
+  font-size: 0.95rem;
+  font-weight: 600;
+  rotate: -0.8deg;
+}
+
+/* Respuestas: notas adhesivas */
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1.3rem 1rem;
+  margin-top: 1.4rem;
+  padding-inline: 0.3rem;
+  counter-reset: question-letter;
+}
+
+.option {
+  --note: #fff08a;
+  --tilt: -1.2deg;
+
+  position: relative;
+  counter-increment: question-letter;
+}
+
+.option:nth-child(4n + 2) {
+  --note: #ffc6d3;
+  --tilt: 1deg;
+}
+
+.option:nth-child(4n + 3) {
+  --note: #b8e4ff;
+  --tilt: -0.6deg;
+}
+
+.option:nth-child(4n + 4) {
+  --note: #c6f0b8;
+  --tilt: 1.3deg;
+}
+
+.radioOption {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option label {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.7rem;
+  min-height: 3.5rem;
+  padding: 0.7rem 0.9rem;
+  background-color: var(--note);
+  border: 2px solid transparent;
+  border-radius: 0.2rem;
+  box-shadow: 0.2rem 0.45rem 0.6rem rgb(0 0 0 / 0.22);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  rotate: var(--tilt);
+}
+
+.option label > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* La letra, en un círculo de tinta */
+.option label::before {
+  content: counter(question-letter, upper-alpha) / '';
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--ink);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* Marca de estado en la esquina: el icono acompaña al color */
+.option label::after {
+  position: absolute;
+  top: -0.65rem;
+  right: -0.55rem;
+  display: none;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  background-color: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.option input:not(:disabled) + label:hover {
+  background-color: color-mix(in srgb, var(--note) 82%, #ffffff);
+}
+
+/* Elegida, sin comprobar: se endereza, con borde de tinta y una marca */
+.option[data-visual='chosen'] label {
+  border-color: var(--ink);
+  box-shadow: 0.1rem 0.25rem 0.4rem rgb(0 0 0 / 0.25);
+  rotate: 0deg;
+  scale: 1.03;
+}
+
+.option[data-visual='chosen'] label::after {
+  content: '✓' / '';
+  display: grid;
+}
+
+.option[data-visual='correct'] label {
+  --note: #a9e9b4;
+
+  border-color: var(--green);
+  rotate: 0deg;
+  scale: 1.03;
+}
+
+.option[data-visual='correct'] label::after {
+  content: '✔' / '';
+  display: grid;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.option[data-visual='wrong'] label {
+  --note: #ffbdb7;
+
+  border-color: var(--red);
+  border-style: dashed;
+}
+
+.option[data-visual='wrong'] label::after {
+  content: '✖' / '';
+  display: grid;
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.option[data-visual='dimmed'] label {
+  opacity: 0.72;
+  cursor: default;
+}
+
+.option input:disabled + label {
+  cursor: default;
+}
+
+/* Foco: aro oscuro con un hueco claro, visible sobre la nota y sobre la mesa */
+.option input:focus-visible + label {
+  outline: 3px solid #0b0b0b;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #ffffff;
+}
+
+/* Capa de efectos: la nota que vuela y el confeti */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 0.4rem 0.7rem;
+  background-color: #fff08a;
+  box-shadow: 0.2rem 0.45rem 0.6rem rgb(0 0 0 / 0.3);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  text-align: center;
+}
+
+.spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 720px) {
+  .paper {
+    padding-left: 1.5rem;
+  }
+
+  .paper::before {
+    left: 0.9rem;
+  }
+
+  .number {
+    left: -0.4rem;
+  }
+}
+
+/* Movimiento: solo si la persona lo permite y no detuvo las animaciones */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .option label {
+    transition:
+      rotate 150ms ease-out,
+      scale 150ms ease-out,
+      translate 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  html:not([data-stop-animations='true']) .option input:not(:disabled) + label:hover {
+    translate: 0 -0.2rem;
+    rotate: 0deg;
+  }
+
+  html:not([data-stop-animations='true']) .option[data-visual='wrong'] label {
+    animation: question-shake 420ms ease-in-out;
+  }
+
+  html:not([data-stop-animations='true']) .option[data-visual='correct'] label {
+    animation: question-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .stamp {
+    animation: question-stamp 420ms cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .hint {
+    animation: question-pop 300ms ease-out;
+  }
+}
+
+@keyframes question-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  20%,
+  60% {
+    translate: -0.35rem 0;
+  }
+
+  40%,
+  80% {
+    translate: 0.35rem 0;
+  }
+}
+
+@keyframes question-pop {
+  0% {
+    scale: 0.92;
+  }
+
+  100% {
+    scale: 1.03;
+  }
+}
+
+@keyframes question-stamp {
+  0% {
+    scale: 2.4;
+    opacity: 0;
+  }
+
+  60% {
+    scale: 0.92;
+    opacity: 1;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .option label {
+    border-color: ButtonText;
+  }
+
+  .option[data-visual='chosen'] label,
+  .option[data-visual='correct'] label {
+    border-color: Highlight;
+    border-width: 4px;
+  }
+
+  .option[data-visual='wrong'] label {
+    border-style: dashed;
+  }
+
+  .blank {
+    border-bottom-color: ButtonText;
+  }
+}

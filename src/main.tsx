@@ -1,19 +1,19 @@
+/* eslint-disable simple-import-sort/imports */
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { HashRouter } from 'react-router-dom';
 
-import "./styles/global.css";
-import "books-ui/styles";
-import "../src/shared/core/styles/stylesheet/global.css";
-import "../src/shared/ui/styles/stylesheet/global.css";
-import "@ui/styles/index.css";
+import App from './App';
 
-import ReactDOM from "react-dom/client";
-import { HashRouter } from "react-router-dom";
-import App from "./App";
-import { Header } from "./components";
+import 'books-ui/styles';
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <HashRouter basename="/">
-    <Header />
-    <App />
-  </HashRouter>,
+import './styles/tokens.css';
+import './styles/base.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </StrictMode>
 );
-

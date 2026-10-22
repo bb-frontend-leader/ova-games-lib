@@ -1,0 +1,166 @@
+/* CONTENEDOR DE INPUTS*/
+.wrapper-radios {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  position: relative;
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Interruptor V/F: placa con chaflán (hud.css). Normal = trazo oscuro; marcado = placa navy con trazo
+   ámbar; correcto/incorrecto = placa verde/roja. El color del texto cambia con el estado, y el foco de
+   teclado reutiliza ese mismo color para dibujar el anillo interior. */
+.wrapper-radio {
+  composes: surface from global;
+
+  --input-tf-bg: var(--accent);
+  --input-tf-text: var(--primary-700);
+  --surface-radius: 0.55rem;
+  --surface-fill: transparent;
+  --surface-edge: var(--primary-500);
+
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 8rem;
+  padding: clamp(0.45rem, 1%, 0.6rem) 1.5rem;
+  color: var(--input-tf-text);
+  border: 0;
+  border-radius: 0;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  cursor: default;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.wrapper-radio__label {
+  display: inline-block;
+}
+
+.wrapper-radio__dot {
+  width: 0;
+  height: 0.5rem;
+  background-color: currentColor;
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    width 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.wrapper-radio:has(input:checked) .wrapper-radio__dot {
+  width: 0.5rem;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wrapper-radio input {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.wrapper-radio:has(input:not(:disabled)):hover {
+  --surface-fill: color-mix(in srgb, var(--accent) 22%, transparent);
+  --surface-edge: var(--primary-700);
+}
+
+.wrapper-radio:has(input:not(:disabled)):active {
+  transform: translateY(1px);
+}
+
+/* El chaflán recorta el outline exterior: el foco se dibuja dentro de la placa. */
+.wrapper-radio:has(input:focus-visible) {
+  outline: 2px solid var(--input-tf-text);
+  outline-offset: -5px;
+}
+
+.wrapper-radio:has(input:checked) {
+  --input-tf-bg: var(--primary-600);
+  --input-tf-text: var(--white);
+  --surface-fill: var(--input-tf-bg);
+  --surface-edge: var(--accent-300);
+}
+
+/* Cuando el estado es correcto */
+.wrapper-radio:has(input[data-state='right']) {
+  --input-tf-bg: var(--success);
+  --input-tf-text: var(--white);
+  --surface-fill: var(--input-tf-bg);
+  --surface-edge: var(--input-tf-bg);
+  animation: true-false-success-pulse 0.45s ease;
+}
+
+/* Cuando el estado es incorrecto */
+.wrapper-radio:has(input[data-state='wrong']) {
+  --input-tf-bg: var(--wrong);
+  --input-tf-text: var(--white);
+  --surface-fill: var(--input-tf-bg);
+  --surface-edge: var(--input-tf-bg);
+  animation: true-false-shake 0.4s ease;
+}
+
+.wrapper-radio:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+@keyframes true-false-success-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes true-false-shake {
+  10%,
+  90% {
+    transform: translateX(-3px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrapper-radio,
+  .wrapper-radio__label,
+  .wrapper-radio__dot,
+  .wrapper-radio:has(input[data-state='right']),
+  .wrapper-radio:has(input[data-state='wrong']) {
+    transition: none;
+    animation: none;
+  }
+
+  .wrapper-radio:has(input:not(:disabled)):active {
+    transform: none;
+  }
+}

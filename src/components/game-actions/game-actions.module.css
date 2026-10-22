@@ -1,0 +1,14 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-block-start: 1rem;
+}
+
+/* Los botones conservan su tamaño: no se estiran con la fila. */
+.actions > * {
+  flex: 0 0 auto;
+  width: auto;
+}

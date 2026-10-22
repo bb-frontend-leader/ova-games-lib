@@ -1,0 +1,5 @@
+.description {
+  margin-inline: auto;
+  max-width: var(--image-max-width, auto);
+  text-align: center;
+}

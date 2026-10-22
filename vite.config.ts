@@ -1,33 +1,32 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
+import path from 'path';
+import { defineConfig } from 'vite';
+
+import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/react-games-gallery/#",
+  base: './',
   build: {
-    target: "ES2022",
-    outDir: "dist/",
-    assetsDir: "./",
+    target: 'ES2022',
+    outDir: 'dist/',
+    assetsDir: './',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/gsap')) return 'vendor-gsap';
+          if (id.includes('node_modules/books-ui')) return 'vendor-books-ui';
+          if (id.includes('node_modules')) return 'vendor';
+        }
+      }
+    }
   },
   resolve: {
     alias: {
-      "@/": `${path.resolve(__dirname, "src")}/`,
-      "@shared": `${path.resolve(__dirname, "src/shared")}/`,
-      "@core": `${path.resolve(__dirname, "src/shared/core")}/`,
-      "@ui": `${path.resolve(__dirname, "src/shared/ui")}/`,
-      "@pages": `${path.resolve(__dirname, "src/pages")}/`,
-      "@router": `${path.resolve(__dirname, "src/router")}/`,
-      "@styles": `${path.resolve(__dirname, `src/styles`)}/`,
-    },
+      '@/': `${path.resolve(__dirname, 'src')}/`
+    }
   },
   server: {
-    host: true,
-  },
-  // esbuild: {
-  //   logOverride: {
-  //     "this-is-undefined-in-esm": "silent",
-  //   },
-  // },
+    host: true
+  }
 });

@@ -1,0 +1,434 @@
+/* Pair logic — emparejar imágenes con textos.
+   · Dos filas (imágenes / textos): tarjetas a elegir → flecha → recuadro donde se coloca la elegida.
+     Se elige con radios nativos (flechas dentro del grupo, un solo Tab por grupo) y, con una imagen y un texto
+     en sus recuadros, "Comprobar" da el veredicto de ese intento; la línea de estado lo explica.
+   · El estado nunca depende solo del color (WCAG 1.4.1): fichas con glifo/letra y texto de estado para lectores
+     de pantalla. Los bordes de los controles superan 3:1 (1.4.11) y el texto 4.5:1.
+   · Cada tarjeta deja
+     margen de scroll para que una cabecera fija no la tape (2.4.11).
+   Todo es CSS estático. */
+
+.board {
+  display: grid;
+  gap: 1.25rem;
+  inline-size: 100%;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  text-align: start;
+  background-color: color-mix(in srgb, var(--primary) 3%, var(--card));
+  box-shadow: inset 0 0 0 1px var(--edge-soft);
+  border-radius: var(--radius);
+}
+
+/* Fila: rótulo y tarjetas a la izquierda, flecha en medio y recuadro de la elegida a la derecha. */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) 3.5rem minmax(0, 1fr);
+  grid-template-areas:
+    'label . slot-label'
+    'choices arrow slot';
+  gap: 0.75rem 0.5rem;
+}
+
+.label {
+  composes: tag tag-dot from global;
+
+  --tag-color: var(--text-main);
+  --tag-dot: var(--accent);
+
+  grid-area: label;
+  margin: 0;
+}
+
+.label--slot {
+  grid-area: slot-label;
+}
+
+.rule {
+  composes: rule from global;
+}
+
+/* Las tarjetas se reparten solas: sin saltos de línea fijos, la rejilla reacomoda a 320px (1.4.10). */
+.images {
+  display: grid;
+  grid-area: choices;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.texts {
+  display: grid;
+  grid-area: choices;
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.arrow {
+  grid-area: arrow;
+  align-self: center;
+  justify-self: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  color: var(--edge-strong);
+}
+
+/* ─── Recuadro de la elegida ─────────────────────────────────────────────────── */
+
+.slot {
+  composes: surface from global;
+
+  --surface-radius: 0.75rem;
+  --surface-fill: color-mix(in srgb, var(--primary) 4%, var(--card));
+  --surface-edge: var(--edge-soft);
+
+  position: relative;
+  grid-area: slot;
+  display: grid;
+  place-items: center;
+  min-block-size: 8rem;
+  padding: 1.25rem;
+  color: var(--text-main);
+  text-align: center;
+}
+
+.slot--image {
+  min-block-size: 11rem;
+}
+
+.slot[data-state='selected'] {
+  --surface-edge: var(--primary-800);
+  --surface-fill: color-mix(in srgb, var(--accent) 22%, var(--card));
+}
+
+.slot[data-state='matched'],
+.slot[data-state='wrong'],
+.slot__chips {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-end: 0.6rem;
+  z-index: 1;
+}
+
+.slot__empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  max-inline-size: 16rem;
+}
+
+.slot__empty p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.slot__icon {
+  inline-size: 3rem;
+  block-size: 3rem;
+  fill: currentColor;
+  opacity: 0.7;
+}
+
+.slot__image {
+  max-inline-size: 100%;
+  max-block-size: 8rem;
+  object-fit: contain;
+  user-select: none;
+}
+
+.slot__text {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ─── Tarjeta ────────────────────────────────────────────── */
+
+.card {
+  composes: surface from global;
+
+  --surface-radius: 0.65rem;
+  --surface-fill: var(--card);
+  --surface-edge: var(--primary-500);
+
+  position: relative;
+  color: var(--text-main);
+  line-height: 1.35;
+  text-align: start;
+  cursor: pointer;
+  scroll-margin-block: 5rem;
+  transition: background-color 0.15s ease;
+}
+
+.card--image {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  aspect-ratio: 1;
+  padding: 0.75rem;
+}
+
+.card--text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 4rem;
+  padding: 0.75rem 1rem;
+}
+
+.card:has(.card__input:enabled):hover {
+  --surface-edge: var(--accent);
+  --surface-fill: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+.card:has(.card__input:disabled) {
+  cursor: default;
+}
+
+/* El radio cubre la placa (opacity 0): recibe el clic y el foco, y los lectores de pantalla lo anuncian con su
+   tamaño real. */
+.card__input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.card__input:disabled {
+  cursor: default;
+}
+
+.card:has(.card__input:focus-visible) {
+  outline: 2px solid var(--primary-700);
+  outline-offset: -5px;
+}
+
+/* Indicador de foco mejorado (a11y.css): se dibuja en la placa porque el radio es invisible. */
+html[data-focus-indicator='true'] .card:has(.card__input:focus-visible) {
+  outline: 3px solid #ff6200;
+  outline-offset: -5px;
+}
+
+/* Elegida: ficha ◆ + placa ámbar. */
+.card[data-state='selected'] {
+  --surface-edge: var(--primary-800);
+  --surface-fill: color-mix(in srgb, var(--accent) 22%, var(--card));
+}
+
+/* Veredicto. */
+.card[data-state='matched'],
+.card[data-state='wrong'],
+.chips {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.chips:empty {
+  display: none;
+}
+
+.card--image .chips {
+  position: absolute;
+  inset-block-start: 0.4rem;
+  inset-inline-end: 0.4rem;
+  z-index: 1;
+}
+
+.card--text .chips {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.card__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.card__text {
+  grid-column: 1;
+  grid-row: 1;
+  overflow-wrap: anywhere;
+}
+
+/* ─── Fichas (letra de la pareja, selección y veredicto) ─────────────────────── */
+
+.chip {
+  composes: surface from global;
+
+  --surface-radius: 0.4rem;
+  --surface-fill: var(--primary-700);
+  --surface-edge: transparent;
+
+  display: grid;
+  place-items: center;
+  flex: none;
+  min-inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding-inline: 0.35rem;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.chip--selected {
+  --surface-fill: var(--accent);
+
+  color: var(--primary-900);
+}
+
+.chip--right {
+  --surface-fill: var(--success);
+
+  color: var(--white);
+}
+
+.chip--wrong {
+  --surface-fill: var(--wrong);
+
+  color: var(--white);
+}
+
+/* ─── Línea de estado ────────────────────────────────────────────────────────── */
+
+.bar {
+  composes: surface from global;
+
+  --surface-radius: 0.65rem;
+  --surface-fill: color-mix(in srgb, var(--primary) 6%, var(--card));
+  --surface-edge: var(--primary-500);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-block-size: 3.25rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-main);
+}
+
+.bar[data-state='right'],
+.bar[data-state='wrong'],
+.bar__message {
+  flex: 1 1 14rem;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.bar__progress {
+  composes: tag from global;
+
+  --tag-color: var(--text-main);
+
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+/* ─── Pantallas estrechas ────────────────────────────────────────────────────── */
+
+/* La fila se apila: tarjetas, flecha hacia abajo y recuadro. */
+@media screen and (max-width: 48rem) {
+  .board {
+    padding: 1rem;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'label'
+      'choices'
+      'arrow'
+      'slot-label'
+      'slot';
+  }
+
+  .arrow {
+    inline-size: 2rem;
+    block-size: 2rem;
+    transform: rotate(90deg);
+  }
+
+  .slot,
+  .slot--image {
+    min-block-size: 7rem;
+  }
+}
+
+/* Dos imágenes por fila incluso a 320px (con 8rem de mínimo se apilarían a una por fila, enormes). */
+@media screen and (max-width: 40rem) {
+  .images {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 5rem), 1fr));
+  }
+}
+
+/* ─── Movimiento ─────────────────────────────────────────────────────────────── */
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@keyframes place {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+/* Entrada de las tarjetas (escalonada) y de lo que se coloca en un recuadro: solo opacity/transform y solo si no se
+   ha pedido reducir el movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .card {
+    animation: enter 0.4s ease backwards;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  html:not([data-stop-animations='true']) .slot__content {
+    animation: place 0.3s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+/* ─── Contraste forzado (Windows) ────────────────────────────────────────────── */
+
+/* Las sombras interiores desaparecen: se dibuja un borde real. */
+@media (forced-colors: active) {
+  .card.card,
+  .bar.bar,
+  .slot.slot {
+    border: 2px solid ButtonText;
+  }
+
+  .slot[data-state='wrong'] {
+    border-style: dashed;
+  }
+
+  .card:has(.card__input:checked) {
+    border-color: Highlight;
+  }
+
+  .card[data-state='wrong'] {
+    border-style: dashed;
+  }
+
+  .chip.chip {
+    border: 1px solid ButtonText;
+  }
+}

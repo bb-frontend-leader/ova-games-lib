@@ -1,0 +1,1147 @@
+/* Casino: mesa verde, tarjetas verde botella, marco punteado de la pregunta y fichas de colores */
+
+.casino {
+  --casino-question-bg: #3b153a;
+  --casino-answer-bg: #10635b;
+  --casino-panel: #0a3d38;
+  --gold: #ffd35a;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: #ffffff;
+  background-image: var(--casino-bg);
+  background-repeat: round;
+  background-size: cover;
+  container-type: inline-size;
+}
+
+/* Solo para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Fichas: se dibujan con CSS (borde de muescas blancas, aro interior y valor al centro) */
+[data-chip='orange'] {
+  --c: #c2570a;
+  --c-dark: #7c3506;
+}
+
+[data-chip='red'] {
+  --c: #c0291a;
+  --c-dark: #7a150c;
+}
+
+[data-chip='blue'] {
+  --c: #1f5ca8;
+  --c-dark: #123767;
+}
+
+[data-chip='white'] {
+  --c: #d9dde0;
+  --c-dark: #8a9298;
+}
+
+.chip {
+  --size: 4rem;
+
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 100%, #fff 22%), var(--c) 60%);
+  box-shadow:
+    0 0.22rem 0 var(--c-dark),
+    0 0.45rem 0.6rem rgb(0 0 0 / 0.35);
+  color: #ffffff;
+}
+
+/* Muescas del borde */
+.chip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#ffffff 0 14deg, transparent 14deg 45deg);
+  mask: radial-gradient(circle, transparent 0 66%, #000 67%);
+}
+
+/* Aro interior */
+.chip::after {
+  content: '';
+  position: absolute;
+  inset: 17%;
+  border: 2px dashed rgb(255 255 255 / 0.75);
+  border-radius: 50%;
+}
+
+.chip-value {
+  position: relative;
+  z-index: 1;
+  font-size: calc(var(--size) * 0.3);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+
+.chip[data-chip='white'] {
+  color: #1b2a2e;
+}
+
+/* Pilas vistas de lado */
+.stacks {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  min-height: 2.4rem;
+}
+
+.stack {
+  position: relative;
+  display: block;
+  width: var(--stack-w, 2.3rem);
+  height: calc(var(--disc-h, 1.05rem) + var(--n) * var(--step, 0.3rem));
+}
+
+.disc {
+  position: absolute;
+  bottom: calc(var(--i) * var(--step, 0.3rem));
+  left: 0;
+  display: block;
+  width: 100%;
+  height: var(--disc-h, 1.05rem);
+  border: 0.17rem dashed rgb(255 255 255 / 0.9);
+  border-radius: 50%;
+  background-color: var(--c);
+  box-shadow: 0 0.22rem 0 var(--c-dark);
+}
+
+.stack-count {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.6rem;
+  padding-inline: 0.3rem;
+  border-radius: 100vw;
+  background-color: #000000;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.no-chips {
+  align-self: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Barra: la banca a la izquierda y la mano del jugador a la derecha */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.bank,
+.rack {
+  display: grid;
+  align-content: space-between;
+  gap: 0.35rem;
+  min-width: 9rem;
+  padding: 0.5rem 0.9rem 0.6rem;
+  border: 2px solid rgb(255 255 255 / 0.6);
+  border-radius: 0.9rem;
+  background-color: var(--casino-panel);
+}
+
+.rack {
+  justify-items: end;
+  text-align: end;
+}
+
+.rack .stacks {
+  flex-direction: row-reverse;
+}
+
+.tray-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rack-total {
+  font-size: 1.3rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+}
+
+/* Pregunta */
+.casino-question {
+  --casino-question-rounded: 1rem;
+  --casino-question-size-die: 3rem;
+
+  position: relative;
+  width: 100%;
+  max-width: 60ch;
+  margin-block: 0.75rem;
+  padding: 0.5rem;
+  border: 0.3rem dotted #f2f2f2;
+  border-radius: var(--casino-question-rounded);
+}
+
+.casino-question::after,
+.casino-question::before {
+  content: '';
+  position: absolute;
+  width: var(--casino-question-size-die);
+  height: var(--casino-question-size-die);
+  background-image: var(--casino-dice);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.casino-question::before {
+  top: -1.5rem;
+  right: -1.5rem;
+}
+
+.casino-question::after {
+  bottom: -1.5rem;
+  left: -1.5rem;
+  transform: rotate(180deg);
+}
+
+.casino-questino-background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--casino-question-rounded);
+  background-color: var(--casino-question-bg);
+  font-size: var(--fs-200);
+  font-weight: bold;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Opciones: cada una es una mesa de apuesta con su casilla */
+.casino-elements-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 1.4rem;
+  width: 100%;
+  padding-inline: 0.5rem;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.75rem;
+  min-height: 11rem;
+  padding: 1.5rem 0.8rem 1rem;
+  border: 3px solid transparent;
+  border-radius: 1rem;
+  background-color: var(--casino-answer-bg);
+  text-align: center;
+  cursor: pointer;
+}
+
+/* El radio es real (teclado y lector de pantalla) pero no se ve: lo muestra la tarjeta */
+.card-input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.card:has(.card-input:disabled) {
+  cursor: default;
+}
+
+.badge {
+  position: absolute;
+  top: -0.7rem;
+  left: -0.7rem;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--casino-answer-bg);
+  border-radius: 50%;
+  background-color: #f2f2f2;
+  font-size: var(--fs-300);
+  font-weight: 800;
+  color: var(--casino-answer-bg);
+}
+
+.card-text {
+  font-weight: bold;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.card:not(:has(.card-input:disabled)):hover {
+  border-color: rgb(255 255 255 / 0.7);
+  background-color: color-mix(in srgb, var(--casino-answer-bg) 100%, #ffffff 10%);
+}
+
+.card[data-selected] {
+  border-color: var(--gold);
+  background-color: color-mix(in srgb, var(--casino-answer-bg) 100%, #ffffff 12%);
+}
+
+.card[data-state='success'] {
+  border-color: #ffffff;
+  background-color: #1d7a37;
+}
+
+.card[data-state='wrong'] {
+  border-color: #ffffff;
+  background-color: #a82433;
+}
+
+/* Marca del resultado, además del color */
+.card[data-state]::after {
+  position: absolute;
+  top: -0.8rem;
+  right: -0.8rem;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.3);
+}
+
+.card[data-state='success']::after {
+  content: '✔' / '';
+  background-color: #1d7a37;
+}
+
+.card[data-state='wrong']::after {
+  content: '✖' / '';
+  background-color: #a82433;
+}
+
+/* Casilla de apuesta */
+.spot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 0.2rem dashed rgb(255 255 255 / 0.6);
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 0.22);
+}
+
+.spot-chip {
+  --size: 3.4rem;
+}
+
+.card[data-selected] .spot {
+  border-color: var(--gold);
+}
+
+.tag {
+  padding: 0.2rem 0.55rem;
+  border-radius: 100vw;
+  background-color: #7a150c;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.tag[data-won] {
+  background-color: #0b4d1d;
+  color: var(--gold);
+}
+
+/* Bandeja de fichas */
+.tray {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tray-title {
+  padding: 0.2rem 0.9rem;
+  border-radius: 100vw;
+  background-color: var(--casino-question-bg);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tray-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.tray-chip {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.tray-input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.tray-chip:has(.tray-input:disabled) {
+  cursor: not-allowed;
+}
+
+.tray-chip:has(.tray-input:disabled) .tray-chip-art {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.tray-chip-art {
+  --size: 4.4rem;
+}
+
+.tray-caption {
+  padding: 0.15rem 0.7rem;
+  border-radius: 100vw;
+  background-color: var(--casino-panel);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* La ficha elegida se levanta y queda marcada con un aro dorado */
+.tray-chip:has(.tray-input:checked) .tray-chip-art {
+  transform: translateY(-0.45rem);
+  outline: 0.22rem solid var(--gold);
+  outline-offset: 0.2rem;
+}
+
+.tray-chip:has(.tray-input:checked) .tray-caption {
+  background-color: var(--gold);
+  color: #2b1700;
+}
+
+/* Anillo de foco en dos tonos: se ve sobre el verde claro, el verde botella y las fichas */
+.card:has(.card-input:focus-visible) {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px var(--casino-question-bg);
+}
+
+.tray-chip:has(.tray-input:focus-visible) {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px var(--casino-question-bg);
+}
+
+.hint {
+  max-width: 46ch;
+  margin: 0;
+  padding: 0.3rem 0.9rem;
+  border-radius: 100vw;
+  background-color: var(--casino-panel);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.hint[data-empty] {
+  display: none;
+}
+
+/* Botón de la ronda, dentro del juego: aparece cuando la banca termina de pagar */
+.next-round {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.5rem 1.6rem;
+  border: 3px solid #ffffff;
+  border-radius: 100vw;
+  background-color: var(--gold);
+  box-shadow: 0 0.3rem 0 #a67a00;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #2b1700;
+  cursor: pointer;
+}
+
+.next-round:hover {
+  background-color: #ffe9a3;
+}
+
+.next-round:active {
+  transform: translateY(0.2rem);
+  box-shadow: 0 0.1rem 0 #a67a00;
+}
+
+.next-round:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 8px var(--casino-question-bg);
+}
+
+.next-round-arrow {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Mesa cerrada: todas las fichas ganadas */
+.cashout {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  width: min(100%, 36rem);
+  margin-block: 0.5rem;
+  padding: 1.25rem 1rem 1.5rem;
+  border: 0.3rem dotted #f2f2f2;
+  border-radius: 1rem;
+  background-color: var(--casino-question-bg);
+  text-align: center;
+}
+
+.cashout-title {
+  margin: 0;
+  font-size: clamp(1.4rem, 1.1rem + 1.5cqi, 2rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+}
+
+.cashout-title:focus {
+  outline: none;
+}
+
+.cashout-sub,
+.cashout-total,
+.cashout-profit,
+.cashout-bets {
+  margin: 0;
+}
+
+.cashout-sub {
+  font-weight: 700;
+}
+
+.final-stacks {
+  --stack-w: 4.4rem;
+  --disc-h: 2rem;
+  --step: 0.5rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.6rem;
+  min-height: 5rem;
+  padding: 1rem 0.5rem 0.5rem;
+}
+
+.final-stacks .stack-count {
+  right: -0.9rem;
+  font-size: 0.9rem;
+}
+
+.cashout-amount {
+  font-size: clamp(2rem, 1.5rem + 2.5cqi, 3rem);
+}
+
+.cashout-profit {
+  padding: 0.3rem 1rem;
+  border-radius: 100vw;
+  background-color: #0b4d1d;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.cashout-profit[data-loss] {
+  background-color: #7a150c;
+}
+
+.cashout-bets {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Capa de efectos de JS (fichas en vuelo, ondas, destellos): encima de todo y sin eventos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5rem;
+  height: 5rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+.flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  border: 0.2rem dashed #ffffff;
+  border-radius: 50%;
+  background-color: var(--c);
+  box-shadow: 0 0.2rem 0 var(--c-dark);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.flyer--orange {
+  --c: #c2570a;
+  --c-dark: #7c3506;
+}
+
+.flyer--red {
+  --c: #c0291a;
+  --c-dark: #7a150c;
+}
+
+.flyer--blue {
+  --c: #1f5ca8;
+  --c-dark: #123767;
+}
+
+.flyer--white {
+  --c: #d9dde0;
+  --c-dark: #8a9298;
+
+  color: #1b2a2e;
+}
+
+/* Pantalla de inicio */
+.init {
+  display: grid;
+  place-items: center;
+  min-height: 42.5rem; /* Misma altura que la mesa, para que el panel no cambie de tamaño al empezar */
+  padding: 1.5rem 1rem;
+  background-image: var(--casino-bg);
+  background-repeat: round;
+  background-size: cover;
+  container-type: inline-size;
+}
+
+.init-content {
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+  width: min(100%, 34rem);
+}
+
+.init-sign {
+  display: grid;
+  place-items: center;
+  width: min(100%, 30rem);
+  aspect-ratio: 561 / 283;
+  background-image: var(--sign);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.init-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.4rem, 9cqw, 3.75rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.init-text {
+  margin: 0;
+  padding: 0.5rem 1.25rem;
+  background-color: #0a3d38;
+  border: 2px solid #88d8c3;
+  border-radius: 1rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.init-chips {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 4rem;
+  --stack-w: 3.4rem;
+  --disc-h: 1.5rem;
+  --step: 0.45rem;
+}
+
+.init-chips .stack-count {
+  display: none;
+}
+
+.init-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 2.5rem;
+  background-color: #3b1638;
+  border: 0.4rem solid #88d8c3;
+  border-radius: 2.25rem;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    filter 0.15s,
+    translate 0.15s;
+}
+
+.init-button:hover {
+  filter: brightness(1.25);
+  translate: 0 -2px;
+}
+
+.init-button:active {
+  translate: 0 1px;
+}
+
+.init-button--ghost {
+  background-color: #0a3d38;
+  border-width: 0.2rem;
+  font-size: 1.1rem;
+}
+
+.init-button:focus-visible,
+.init-rules-title:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #3b1638;
+}
+
+.init-rules-title:focus-visible {
+  box-shadow: none;
+}
+
+.init-rules {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 1.5rem 1.25rem;
+  background-color: #0a3d38;
+  border: 2px solid #ffffff;
+  border-radius: 1.5rem;
+  color: #ffffff;
+}
+
+.init-rules-title {
+  margin: 0;
+  color: var(--gold);
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.init-rules-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  counter-reset: rule;
+}
+
+.init-rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  counter-increment: rule;
+}
+
+.init-rules-list li::before {
+  content: counter(rule) / '';
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: #3b1638;
+  border: 2px solid #88d8c3;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.init-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .init-content {
+      animation: init-in 0.5s ease-out both;
+    }
+
+    .init-chips .stack {
+      animation: init-bob 2.4s ease-in-out infinite;
+    }
+
+    .init-chips .stack:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .init-chips .stack:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+  }
+}
+
+@keyframes init-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+@keyframes init-bob {
+  50% {
+    translate: 0 -0.4rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .init-text,
+  .init-rules,
+  .init-button {
+    border: 2px solid ButtonText;
+  }
+
+  .init-button:focus-visible,
+  .init-rules-title:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+.casino-figcaption {
+  text-align: center;
+}
+
+@container (max-width: 30rem) {
+  .casino-elements-wrapper {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    min-height: 9.5rem;
+  }
+
+  .bank,
+  .rack {
+    min-width: 0;
+    flex: 1 1 8rem;
+  }
+
+  /* Las tres fichas caben en una sola fila */
+  .tray-chips {
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+
+  .tray-chip {
+    padding-inline: 0.2rem;
+  }
+
+  .tray-chip-art {
+    --size: 3.4rem;
+  }
+
+  .tray-caption {
+    padding-inline: 0.45rem;
+    font-size: 0.72rem;
+    text-align: center;
+  }
+}
+
+/* Movimiento: solo si el usuario lo permite */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .bar {
+      animation: drop-in 480ms cubic-bezier(0.2, 0.9, 0.3, 1.2) backwards;
+    }
+
+    .casino-question {
+      animation: pop-in 500ms cubic-bezier(0.2, 0.9, 0.3, 1.15) 100ms backwards;
+    }
+
+    .card {
+      transition: transform 150ms ease-out;
+      animation: rise-in 480ms cubic-bezier(0.2, 0.8, 0.3, 1) var(--delay, 0ms) backwards;
+    }
+
+    .card:nth-child(1) {
+      --delay: 220ms;
+    }
+
+    .card:nth-child(2) {
+      --delay: 300ms;
+    }
+
+    .card:nth-child(3) {
+      --delay: 380ms;
+    }
+
+    .card:nth-child(4) {
+      --delay: 460ms;
+    }
+
+    .tray-chip {
+      animation: rise-in 480ms cubic-bezier(0.2, 0.8, 0.3, 1) 520ms backwards;
+    }
+
+    .card:not(:has(.card-input:disabled)):hover {
+      transform: translateY(-3px);
+    }
+
+    .card:not(:has(.card-input:disabled)):active {
+      transform: scale(0.98);
+    }
+
+    .tray-chip-art {
+      transition: transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+    }
+
+    .tray-chip:not(:has(.tray-input:disabled)):hover .tray-chip-art {
+      transform: translateY(-0.3rem) rotate(-8deg);
+    }
+
+    .tray-chip:has(.tray-input:checked) .tray-chip-art {
+      animation: chip-lift 360ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
+    }
+
+    /* Con la opción elegida y sin ficha, la casilla pide la ficha */
+    .spot[data-need] {
+      animation: spot-ask 700ms ease-in-out 3;
+    }
+
+    /* La ficha real aparece cuando termina de volar desde la bandeja */
+    .spot-chip {
+      animation: chip-land 360ms cubic-bezier(0.2, 0.9, 0.3, 1.5) 460ms backwards;
+    }
+
+    .card[data-state='success'] {
+      animation: win 700ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    .card[data-state='wrong'] {
+      animation: shake 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    .card[data-state]::after {
+      animation: icon-pop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.6) 120ms backwards;
+    }
+
+    .tag {
+      animation: tag-in 420ms cubic-bezier(0.2, 0.9, 0.3, 1.5) backwards;
+    }
+
+    .disc {
+      animation: disc-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1.4) backwards;
+    }
+
+    .hint {
+      animation: pop-in 300ms ease-out;
+    }
+
+    .next-round {
+      animation: pop-in 420ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
+    }
+
+    .cashout {
+      animation: pop-in 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    /* Las fichas finales caen una por una */
+    .final-stacks .disc {
+      animation: disc-in 360ms cubic-bezier(0.2, 0.9, 0.3, 1.4) calc(300ms + var(--i) * 90ms) backwards;
+    }
+
+    .cashout-profit,
+    .cashout-bets {
+      animation: rise-in 420ms ease-out 900ms backwards;
+    }
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1.25rem);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+@keyframes chip-lift {
+  40% {
+    transform: translateY(-1rem) scale(1.1);
+  }
+}
+
+@keyframes spot-ask {
+  50% {
+    transform: scale(1.12);
+    border-color: #ffffff;
+  }
+}
+
+@keyframes chip-land {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) scale(1.5);
+  }
+}
+
+@keyframes win {
+  30% {
+    transform: scale(1.05);
+  }
+
+  55% {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes shake {
+  15%,
+  55% {
+    transform: translateX(-0.6rem);
+  }
+
+  35%,
+  75% {
+    transform: translateX(0.6rem);
+  }
+}
+
+@keyframes icon-pop {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-120deg);
+  }
+}
+
+@keyframes tag-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes disc-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.9rem);
+  }
+}
+
+/* Alto contraste del sistema: el estado se marca con el borde y las fichas conservan su valor escrito */
+@media (forced-colors: active) {
+  .card {
+    border-color: ButtonText;
+  }
+
+  .card[data-selected],
+  .card[data-state] {
+    border-color: Highlight;
+  }
+
+  .card:has(.card-input:focus-visible),
+  .tray-chip:has(.tray-input:focus-visible) {
+    outline-color: Highlight;
+  }
+
+  .fx {
+    display: none;
+  }
+}

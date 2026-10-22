@@ -1,0 +1,93 @@
+.panel {
+  display: grid;
+  /* Una sola columna de ancho completo: sin esto la columna se ajusta al contenido y los juegos quedan angostos. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.nav {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+}
+
+.nav__status {
+  font-size: var(--fs-200);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.nav__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.nav__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-block-size: 2.25rem;
+  padding: 0.3rem 0.9rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--white);
+  color: var(--ui-ink);
+  box-shadow: var(--shadow-hard-sm);
+  font-size: var(--fs-200);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.nav__button:hover:not(:disabled) {
+  background-color: var(--accent-100);
+}
+
+.nav__button:disabled {
+  border-color: var(--secondary-300);
+  box-shadow: none;
+  color: var(--secondary-500);
+  cursor: not-allowed;
+}
+
+.nav__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Área de toque de 24px; el punto visible es más pequeño (WCAG 2.5.8). */
+.nav__dot {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav__dot::before {
+  content: '';
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--secondary-300);
+  border: 2px solid var(--ui-ink);
+  transition: background-color 0.15s ease;
+}
+
+.nav__dot[aria-current='step']::before {
+  background-color: var(--accent-500);
+}
+
+.nav__dot:hover::before {
+  background-color: var(--accent-300);
+}

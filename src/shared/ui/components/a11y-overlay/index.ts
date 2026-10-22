@@ -1,1 +1,0 @@
-export { A11yOverlay } from './a11y-overlay';

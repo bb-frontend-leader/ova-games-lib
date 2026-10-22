@@ -1,1 +1,0 @@
-export { FullScreenAlert } from './fullscreen-alert';

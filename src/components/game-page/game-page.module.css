@@ -1,0 +1,138 @@
+.page {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--primary-800);
+  font-size: var(--fs-200);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.back::before {
+  content: '←';
+}
+
+.back:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.header {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.header__tag {
+  padding: 0.2rem 0.8rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--primary-200);
+  color: var(--ui-ink);
+  font-size: var(--fs-100);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.header__title {
+  color: var(--ui-ink);
+  font-size: var(--fs-700);
+  line-height: 1.1;
+}
+
+.header__summary {
+  max-inline-size: 60ch;
+  color: var(--text-muted);
+  font-size: var(--fs-400);
+}
+
+/* Marco donde corre el juego. */
+.demo {
+  min-inline-size: 0;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  border: var(--border);
+  border-radius: 1.25rem;
+  background-color: var(--card);
+  box-shadow: 6px 6px 0 var(--ui-ink);
+}
+
+.info {
+  display: grid;
+  gap: 1rem;
+  margin-block-start: 0.5rem;
+}
+
+.info__title {
+  color: var(--ui-ink);
+}
+
+.info__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.panel {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1.25rem 1.4rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background-color: var(--panel-bg, var(--card));
+  box-shadow: var(--shadow-hard);
+}
+
+.panel_wide {
+  grid-column: 1 / -1;
+}
+
+.panel_success {
+  --panel-bg: #e2f6ec;
+}
+
+.panel_wrong {
+  --panel-bg: #fde9e5;
+}
+
+.panel_tips {
+  --panel-bg: var(--accent-100);
+}
+
+.panel__title {
+  color: var(--ui-ink);
+  font-size: var(--fs-400);
+}
+
+.panel__content {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.panel__content :where(p, ul, ol) {
+  margin: 0;
+}
+
+.panel__content :where(ul, ol) {
+  padding-inline-start: 1.25rem;
+}
+
+.panel__content li + li {
+  margin-block-start: 0.35rem;
+}
+
+@media screen and (max-width: 48rem) {
+  .info__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .header__title {
+    font-size: var(--fs-600);
+  }
+}

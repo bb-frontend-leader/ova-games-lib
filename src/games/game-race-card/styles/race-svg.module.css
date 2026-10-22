@@ -1,0 +1,407 @@
+/*
+ * Estilos de las ilustraciones SVG del RaceCard (pista, autos, marcador).
+ * Se comparten entre las escenas, la pantalla de inicio y el podio: cada <svg> lleva la clase `race-svg`.
+ */
+
+.race-svg :global(.st3) {
+  fill: #569e3a;
+}
+
+.race-svg :global(.st4) {
+  fill: #876132;
+}
+
+.race-svg :global(.st5) {
+  fill: #76ac2b;
+}
+
+.race-svg :global(.st6) {
+  fill: #6d961f;
+}
+
+.race-svg :global(.st7) {
+  fill: #72c628;
+}
+
+.race-svg :global(.st8) {
+  fill: #8ec15b;
+}
+
+.race-svg :global(.st9) {
+  fill: #d6d5cd;
+}
+
+.race-svg :global(.st10) {
+  fill: #e42d2c;
+}
+
+.race-svg :global(.st11) {
+  fill: #fdfdfd;
+}
+
+.race-svg :global(.st12) {
+  fill: #8e8d87;
+}
+
+.race-svg :global(.st13) {
+  fill: #696969;
+}
+
+.race-svg :global(.st14) {
+  fill: #6d6d68;
+}
+
+.race-svg :global(.st15) {
+  fill: #5b9b3d;
+}
+
+.race-svg :global(.st16) {
+  fill: #418338;
+}
+
+.race-svg :global(.st17) {
+  fill: #4a5147;
+}
+
+.race-svg :global(.st18) {
+  opacity: 0.3;
+  fill: #1d1d1b;
+  enable-background: new;
+}
+
+.race-svg :global(.st19) {
+  fill: #1d1d1b;
+}
+
+.race-svg :global(.st20) {
+  fill: #ffffff;
+}
+
+.race-svg :global(.st21) {
+  fill: #231f20;
+}
+
+.race-svg :global(.st22) {
+  fill: #191717;
+}
+
+.race-svg :global(.st23) {
+  fill: #76e0b3;
+}
+
+.race-svg :global(.st24) {
+  fill: #fab83a;
+}
+
+.race-svg :global(.st25) {
+  opacity: 0.31;
+  fill: #ffffff;
+  enable-background: new;
+}
+
+.race-svg :global(.st26) {
+  opacity: 0.29;
+  fill: #1d1d1b;
+  enable-background: new;
+}
+
+.race-svg :global(.st27) {
+  fill: #252024;
+}
+
+.race-svg :global(.st28) {
+  fill: #3e393d;
+}
+
+.race-svg :global(.st29) {
+  fill: #6c6d69;
+}
+
+.race-svg :global(.st30) {
+  fill: #257100;
+}
+
+.race-svg :global(.st31) {
+  fill: #4da623;
+}
+
+.race-svg :global(.st32) {
+  fill: #247000;
+}
+
+.race-svg :global(.st33) {
+  fill: #23ba76;
+}
+
+.race-svg :global(.aleron-azul) {
+  fill: #006ec2;
+}
+
+.race-svg :global(.st34) {
+  fill: white;
+}
+
+.race-svg :global(.st35) {
+  fill: none;
+  stroke: #646363;
+  stroke-width: 1.9779;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st36) {
+  fill: #a9a8ad;
+}
+
+.race-svg :global(.st37) {
+  fill: #f8cd75;
+}
+
+.race-svg :global(.st38) {
+  fill: #231f20;
+  stroke: #a9a8ad;
+  stroke-width: 1.1228;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st39) {
+  fill: #dddddd;
+}
+
+.race-svg :global(.st40) {
+  fill: #327e8c;
+}
+
+.race-svg :global(.st41) {
+  fill: #4fbaab;
+}
+
+.race-svg :global(.st42) {
+  fill: #41a9ff;
+}
+
+.race-svg :global(.st43) {
+  fill: #035b81;
+}
+
+.race-svg :global(.st44) {
+  fill: #018cd0;
+}
+
+.race-svg :global(.st45) {
+  fill: #025d83;
+}
+
+.race-svg :global(.st46) {
+  fill: #006ec2;
+}
+
+.race-svg :global(.st47) {
+  fill: #adb6de;
+}
+
+.race-svg :global(.st48) {
+  fill: #2c2054;
+}
+
+.race-svg :global(.st49) {
+  fill: #fcc13a;
+}
+
+.race-svg :global(.st50) {
+  fill: #585858;
+}
+
+.race-svg :global(.st51) {
+  fill: none;
+  stroke: #1d1d1b;
+  stroke-width: 2.0523;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st52) {
+  fill: #fdc537;
+  stroke: #ffffff;
+  stroke-width: 5.7906;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st53) {
+  fill: #771928;
+}
+
+.race-svg :global(.st54) {
+  fill: none;
+  stroke: #646363;
+  stroke-width: 1.3515;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st55) {
+  fill: #231f20;
+  stroke: #a9a8ad;
+  stroke-width: 0.7673;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st56) {
+  fill: #fffbda;
+  stroke: #55539f;
+  stroke-width: 3.2032;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st57) {
+  fill: #fffbda;
+  stroke: #55539f;
+  stroke-width: 5.6801;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st58) {
+  fill: none;
+  stroke: #1d1d1b;
+  stroke-width: 1.4849;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st59) {
+  fill: #80b74c;
+  stroke: #ffffff;
+  stroke-width: 4.1896;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st60) {
+  fill: #086f4c;
+}
+
+.race-svg :global(.st61) {
+  fill: none;
+  stroke: #646363;
+  stroke-width: 1.1183;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st62) {
+  fill: #231f20;
+  stroke: #a9a8ad;
+  stroke-width: 0.6348;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st63) {
+  fill: #e62a29;
+  stroke: #ffffff;
+  stroke-width: 4.1896;
+  stroke-miterlimit: 10;
+}
+
+.race-svg :global(.st64) {
+  fill: #711912;
+}
+
+.race-svg :global(.st65) {
+  fill: #00495c;
+  stroke: #ffffff;
+  stroke-width: 2.8702;
+  stroke-miterlimit: 10;
+}
+
+/* Auto del jugador: la skin elegida llega por variables CSS (los valores por defecto son la skin Esmeralda) */
+.race-svg :global(.car--player) :global(.st31) {
+  fill: var(--car-main, #4da623);
+}
+
+.race-svg :global(.car--player) :global(.st23) {
+  fill: var(--car-light, #76e0b3);
+}
+
+.race-svg :global(.car--player) :global(.st33) {
+  fill: var(--car-side, #23ba76);
+}
+
+.race-svg :global(.car--player) :global(.st30) {
+  fill: var(--car-decal, #257100);
+}
+
+.race-svg :global(.car--player) :global(.st32) {
+  fill: var(--car-wing, #247000);
+}
+
+.race-svg :global(.car--player) :global(.st24) {
+  fill: var(--helmet, #fab83a);
+}
+
+/* Cielo: todo el movimiento solo con animaciones permitidas */
+.star {
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .star {
+      animation: star-twinkle 2.8s ease-in-out infinite alternate;
+    }
+
+    .body-glow {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: body-glow 5s ease-in-out infinite alternate;
+    }
+
+    .sun-rays {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: sun-rays 60s linear infinite;
+    }
+
+    .clouds {
+      animation: cloud-drift 42s ease-in-out infinite alternate;
+    }
+
+    .beam {
+      animation: beam-flicker 3.4s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@keyframes star-twinkle {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes body-glow {
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes sun-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cloud-drift {
+  to {
+    transform: translateX(-70px);
+  }
+}
+
+@keyframes beam-flicker {
+  from {
+    opacity: 0.85;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

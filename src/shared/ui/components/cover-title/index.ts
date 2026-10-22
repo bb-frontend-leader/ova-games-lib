@@ -1,1 +1,0 @@
-export { CoverTitle } from "./cover-title";

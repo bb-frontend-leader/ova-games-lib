@@ -1,0 +1,77 @@
+.modal {
+  --modal-max-width: 28rem;
+
+  padding: 1.5rem;
+  border: var(--border);
+  border-radius: 1.25rem;
+  background-color: var(--card);
+  color: var(--text-main);
+  box-shadow: 6px 6px 0 var(--ui-ink);
+  block-size: unset;
+  z-index: var(--z-modal);
+}
+
+.modal[data-size='xs'] {
+  --modal-max-width: 20rem;
+}
+
+.modal[data-size='sm'] {
+  --modal-max-width: 28rem;
+}
+
+.modal[data-size='md'] {
+  --modal-max-width: 50rem;
+}
+
+.modal[data-size='lg'] {
+  --modal-max-width: 70rem;
+}
+
+.modal[data-size='xl'] {
+  --modal-max-width: 80rem;
+}
+
+.modal :global(.c-modal-container) {
+  max-block-size: 70vh;
+}
+
+@media screen and (max-width: 1280px) {
+  div.modal {
+    --modal-max-width: calc(100vw - 1rem);
+
+    width: calc(100vw - 1rem);
+  }
+
+  .modal :global(.c-modal-container) {
+    max-block-size: calc(100svh - 3rem);
+  }
+}
+
+.overlay {
+  opacity: 0.7 !important;
+  background-color: var(--primary-950);
+  z-index: var(--z-modal);
+}
+
+.close {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  inline-size: 2.5rem;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: var(--border);
+  border-radius: 50%;
+  background-color: var(--accent-400);
+  color: var(--ui-ink);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.close:hover {
+  background-color: var(--accent-300);
+}

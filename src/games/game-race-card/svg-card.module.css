@@ -1,0 +1,526 @@
+/* Game container */
+.game {
+  --clr-primary: #fefbdb;
+  --clr-secondary: #555792;
+  --clr-secondary-dark: #2d2b56;
+}
+
+.game-wrapper {
+  place-content: center;
+  display: grid;
+  gap: 0.5em;
+  grid-template-columns: 1fr;
+}
+
+@media screen and (max-width: 1219px) {
+  .game-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .game-wrapper__options {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)) !important;
+  }
+}
+
+.game-wrapper__options {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 0.5rem;
+  background-color: var(--container-bg-clr, var(--clr-secondary-dark));
+  position: relative;
+}
+
+.game-wrapper__scene {
+  width: 100%;
+}
+
+@media screen and (max-width: 1219px) and (orientation: landscape) {
+  .game-wrapper[data-fullscreen] {
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: 30ch 1fr;
+    place-content: start;
+  }
+
+  .game-wrapper[data-fullscreen] .radio__svg label {
+    min-height: auto;
+  }
+
+  .game-wrapper[data-fullscreen] .game-wrapper__options {
+    order: -1;
+  }
+}
+
+/* Radio activity */
+/*
+ * Respuestas (RaceCard.Radio): fichas de salida. Cada una lleva su letra (A, B, C…) en un dorsal y una banderola a
+ * cuadros; la letra sale de un contador de CSS, así el componente no necesita saber su posición.
+ */
+.game-wrapper__options {
+  counter-reset: race-answer;
+}
+
+.radio__svg {
+  position: relative;
+  width: 100%;
+  counter-increment: race-answer;
+}
+
+/* El input cubre la ficha entera (invisible): el clic, el toque y el lector de pantalla caen sobre él */
+.radio__svg input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio__svg label {
+  --ticket-top: #3d3f78;
+  --ticket-bottom: #555792;
+  --ticket-edge: #fefbdb;
+  --ticket-text: #ffffff;
+  --ticket-shadow: #1c1a3d;
+  --badge-bg: #fefbdb;
+  --badge-text: #2d2b56;
+  --flag-opacity: 0.55;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 2rem 0.5rem 0.6rem;
+  background-image: linear-gradient(180deg, var(--ticket-top), var(--ticket-bottom));
+  border: 2px solid var(--ticket-edge);
+  border-radius: 0.9rem;
+  box-shadow: 0 0.25rem 0 var(--ticket-shadow);
+  font-size: clamp(0.9rem, 0.82rem + 0.4vw, 1.05rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ticket-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.radio__svg label > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Dorsal con la letra de la respuesta */
+.radio__svg label::before {
+  content: counter(race-answer, upper-alpha) / '';
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: var(--badge-bg);
+  border: 2px solid var(--ticket-shadow);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--badge-text);
+}
+
+/* Banderola a cuadros del borde derecho (decorativa) */
+.radio__svg label::after {
+  content: '' / '';
+  position: absolute;
+  inset-block: 0.5rem;
+  right: 0.55rem;
+  width: 0.9rem;
+  background: conic-gradient(#ffffff 25%, #1c1a3d 0 50%, #ffffff 0 75%, #1c1a3d 0) 0 0 / 0.45rem 0.45rem;
+  border-radius: 0.2rem;
+  opacity: var(--flag-opacity);
+}
+
+.radio__svg input:not(:disabled) + label:hover {
+  --flag-opacity: 1;
+}
+
+/* Elegida (aún sin comprobar): ficha crema con el dorsal granate y una marca */
+.radio__svg input:checked + label {
+  --ticket-top: #fefbdb;
+  --ticket-bottom: #fefbdb;
+  --ticket-edge: #771928;
+  --ticket-text: #2d2b56;
+  --ticket-shadow: #4a0f19;
+  --badge-bg: #771928;
+  --badge-text: #ffffff;
+  --flag-opacity: 1;
+
+  transform: translateY(0.15rem);
+  box-shadow: 0 0.1rem 0 var(--ticket-shadow);
+}
+
+.radio__svg input:checked + label::before {
+  content: '✓' / '';
+  border-color: #ffffff;
+}
+
+/* Comprobada: el color y la marca dicen si fue correcta; el color solo no basta */
+.radio__svg input:checked:is([data-state='correct'], [data-state='incorrect']) + label {
+  --ticket-edge: #ffffff;
+  --ticket-shadow: #1c1a3d;
+  --badge-bg: #ffffff;
+
+  background-image: none;
+}
+
+.radio__svg input:checked[data-state='correct'] + label {
+  background-color: var(--success);
+  --ticket-text: var(--secondary-900);
+  --badge-text: var(--success);
+}
+
+.radio__svg input:checked[data-state='incorrect'] + label {
+  background-color: var(--wrong);
+  --ticket-text: #ffffff;
+  --badge-text: var(--wrong);
+}
+
+.radio__svg input:checked[data-state='correct'] + label::before {
+  content: '✔' / '';
+}
+
+.radio__svg input:checked[data-state='incorrect'] + label::before {
+  content: '✖' / '';
+}
+
+/* Con la respuesta ya comprobada, las otras fichas se apagan */
+.radio__svg input:disabled:not(:checked) + label {
+  --flag-opacity: 0.25;
+
+  opacity: 0.7;
+  cursor: default;
+}
+
+.radio__svg input:disabled + label {
+  cursor: default;
+}
+
+/* Foco: aro blanco con un hueco oscuro, visible sobre la ficha y sobre el fondo */
+.radio__svg input:focus-visible + label {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 2px #121212,
+    0 0.25rem 0 var(--ticket-shadow);
+}
+
+/* Movimiento: solo si la persona lo permite y no detuvo las animaciones */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .radio__svg label {
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out,
+      opacity 200ms ease-out;
+  }
+
+  html:not([data-stop-animations='true']) .radio__svg input:not(:disabled):not(:checked) + label:hover {
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.45rem 0 var(--ticket-shadow);
+  }
+
+  html:not([data-stop-animations='true']) .radio__svg input:checked + label {
+    animation: answer-pop 280ms ease-out;
+  }
+
+  html:not([data-stop-animations='true']) .radio__svg input:checked + label::before {
+    animation: answer-badge 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .radio__svg input:checked[data-state='incorrect'] + label {
+    animation: answer-shake 420ms ease-in-out;
+  }
+}
+
+@keyframes answer-pop {
+  0% {
+    transform: translateY(-0.2rem) scale(1.03);
+  }
+
+  100% {
+    transform: translateY(0.15rem) scale(1);
+  }
+}
+
+@keyframes answer-badge {
+  0% {
+    transform: rotate(-180deg) scale(0.4);
+  }
+
+  100% {
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes answer-shake {
+  0%,
+  100% {
+    transform: translate(0, 0.15rem);
+  }
+
+  20%,
+  60% {
+    transform: translate(-0.35rem, 0.15rem);
+  }
+
+  40%,
+  80% {
+    transform: translate(0.35rem, 0.15rem);
+  }
+}
+
+@media (forced-colors: active) {
+  .radio__svg label {
+    border-color: ButtonText;
+  }
+
+  .radio__svg label::before {
+    border-color: currentColor;
+  }
+
+  .radio__svg input:checked + label {
+    border-color: Highlight;
+  }
+}
+
+.button-play-again {
+  padding: 0.3rem;
+  background-color: var(--clr-brand);
+  cursor: pointer;
+  border: 3px solid white;
+  border-radius: 8px;
+  color: white;
+}
+
+.box-questions {
+  place-content: center;
+  display: grid;
+  overflow-y: auto;
+  height: 7.475rem;
+  font-size: 0.9rem;
+}
+
+.question__validation-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+/* Car animations*/
+.car-transition {
+  transition: transform var(--transition-time, 500ms) ease-in-out;
+}
+
+/* Tracks */
+.race-card__track {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .race-card__track--up {
+      animation: move-track-up var(--track-move-time, 3s) linear infinite;
+    }
+
+    .race-card__track--behind {
+      animation: move-track-behind var(--track-move-time, 3s) linear infinite;
+    }
+  }
+}
+
+@keyframes move-track-up {
+  0% {
+    transform: translateX(0);
+    /* Pista 1 empieza en la posición inicial */
+  }
+
+  100% {
+    transform: translateX(-215%);
+  }
+}
+
+@keyframes move-track-behind {
+  0% {
+    transform: translateX(215%);
+    /* Pista 2 comienza fuera del viewport a la derecha */
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Wheels */
+.wheel {
+  transform-origin: var(--wheel-origin-x, 50%) var(--wheel-origin-y, 50%);
+}
+
+.wheel--1 {
+  --wheel-origin-x: 53px;
+  --wheel-origin-y: 252.8px;
+}
+
+.wheel--2 {
+  --wheel-origin-x: 219.9px;
+  --wheel-origin-y: 252.8px;
+}
+
+.wheel--3 {
+  --wheel-origin-x: 73.6px;
+  --wheel-origin-y: 368.3px;
+}
+
+.wheel--4 {
+  --wheel-origin-x: 240.6px;
+  --wheel-origin-y: 368.3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .wheel {
+      animation: wheelsRotation var(--wheel-rotate-time, 200ms) infinite linear;
+    }
+  }
+}
+
+@keyframes wheelsRotation {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* svg-initial */
+.instructions-container,
+.box-questions {
+  display: grid;
+  place-content: center;
+  padding-inline: 1rem;
+  padding-block: 0.8rem;
+  width: 100%;
+  background-color: var(--clr-primary);
+  border: 4px solid var(--clr-secondary);
+  border-radius: 1.125rem;
+  font-weight: bold;
+  color: #121212;
+  text-align: center;
+}
+
+.instructions-container {
+  height: 100%;
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+.instructions__button {
+  --button-clr: #771928;
+  --outline-color: var(--button-clr);
+  padding-inline: 1rem;
+  padding-block: 0.2rem;
+  margin-block-end: 0.5rem;
+  margin-inline: auto;
+  display: block;
+  transition: background-color 200ms ease-in-out;
+  background-color: var(--button-clr);
+  border: 1px solid transparent;
+  border-radius: 0.2rem;
+  font-size: var(--fs-400);
+  font-weight: bold;
+  color: #f2f2f2;
+}
+
+.instructions__button:hover {
+  background-color: color-mix(in srgb, var(--button-clr) 100%, #ffffff 20%);
+}
+
+/* Feedback */
+.reference-score {
+  padding-block: 0.2rem;
+  padding-inline: 2rem 0.5rem;
+  margin-block: 1em;
+  margin-inline: auto;
+  position: relative;
+  max-width: 15ch;
+  background-color: #2c1f51;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: bold;
+  color: #f2f2f2;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.reference-score__img {
+  position: absolute;
+  top: -0.5rem;
+  left: -1.5rem;
+  max-width: 3.8rem;
+}
+
+@media (min-width: 1200px) {
+  .button-play-again {
+    position: relative;
+    bottom: 80px;
+  }
+}
+
+.alert {
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.575rem 0.8rem;
+  border-radius: 0.5rem;
+  background-color: #fff4e5;
+  color: #663c00;
+  animation: bounding-alert 1s ease-in-out infinite;
+}
+
+.alert code {
+  font-weight: bold;
+  color: #663c00;
+}
+
+@keyframes bounding-alert {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* =========================
+   STOP ANIMATIONS ON GAME OVER
+   ========================= */
+
+/* Autos estacionados (podio): las ruedas no giran */
+g[data-parked='true'] .wheel {
+  animation: none !important;
+}
+
+/* Pista, ruedas, cielo y faros se quedan quietos; los autos sí terminan de deslizarse hasta su lugar */
+svg[data-game-over='true'] * {
+  animation: none !important;
+}

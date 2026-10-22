@@ -1,0 +1,135 @@
+/* Opción de respuesta: ranura de terminal con chaflán (hud.css). El estado se expresa en el trazo y el
+   relleno; correcto/incorrecto cambian además el color del trazo (no solo el color: también el icono). */
+.checkbox {
+  composes: surface from global;
+}
+
+div.checkbox {
+  --input-check-clr: var(--background);
+  --input-check-border-clr: var(--primary-600);
+  --input-check-bg: var(--primary-500);
+  --input-filter: var(--secondary-400);
+  --input-size: 1.3rem;
+  --input-size-svg: 1em;
+  --input-check-gap: 1rem;
+  --corner: 0.5em;
+  --option-active: var(--input-check-bg);
+  --surface-radius: 0.55rem;
+  --surface-fill: var(--card);
+  --surface-edge: var(--input-check-border-clr);
+
+  position: relative;
+  padding: 0.5rem 1rem;
+  justify-content: flex-start;
+  border: 0;
+  border-radius: 0;
+  transition:
+    background-color 0.15s ease,
+    transform 0.12s ease;
+}
+
+div.checkbox:has(input:not(:disabled)):hover {
+  --surface-edge: var(--option-active);
+  --surface-fill: color-mix(in srgb, var(--option-active) 7%, var(--card));
+}
+
+div.checkbox:has(input:checked) {
+  --surface-edge: var(--option-active);
+  --surface-fill: color-mix(in srgb, var(--option-active) 12%, var(--card));
+}
+
+div.checkbox:has(input:not(:disabled)):active {
+  transform: translateY(1px);
+}
+
+/* El chaflán recorta el outline exterior: el foco de teclado se dibuja dentro de la ranura. */
+div.checkbox:has(input:focus-visible) {
+  outline: 2px solid var(--primary-700);
+  outline-offset: -5px;
+}
+
+div.checkbox label::first-letter {
+  color: var(--primary-500);
+  font-weight: bold;
+}
+
+.checkbox[data-state='right'] {
+  --input-check-bg: var(--success);
+  --option-active: var(--success);
+  animation: checkbox-success-pulse 0.45s ease;
+}
+
+.checkbox[data-state='wrong'] {
+  --input-check-bg: var(--wrong);
+  --option-active: var(--wrong);
+  animation: checkbox-shake 0.4s ease;
+}
+
+.checkbox :global(.c-input-check__box) {
+  min-inline-size: var(--input-size);
+  min-block-size: var(--input-size);
+  border: 1.8px solid var(--input-check-border-clr);
+  transition: transform 0.15s ease;
+}
+
+.checkbox :global(.c-input-check__box):has(input:checked) {
+  animation: checkbox-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.checkbox :global(.c-input-check__icon) svg {
+  width: var(--input-size-svg);
+  height: var(--input-size-svg);
+}
+
+@keyframes checkbox-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes checkbox-success-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes checkbox-shake {
+  10%,
+  90% {
+    transform: translateX(-3px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  div.checkbox,
+  .checkbox[data-state='right'],
+  .checkbox[data-state='wrong'],
+  .checkbox :global(.c-input-check__box),
+  .checkbox :global(.c-input-check__box):has(input:checked) {
+    animation: none;
+    transition: none;
+  }
+}
