@@ -1,0 +1,425 @@
+/* Select — "selector de módulos" (lenguaje HUD de hud.css).
+   · El control es una placa con chaflán (arriba-izquierda y abajo-derecha) y trazo de 2px; a la derecha lleva una
+     tapa ámbar (accionable) con el chevron. El texto puede ocupar dos líneas: no se trunca la respuesta elegida.
+   · Correcto/incorrecto cambia el trazo, el relleno y la tapa, que pasa a mostrar ✔/✖: no solo el color.
+   · La lista desplegable es una placa de casco (oscura, trazo cian) con marca ámbar en la opción activa y ✔ en la elegida.
+   · El foco de teclado se dibuja dentro de la placa: clip-path recorta el outline exterior.
+   Todo es CSS estático: las animaciones (pocas) son transform/opacity y solo corren con movimiento permitido.
+
+   books-ui pinta el select (`c-select*`) y no deja ponerle clases a sus partes, así que se alcanza con `:global`.
+   La lista se monta en un portal fuera del select: se le aplican los estilos solo mientras hay un select de esta
+   actividad abierto (`html:has(.select [aria-expanded='true'])`), para no tocar otros selects. */
+
+.select {
+  --select-cut: 0.5rem;
+  --select-h: 2.5rem;
+  --select-edge-w: 2px;
+  --select-edge: var(--edge-strong);
+  --select-tint: var(--edge-strong);
+  --select-cell: var(--accent);
+  --select-cell-ink: var(--primary-900);
+
+  /* Variable de books-ui: margen del texto dentro del botón. */
+  --select-padding: 0 0.65rem;
+}
+
+.select--success {
+  --select-edge: var(--success);
+  --select-tint: var(--success);
+  --select-cell: var(--success);
+  --select-cell-ink: var(--card);
+}
+
+.select--wrong {
+  --select-edge: var(--wrong);
+  --select-tint: var(--wrong);
+  --select-cell: var(--wrong);
+  --select-cell-ink: var(--card);
+}
+
+/* ─── Control (placa con chaflán) ──────────────────────────────────────────────
+   Receta de .hud-cut: el trazo recto es un inset box-shadow; las dos diagonales se dibujan en el ::after, encima
+   de la tapa. clip-path recorta outline y sombras exteriores: nada de sombras exteriores. */
+
+.select :global(.c-select-button) {
+  position: relative;
+  grid-template-columns: 1fr calc(2.5rem + var(--select-edge-w) * 2);
+  place-content: stretch;
+  width: 100%;
+  height: auto;
+  min-block-size: var(--select-h);
+  color: var(--text-main);
+  text-align: start;
+  background-color: color-mix(in srgb, var(--select-tint) 4%, var(--card));
+  border: 0;
+  box-shadow: inset 0 0 0 var(--select-edge-w) var(--select-edge);
+  cursor: pointer;
+  border-radius: var(--surface-radius, 0.55rem);
+}
+
+.select :global(.c-select-button)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+      135deg,
+      transparent var(--_d),
+      var(--select-edge) 0 calc(var(--_d) + var(--select-edge-w)),
+      transparent 0
+    ),
+    linear-gradient(
+      -45deg,
+      transparent var(--_d),
+      var(--select-edge) 0 calc(var(--_d) + var(--select-edge-w)),
+      transparent 0
+    );
+  background-size:
+    var(--_c) var(--_c),
+    var(--_c) var(--_c);
+  background-position:
+    top left,
+    bottom right;
+  background-repeat: no-repeat;
+}
+
+.select :global(.c-select-button):not(:disabled):hover,
+.select :global(.c-select-button)[aria-expanded='true'] {
+  background-color: color-mix(in srgb, var(--select-tint) 9%, var(--card));
+}
+
+.select :global(.c-select-button):disabled {
+  cursor: default;
+}
+
+/* ─── Foco ─────────────────────────────────────────────────────────────────── */
+
+.select :global(.c-select-button):focus-visible {
+  outline: 2px solid var(--primary-700);
+  outline-offset: -5px;
+}
+
+/* Indicador de foco mejorado (a11y.css): su outline exterior y su sombra de 6px caerían fuera del clip-path. */
+html[data-focus-indicator='true'] .select :global(.c-select-button):focus-visible {
+  outline-offset: -5px !important;
+  box-shadow: inset 0 0 0 var(--select-edge-w) var(--select-edge) !important;
+}
+
+/* ─── Texto ────────────────────────────────────────────────────────────────── */
+
+.select :global(.c-select-button__text),
+.select :global(.c-select-button:disabled) :global(.c-select-button__text) {
+  align-self: center;
+  padding-block: 0.35rem;
+  color: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+/* Sin respuesta todavía: el marcador se lee como una etiqueta de telemetría. */
+.select--empty :global(.c-select-button__text) {
+  color: color-mix(in srgb, var(--text-main) 70%, var(--card));
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ─── Tapa (icono) ─────────────────────────────────────────────────────────── */
+
+.select :global(.c-select-button__icon) {
+  height: auto;
+  margin: var(--select-edge-w);
+  color: var(--select-cell-ink);
+  background-color: var(--select-cell);
+}
+
+.select :global(.c-select-button__icon) svg {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+}
+
+.select :global(.c-select-button)[aria-expanded='true'] :global(.c-select-button__icon) svg {
+  transform: rotate(180deg);
+}
+
+/* Con resultado el chevron se sustituye por el glifo ✔/✖. */
+.select--success :global(.c-select-button__icon) svg,
+.select--wrong :global(.c-select-button__icon) svg {
+  display: none;
+}
+
+.select--success :global(.c-select-button__icon)::after,
+.select--wrong :global(.c-select-button__icon)::after {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.select--success :global(.c-select-button__icon)::after {
+  content: '\2714';
+}
+
+.select--wrong :global(.c-select-button__icon)::after {
+  content: '\2716';
+}
+
+/* ─── Lista desplegable (placa de casco) ───────────────────────────────────────
+   Se monta en un portal: solo se viste mientras hay un select de esta actividad abierto. */
+
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-popover) {
+  --_edge: color-mix(in srgb, var(--primary-300) 70%, transparent);
+
+  min-inline-size: min(17.5rem, calc(100vw - 1rem));
+  max-inline-size: calc(100vw - 1rem);
+  padding: 0.3rem;
+  color: var(--white);
+  background-color: var(--primary-800);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--_edge);
+  overflow-y: auto;
+  transform-origin: top center;
+  border-radius: var(--surface-radius, 0.55rem);
+}
+
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-list) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-list) li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-block-size: 2.5rem;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  color: var(--white);
+  font-size: 0.95rem;
+  line-height: 1.3;
+  background: transparent;
+  border-block-end: 1px solid color-mix(in srgb, var(--primary-300) 18%, transparent);
+  cursor: pointer;
+}
+
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-list) li:last-child {
+  border-block-end: 0;
+}
+
+/* Opción activa (teclado o puntero): marca ámbar a la izquierda, como el menú de mover de dnd. */
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-list) li[data-option-focus='true'] {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Opción elegida en este select. */
+html:has(.select :global(.c-select-button)[aria-expanded='true'])
+  :global(.c-select-list)
+  li[data-option-select='true']::after {
+  content: '\2714';
+  margin-inline-start: auto;
+  color: var(--primary-300);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* Ya usada en otro select: se ve apagada y tachada. */
+html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-list) li[aria-disabled='true'] {
+  background: transparent;
+  box-shadow: none;
+  text-decoration: line-through;
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Feedback (consola HUD) ───────────────────────────────────────────────────
+   Panel de casco con el resultado: placa con glifo ✔/✖ + título en mono + texto (+ audio e intérprete). */
+
+.feedback {
+  composes: surface from global;
+
+  --surface-radius: 0.9rem;
+  --surface-fill: var(--primary-800);
+  --surface-edge: color-mix(in srgb, var(--primary-300) 70%, transparent);
+  --feedback-accent: var(--primary-300);
+
+  display: grid;
+  align-items: center;
+  gap: 1.25rem;
+  grid-template-columns: 3.5rem 1fr;
+  padding: 1.25rem 1.5rem;
+  color: var(--white);
+}
+
+.feedback[data-result='true'] {
+  --surface-edge: var(--success);
+  --feedback-accent: color-mix(in srgb, var(--success) 60%, white);
+}
+
+.feedback[data-result='false'] {
+  --surface-edge: var(--wrong);
+  --feedback-accent: color-mix(in srgb, var(--wrong) 55%, white);
+}
+
+.icon {
+  composes: surface from global;
+
+  --surface-radius: 0.5rem;
+  --surface-fill: var(--accent);
+  --surface-edge: transparent;
+
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  color: var(--primary-900);
+  font-family: var(--font-mono);
+  font-size: var(--fs-600, 1.5rem);
+  font-weight: 700;
+}
+
+.feedback[data-result='true'] .icon {
+  --surface-fill: var(--success);
+
+  color: var(--card);
+}
+
+.feedback[data-result='false'] .icon {
+  --surface-fill: var(--wrong);
+
+  color: var(--card);
+}
+
+.feedback__title {
+  composes: tag from global;
+
+  --tag-color: var(--feedback-accent);
+
+  font-size: 0.95rem;
+}
+
+.feedback:has(.feedback__video-interpreter) {
+  grid-template-columns: 3.5rem 2fr 1fr;
+}
+
+.feedback__video-interpreter {
+  width: auto;
+  height: auto;
+  border-radius: 0.15rem;
+}
+
+@media (max-width: 53.75rem) {
+  .feedback:has(.feedback__video-interpreter) {
+    grid-template-columns: 3.5rem 1fr;
+  }
+
+  .feedback:has(.feedback__video-interpreter) .feedback__video-interpreter {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 22rem;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 48rem) {
+  .icon {
+    width: 3.5rem;
+  }
+
+  .feedback,
+  .feedback:has(.feedback__video-interpreter) {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .feedback__video-interpreter {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* ─── Animaciones: solo transform/opacity y solo con movimiento permitido ──── */
+
+@keyframes select-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@keyframes select-success-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes select-shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+
+  20%,
+  80% {
+    transform: translateX(3px);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .select--success {
+    animation: select-success-pop 0.45s ease;
+  }
+
+  html:not([data-stop-animations='true']) .select--wrong {
+    animation: select-shake 0.4s ease;
+  }
+
+  html:not([data-stop-animations='true']) .select :global(.c-select-button__icon) svg {
+    transition: transform 0.2s ease;
+  }
+
+  html:not([data-stop-animations='true']):has(.select :global(.c-select-button)[aria-expanded='true'])
+    :global(.c-select-popover) {
+    animation: select-popover-in 0.18s ease-out;
+  }
+}
+
+/* ─── Contraste forzado ────────────────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  .select :global(.c-select-button),
+  html:has(.select :global(.c-select-button)[aria-expanded='true']) :global(.c-select-popover) {
+    clip-path: none;
+    border: 1px solid ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .select :global(.c-select-button)::after {
+    display: none;
+  }
+}

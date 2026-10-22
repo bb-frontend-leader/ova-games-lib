@@ -1,0 +1,705 @@
+/* Juego de globos.
+   Los juegos tienen su propio estilo (ilustrado, cálido y redondeado), distinto del HUD de la OVA: cielo
+   de atardecer con paralaje, placas crema con borde café y "relieve" inferior, bandeja celeste.
+   Las animaciones solo usan transform/opacity y están dentro de `prefers-reduced-motion: no-preference`
+   + `html:not([data-stop-animations='true'])`; los efectos de JS (explosión, vuelo, confeti) se apagan con las
+   mismas dos condiciones (ver lib/use-can-animate.ts). */
+
+/* ── Escena ───────────────────────────────────────────────────────────────── */
+
+.scene {
+  /* Paleta del juego */
+  --bl-ink: #121212;
+  --bl-cream: #ffe2ad;
+  --bl-cream-light: #fff3d6;
+  --bl-brown: #bf6f42;
+  --bl-brown-dark: #8f4f2c;
+  --bl-sky: #dbf1f8;
+  --bl-teal: #98e3e6;
+  --bl-teal-dark: #0f5a61;
+  --bl-ok: #aaca4b;
+  --bl-ok-dark: #4d6b12;
+  --bl-bad: #f9abab;
+  --bl-bad-dark: #a83a3a;
+  --bl-focus: #1d1d6b;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  overflow: clip; /* sin scroll programático: el resplandor de los globos puede asomar por los bordes */
+  width: 100%;
+  min-height: 30rem;
+  margin: 0 auto;
+  color: var(--bl-ink);
+  background: #e9c7a6;
+  border: 4px solid var(--bl-brown-dark);
+  border-radius: 1rem;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* En modo oscuro la escena se atenúa con un velo (sin tocar el contraste de las placas) */
+html[data-dark-mode='true'] .backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(8 8 40 / 0.38);
+}
+
+/* Cada capa sobresale 1.5rem para que el paralaje no deje huecos en los bordes */
+.layer {
+  position: absolute;
+  inset: -1.5rem;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.image_sky {
+  object-position: center top;
+}
+
+.cloud {
+  position: absolute;
+  top: 2.5rem;
+  left: 0;
+  display: block;
+  width: 100%;
+  transform: translateX(8%);
+}
+
+/* Sin movimiento queda una sola nube quieta */
+.cloud_late {
+  display: none;
+}
+
+/* Destellos del cielo: puntitos que titilan en la parte alta */
+.sparkles {
+  position: absolute;
+  inset: 0 0 45%;
+  background-image: radial-gradient(1.6px 1.6px at 60px 40px, #fff 40%, transparent),
+    radial-gradient(1.3px 1.3px at 180px 90px, #fff 40%, transparent),
+    radial-gradient(1.5px 1.5px at 120px 150px, #fff6dc 40%, transparent);
+  background-size:
+    271px 197px,
+    337px 251px,
+    223px 241px;
+  opacity: 0.6;
+}
+
+.comet {
+  display: none;
+}
+
+/* ── Contenido ────────────────────────────────────────────────────────────── */
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: inherit;
+  padding: 2.25rem 1rem 1.5rem;
+}
+
+/* Capa de efectos de JS (fragmentos, ondas, palabra en vuelo): encima de todo y sin eventos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+/* ── Globos ───────────────────────────────────────────────────────────────── */
+
+.balloons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.balloon {
+  position: relative;
+  padding: 0.25rem 0.15rem;
+  color: inherit;
+  font: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0.9rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.balloon:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Anillo oscuro: se ve sobre el cielo claro (>3:1) y sobre las placas */
+.balloon:focus-visible {
+  outline: 3px solid var(--bl-focus);
+  outline-offset: 3px;
+}
+
+.lift {
+  display: block;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  isolation: isolate;
+}
+
+/* Resplandor del color del globo, estático (un gradiente, sin blur) */
+.body::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  z-index: -1;
+  width: 140%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, color-mix(in srgb, var(--glow) 28%, transparent), transparent 66%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.balloon:disabled .body {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.art {
+  display: block;
+  width: clamp(3.25rem, 7vw, 4.25rem);
+  height: auto;
+}
+
+.string {
+  display: block;
+  width: 2px;
+  height: 0.7rem;
+  background: var(--bl-brown-dark);
+  opacity: 0.7;
+}
+
+/* Placa con la palabra */
+.plate {
+  display: block;
+  max-width: 9rem;
+  padding: 0.3rem 0.75rem;
+  color: var(--bl-ink);
+  font-size: var(--fs-200);
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: break-word;
+  background: var(--bl-cream);
+  border: 3px solid var(--bl-brown);
+  border-radius: 1.05rem;
+  box-shadow: 0 3px 0 var(--bl-brown-dark);
+}
+
+.balloon:not(:disabled):hover .plate,
+.balloon:focus-visible .plate {
+  background: var(--bl-cream-light);
+  border-color: var(--bl-brown-dark);
+}
+
+/* La palabra que vuela hacia su espacio: copia de la placa, creada por lib/effects.ts */
+.flyer {
+  composes: plate;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Bandeja de la frase ──────────────────────────────────────────────────── */
+
+.tray {
+  position: relative;
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem 1.1rem;
+  overflow: hidden;
+  background: var(--bl-sky);
+  border: 3px solid var(--bl-brown);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 0 var(--bl-brown-dark);
+}
+
+.tray[data-state='success'] {
+  background: var(--bl-ok);
+  border-color: var(--bl-ok-dark);
+}
+
+.tray[data-state='wrong'] {
+  background: var(--bl-bad);
+  border-color: var(--bl-bad-dark);
+}
+
+.tray__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+}
+
+.tag {
+  padding: 0.15rem 0.75rem;
+  color: var(--bl-cream-light);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  background: var(--bl-brown-dark);
+  border-radius: 99rem;
+}
+
+.counter {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Veredicto: texto + glifo, así el resultado no depende solo del color */
+.verdict {
+  margin-left: auto;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.3;
+  background: #fff;
+  border: 2px solid var(--verdict-color);
+  border-radius: 99rem;
+}
+
+.verdict[data-state='success'] {
+  --verdict-color: var(--bl-ok-dark);
+}
+
+.verdict[data-state='wrong'] {
+  --verdict-color: var(--bl-bad-dark);
+}
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem 1rem;
+}
+
+.slot__wrap {
+  position: relative;
+  display: flex;
+  flex: 1 1 5.75rem;
+  max-width: 9.5rem;
+}
+
+/* Espacio vacío: hueco con borde punteado */
+.slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.5rem 0.8rem 1.1rem;
+  color: var(--bl-ink);
+  font: inherit;
+  font-size: var(--fs-200);
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: break-word;
+  background: rgb(255 255 255 / 0.7);
+  border: 2px dashed var(--bl-brown-dark);
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+/* Con palabra: se ve como las placas de los globos */
+.slot:not([data-empty]) {
+  background: var(--bl-cream);
+  border: 3px solid var(--bl-brown);
+  box-shadow: 0 3px 0 var(--bl-brown-dark);
+}
+
+.slot:disabled {
+  cursor: default;
+}
+
+.slot:focus-visible {
+  outline: 3px solid var(--bl-focus);
+  outline-offset: 3px;
+}
+
+.slot[data-selected] {
+  background: var(--bl-teal);
+  border-color: var(--bl-teal-dark);
+}
+
+/* Cursor: raya inferior. Tenue en un espacio vacío; más larga y oscura en el espacio activo */
+.slot__cursor {
+  position: absolute;
+  bottom: 0.55rem;
+  left: 50%;
+  width: 1.5rem;
+  height: 4px;
+  background: color-mix(in srgb, var(--bl-brown-dark) 55%, transparent);
+  border-radius: 99rem;
+  transform: translateX(-50%);
+}
+
+.slot:not([data-empty]):not([data-selected]) .slot__cursor {
+  opacity: 0;
+}
+
+.slot[data-selected] .slot__cursor {
+  width: 2.4rem;
+  background: var(--bl-teal-dark);
+}
+
+.tray[data-state='success'] .slot:not([data-empty]) {
+  border-color: var(--bl-ok-dark);
+}
+
+.tray[data-state='wrong'] .slot:not([data-empty]) {
+  border-color: var(--bl-bad-dark);
+}
+
+.tray[data-state] .slot__cursor {
+  opacity: 0;
+}
+
+/* Quitar la palabra: botón redondo en la esquina del espacio activo (32 px, mínimo de objetivo táctil) */
+.slot__remove {
+  position: absolute;
+  top: -0.65rem;
+  right: -0.65rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  background: var(--bl-brown-dark);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.25);
+  cursor: pointer;
+}
+
+.slot__remove:hover {
+  background: var(--bl-ink);
+}
+
+.slot__remove:focus-visible {
+  outline: 3px solid var(--bl-focus);
+  outline-offset: 2px;
+}
+
+/* ── Movimiento ───────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Destellos que titilan (solo opacidad, lento y sin parpadeos) */
+  html:not([data-stop-animations='true']) .sparkles {
+    animation: twinkle 3.6s ease-in-out infinite alternate;
+  }
+
+  /* Dos nubes cruzan la escena; la segunda va desfasada media vuelta (retraso negativo: ya está en camino) */
+  html:not([data-stop-animations='true']) .cloud {
+    animation: cloud 45s linear infinite;
+  }
+
+  html:not([data-stop-animations='true']) .cloud_late {
+    display: block;
+    animation-delay: -22.5s;
+  }
+
+  /* Estrella fugaz: cruza el cielo un instante cada 11 s */
+  html:not([data-stop-animations='true']) .comet {
+    position: absolute;
+    top: 12%;
+    left: 72%;
+    display: block;
+    width: 7rem;
+    height: 3px;
+    background: linear-gradient(90deg, #fff, transparent);
+    border-radius: 99rem;
+    opacity: 0;
+    transform: rotate(-24deg);
+    animation: comet 11s ease-in 2s infinite;
+  }
+
+  /* Cada globo se mece con su propio ritmo (variables inline por globo) */
+  html:not([data-stop-animations='true']) .balloon:not(:disabled) {
+    animation: sway var(--dur, 3.8s) ease-in-out var(--delay, 0s) infinite;
+  }
+
+  html:not([data-stop-animations='true']) .lift {
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .balloon:not(:disabled):hover .lift,
+  html:not([data-stop-animations='true']) .balloon:focus-visible .lift {
+    transform: translateY(-0.4rem) scale(1.07) rotate(-2.5deg);
+  }
+
+  html:not([data-stop-animations='true']) .balloon:not(:disabled):active .lift {
+    transform: translateY(0.1rem) scale(0.93);
+    transition-duration: 0.08s;
+  }
+
+  /* La palabra aterriza en su espacio: encaja con un pequeño rebote, justo cuando termina el vuelo */
+  html:not([data-stop-animations='true']) .slot__word {
+    animation: land 0.38s cubic-bezier(0.3, 1.5, 0.5, 1) var(--land-delay, 0s) backwards;
+  }
+
+  html:not([data-stop-animations='true']) .slot__cursor {
+    transition:
+      width 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  html:not([data-stop-animations='true']) .slot[data-selected] .slot__cursor {
+    animation: cursor 1.4s ease-in-out infinite;
+  }
+
+  /* Acierto: barrido de luz por la bandeja y ola de saltos entre los espacios */
+  html:not([data-stop-animations='true']) .tray[data-state='success']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+    animation: sweep 0.9s ease-out 0.1s both;
+  }
+
+  html:not([data-stop-animations='true']) .tray[data-state='success'] .slot__wrap {
+    animation: hop 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) calc(var(--i) * 70ms) both;
+  }
+
+  /* Error: la bandeja tiembla una vez (≈ 0.5 s) */
+  html:not([data-stop-animations='true']) .tray[data-state='wrong'] {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  html:not([data-stop-animations='true']) .verdict {
+    animation: stamp 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(calc(var(--tilt, 2deg) * -1));
+  }
+
+  50% {
+    transform: translate3d(0, var(--bob, 16px), 0) rotate(var(--tilt, 2deg));
+  }
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.2;
+  }
+
+  to {
+    opacity: 0.85;
+  }
+}
+
+@keyframes cloud {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes comet {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(-24deg);
+  }
+
+  2% {
+    opacity: 0.9;
+  }
+
+  9%,
+  100% {
+    opacity: 0;
+    transform: translate(-14rem, 6.4rem) rotate(-24deg);
+  }
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(0.9);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes hop {
+  0% {
+    transform: translateY(0);
+  }
+
+  45% {
+    transform: translateY(-0.7rem) scale(1.05);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-0.5rem);
+  }
+
+  40% {
+    transform: translateX(0.45rem);
+  }
+
+  60% {
+    transform: translateX(-0.3rem);
+  }
+
+  80% {
+    transform: translateX(0.15rem);
+  }
+}
+
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.8) rotate(-6deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(0.92);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ── Adaptación ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .content {
+    padding-inline: 0.5rem;
+  }
+
+  .tray {
+    padding-inline: 0.65rem;
+  }
+
+  .slots {
+    gap: 0.8rem 0.6rem;
+  }
+}
+
+/* Alto contraste del sistema: los fondos se reemplazan, así que las capas decorativas sobran */
+@media (forced-colors: active) {
+  .backdrop,
+  .fx {
+    display: none;
+  }
+
+  .scene {
+    background: Canvas;
+  }
+
+  .slot[data-selected] {
+    outline: 2px solid Highlight;
+    outline-offset: -4px;
+  }
+}

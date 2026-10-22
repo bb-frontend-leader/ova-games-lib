@@ -1,0 +1,213 @@
+/* Relation concept — "tablero de vínculos" (lenguaje HUD de hud.css).
+   · Cada tarjeta es una placa con chaflán. Vincular es un borrador: la tarjeta elegida lleva una ficha ◆ y, al
+     unirse dos, ambas llevan la misma letra (A, B…). El veredicto (✔/✖ + color) llega solo al comprobar.
+   · El estado nunca depende solo del color (WCAG 1.4.1): fichas con glifo/letra, aria-pressed y texto para
+     lectores de pantalla. Los bordes de los controles superan 3:1 (1.4.11) y el texto 4.5:1.
+   · El foco de teclado se dibuja dentro de la placa: clip-path recorta el outline exterior. Cada tarjeta deja
+     margen de scroll para que una cabecera fija no la tape (2.4.11).
+   Todo es CSS estático. */
+
+.grid-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  inline-size: 100%;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  background-color: color-mix(in srgb, var(--primary) 3%, var(--card));
+  box-shadow: inset 0 0 0 1px var(--edge-soft);
+  border-radius: 0.15rem;
+}
+
+/* El botón de pantalla completa solo se muestra hasta 1280px (fullscreen-button.module.css): se le deja sitio. */
+@media screen and (max-width: 1280px) {
+  .grid-wrapper {
+    padding-block-start: 3rem;
+  }
+}
+
+.fullScreen__button {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  z-index: 2;
+}
+
+.grid-title {
+  text-align: center;
+}
+
+.grid-title h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: var(--fs-400);
+}
+
+/* Las tarjetas se reparten solas: sin saltos de línea fijos, la rejilla reacomoda a 320px (1.4.10). */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+  gap: 0.75rem;
+  inline-size: 100%;
+}
+
+/* ─── Tarjeta (placa con chaflán) ────────────────────────────────────────────── */
+
+.card {
+  composes: surface from global;
+
+  --surface-radius: 0.65rem;
+  --surface-fill: var(--card);
+  --surface-edge: var(--primary-500);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-block-size: 6rem;
+  padding: 0.5rem 0.65rem 0.75rem;
+  color: var(--text-main);
+  font: inherit;
+  line-height: 1.3;
+  text-align: center;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  scroll-margin-block: 5rem;
+  transition: background-color 0.15s ease;
+}
+
+.card:not([aria-disabled='true']):hover {
+  --surface-edge: var(--accent);
+  --surface-fill: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+.card[aria-disabled='true'] {
+  cursor: default;
+}
+
+/* Foco de teclado dentro de la placa. El indicador mejorado (a11y.css) lo recoloca hud.css. */
+.card:focus-visible {
+  outline: 2px solid var(--primary-700);
+  outline-offset: -5px;
+}
+
+/* Elegida a medias: ficha ◆ + placa ámbar. */
+.card[data-state='selected'] {
+  --surface-edge: var(--primary-800);
+  --surface-fill: color-mix(in srgb, var(--accent) 22%, var(--card));
+}
+
+/* Vinculada (borrador): ficha con la letra del vínculo. */
+.card[data-state='linked'] {
+  --surface-edge: var(--primary-700);
+  --surface-fill: color-mix(in srgb, var(--primary) 9%, var(--card));
+}
+
+/* Veredicto. */
+.card[data-state='correct'] {
+  --surface-edge: var(--success);
+  --surface-fill: color-mix(in srgb, var(--success) 12%, var(--card));
+}
+
+.card[data-state='incorrect'] {
+  --surface-edge: var(--wrong);
+  --surface-fill: color-mix(in srgb, var(--wrong) 12%, var(--card));
+}
+
+.card__chips {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-block-size: 1.5rem;
+}
+
+.card__content {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  overflow-wrap: anywhere;
+}
+
+.card__content img {
+  max-inline-size: 100%;
+  max-block-size: 5rem;
+  object-fit: contain;
+}
+
+/* ─── Fichas (letra del vínculo, selección y veredicto) ──────────────────────── */
+
+.chip {
+  composes: surface from global;
+
+  --surface-radius: 0.4rem;
+  --surface-fill: var(--primary-700);
+  --surface-edge: transparent;
+
+  display: grid;
+  place-items: center;
+  min-inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding-inline: 0.35rem;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.chip--selected {
+  --surface-fill: var(--accent);
+
+  color: var(--primary-900);
+}
+
+.chip--correct {
+  --surface-fill: var(--success);
+
+  color: var(--primary-900);
+}
+
+.chip--incorrect {
+  --surface-fill: var(--wrong);
+
+  color: var(--white);
+}
+
+/* En modo oscuro --wrong es más claro: el glifo pasa a tinta oscura para mantener el contraste. */
+
+/* Una sola columna: tarjetas más bajas para que la lista no sea interminable. */
+@media screen and (max-width: 40rem) {
+  .card {
+    min-block-size: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+/* Contraste forzado (Windows): clip-path y sombras interiores desaparecen, así que se dibuja un borde real. */
+@media (forced-colors: active) {
+  .card.card {
+    clip-path: none;
+    background-image: none;
+    border: 2px solid ButtonText;
+  }
+
+  .card[aria-pressed='true'] {
+    border-color: Highlight;
+  }
+
+  .card[data-state='incorrect'] {
+    border-style: dashed;
+  }
+
+  .chip.chip {
+    clip-path: none;
+    border: 1px solid ButtonText;
+  }
+}

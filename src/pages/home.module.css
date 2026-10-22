@@ -1,0 +1,131 @@
+.home {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.hero__tag {
+  padding: 0.2rem 0.8rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--accent-300);
+  color: var(--ui-ink);
+  font-size: var(--fs-100);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  max-inline-size: 22ch;
+  color: var(--ui-ink);
+  font-size: var(--fs-700);
+  line-height: 1.1;
+}
+
+.hero__text {
+  max-inline-size: 60ch;
+  color: var(--text-muted);
+  font-size: var(--fs-400);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  box-shadow: var(--shadow-hard);
+}
+
+.search {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1 1 16rem;
+  max-inline-size: 26rem;
+}
+
+.search__label {
+  color: var(--ui-ink);
+  font-size: var(--fs-200);
+  font-weight: 800;
+}
+
+.search__input {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--white);
+  color: var(--text-main);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.5rem;
+  padding: 0.35rem 1rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--white);
+  color: var(--ui-ink);
+  font-size: var(--fs-200);
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.chip[data-small='true'] {
+  min-block-size: 2.25rem;
+  font-weight: 700;
+}
+
+.chip:hover {
+  background-color: var(--accent-100);
+}
+
+.chip[aria-pressed='true'] {
+  background-color: var(--primary-600);
+  color: var(--white);
+}
+
+.count {
+  color: var(--text-muted);
+  font-size: var(--fs-200);
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  border: 2px dashed var(--ui-ink);
+  border-radius: 1rem;
+  text-align: center;
+}

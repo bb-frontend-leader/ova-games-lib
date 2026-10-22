@@ -1,0 +1,756 @@
+/*
+ * StopCard: un camino de aprendizaje a la orilla del mar. Estilo propio (arena, verde azulado y naranja de viaje),
+ * no el HUD de la plantilla. Los textos llevan colores fijos sobre fichas claras: se leen igual en modo oscuro.
+ */
+.stop,
+.init {
+  --sand: #ffe29a;
+  --cream: #fffef0;
+  --ink: #1f2a37;
+  --teal: #0b6e6a;
+  --teal-dark: #064e4b;
+  --orange: #b84b0c;
+  --orange-dark: #6b2c08;
+  --green: #1f7a35;
+  --red: #b3261e;
+  --blue: #006aa3;
+
+  color: var(--ink);
+}
+
+/* --- ESCENA --- */
+.stop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+  width: 100%;
+  text-align: left;
+}
+
+.stop:fullscreen {
+  align-content: center;
+  padding: clamp(0.75rem, 3vw, 2rem);
+  overflow: auto;
+  background-color: var(--sand);
+}
+
+/* Paradas y tropiezos */
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 0.55rem 0.9rem;
+  background-color: var(--cream);
+  border: 3px solid var(--teal);
+  border-radius: 1rem;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Tramo entre paradas: discontinuo como la línea de la carretera, continuo al completarse */
+.step + .step::before {
+  content: '' / '';
+  width: 1.5rem;
+  height: 0.3rem;
+  margin-inline: 0.4rem;
+  background: repeating-linear-gradient(90deg, var(--teal) 0 0.35rem, transparent 0 0.65rem);
+  border-radius: 1rem;
+}
+
+.step[data-state='done'] + .step::before,
+.step[data-state='here'] + .step[data-goal]::before {
+  background: var(--green);
+}
+
+.step-badge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  background-color: #ffffff;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.step[data-state='here'] .step-badge {
+  background-color: var(--orange);
+  border-color: var(--orange-dark);
+  color: #ffffff;
+}
+
+.step[data-state='done'] .step-badge {
+  background-color: var(--green);
+  border-color: #145226;
+  color: #ffffff;
+}
+
+/* La meta: una casilla a cuadros */
+.step[data-goal] .step-badge {
+  background: conic-gradient(var(--ink) 25%, #ffffff 0 50%, var(--ink) 0 75%, #ffffff 0) 0 0 / 0.75rem 0.75rem;
+  border-radius: 0.4rem;
+}
+
+.step[data-goal][data-state='done'] .step-badge {
+  border-color: var(--green);
+}
+
+.step-goal {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.slips {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.slips strong {
+  display: inline-block;
+  min-width: 1.6rem;
+  padding: 0.05rem 0.4rem;
+  background-color: var(--ink);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* El mapa ocupa todo el ancho y la pregunta queda debajo */
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+/* --- MAPA --- */
+.map-holder {
+  position: relative;
+}
+
+.fullscreen-button {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 6;
+}
+
+.map {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--sand);
+  border: 3px solid var(--teal-dark);
+  border-radius: 1.1rem;
+  box-shadow: 0 0.3rem 0 var(--teal-dark);
+  line-height: 0;
+}
+
+.map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.trail {
+  fill: none;
+  stroke: #ffd23f;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pin-body {
+  stroke: #ffffff;
+}
+
+.pin[data-state='next'] {
+  --pin: #cf5a52;
+}
+
+.pin[data-state='here'] {
+  --pin: #e0201b;
+}
+
+.pin[data-state='done'] {
+  --pin: #2f9e44;
+}
+
+.pin-body {
+  fill: var(--pin);
+}
+
+.pin-number {
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 800;
+  fill: #8b1a1a;
+}
+
+.finish-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+.bubble path {
+  fill: #ffffff;
+  stroke: var(--bubble);
+  stroke-width: 3;
+}
+
+.bubble text {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  fill: var(--ink);
+}
+
+.bubble[data-kind='ok'] {
+  --bubble: #2f9e44;
+}
+
+.bubble[data-kind='ko'] {
+  --bubble: var(--red);
+}
+
+/* Capa de efectos: confeti y polvo */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* --- PREGUNTA --- */
+.panel {
+  display: grid;
+  gap: 0.8rem;
+  align-content: start;
+  padding: 1rem;
+  background-color: var(--cream);
+  border: 3px solid var(--teal);
+  border-radius: 1.1rem;
+  box-shadow: 0 0.3rem 0 var(--teal-dark);
+}
+
+.tag {
+  justify-self: start;
+  margin: 0;
+  padding: 0.15rem 0.8rem;
+  background-color: var(--orange);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.question {
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.locked {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  background-color: #fff3cd;
+  border: 2px dashed #8a6d00;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a3a00;
+}
+
+/* Respuestas: letreros de carretera con su letra */
+.signs {
+  display: grid;
+  gap: 0.6rem;
+  counter-reset: stop-answer;
+}
+
+.sign {
+  position: relative;
+  counter-increment: stop-answer;
+}
+
+.sign input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sign label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.45rem 0.8rem 0.45rem 0.5rem;
+  background-color: #ffffff;
+  border: 2px solid var(--teal);
+  border-radius: 0.8rem;
+  box-shadow: 0 0.2rem 0 var(--teal-dark);
+  font-size: clamp(0.95rem, 0.88rem + 0.35vw, 1.05rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sign label > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Panel azul de señal con la letra */
+.sign label::before {
+  content: counter(stop-answer, upper-alpha) / '';
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  background-color: var(--blue);
+  border: 2px solid #ffffff;
+  border-radius: 0.45rem;
+  box-shadow: 0 0 0 2px var(--blue);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.sign input:not(:disabled) + label:hover {
+  background-color: #e7f7f6;
+}
+
+.sign input:disabled + label {
+  cursor: default;
+}
+
+/* Elegida, sin comprobar */
+.sign[data-visual='chosen'] label {
+  background-color: #fff1e0;
+  border-color: var(--orange);
+  box-shadow: 0 0.1rem 0 var(--orange-dark);
+  transform: translateY(0.1rem);
+}
+
+.sign[data-visual='chosen'] label::before {
+  content: '✓' / '';
+  background-color: var(--orange);
+  box-shadow: 0 0 0 2px var(--orange);
+}
+
+/* Comprobada: el icono y el color dicen si fue correcta; el color solo no basta */
+.sign[data-visual='correct'] label {
+  background-color: #e3f6e8;
+  border-color: var(--green);
+  box-shadow: 0 0.1rem 0 #145226;
+  transform: translateY(0.1rem);
+}
+
+.sign[data-visual='correct'] label::before {
+  content: '✔' / '';
+  background-color: var(--green);
+  box-shadow: 0 0 0 2px var(--green);
+}
+
+.sign[data-visual='wrong'] label,
+.sign[data-visual='discarded'] label {
+  background-color: #fdebeb;
+  border-color: var(--red);
+  box-shadow: 0 0.1rem 0 #6f1712;
+  transform: translateY(0.1rem);
+  color: #5a1a17;
+}
+
+.sign[data-visual='wrong'] label > span,
+.sign[data-visual='discarded'] label > span {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.sign[data-visual='wrong'] label::before,
+.sign[data-visual='discarded'] label::before {
+  content: '✖' / '';
+  background-color: var(--red);
+  box-shadow: 0 0 0 2px var(--red);
+}
+
+/* Sin poder responder todavía (parada bloqueada) */
+.sign[data-visual='idle'] input:disabled + label {
+  background-color: #f1efe2;
+  border-color: #6b7280;
+  box-shadow: 0 0.2rem 0 #4b5563;
+  color: #374151;
+  cursor: not-allowed;
+}
+
+.sign[data-visual='idle'] input:disabled + label::before {
+  background-color: #4b5563;
+  box-shadow: 0 0 0 2px #4b5563;
+}
+
+/* Foco: aro oscuro con un hueco claro, visible sobre la ficha y sobre el fondo crema */
+.sign input:focus-visible + label {
+  outline: 3px solid #0b0b0b;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0.2rem 0 var(--teal-dark);
+}
+
+.say {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #264653;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.next {
+  display: flex;
+  justify-content: center;
+}
+
+/* Meta alcanzada */
+.summary {
+  padding: 0.7rem 0.9rem;
+  background-color: #fff7cf;
+  border: 3px solid #8a6d00;
+  border-radius: 0.9rem;
+  text-align: center;
+}
+
+.summary p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary-title {
+  margin-block-end: 0.2rem !important;
+  font-size: 1.15rem;
+  font-weight: 900 !important;
+}
+
+.summary-title:focus-visible {
+  outline: 3px solid #0b0b0b;
+  outline-offset: 2px;
+}
+
+/* --- INICIO --- */
+.init {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  min-height: 34rem;
+  overflow: clip;
+  background-color: var(--sand);
+  border: 3px solid var(--teal-dark);
+  border-radius: 1.1rem;
+  box-shadow: 0 0.3rem 0 var(--teal-dark);
+}
+
+.init-map {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.init-map .map {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.init-map .map svg {
+  height: 100%;
+}
+
+.init-card {
+  width: min(100% - 2rem, 34rem);
+  margin-block: 1.2rem;
+  padding: 1.2rem 1.5rem 1.4rem;
+  background-color: rgb(255 254 240 / 0.97);
+  border: 3px solid var(--teal);
+  border-radius: 1.1rem;
+  box-shadow: 0 0.35rem 0 var(--teal-dark);
+  text-align: center;
+}
+
+.init-title {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.4rem, 1.1rem + 1.5vw, 2rem);
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--teal-dark);
+}
+
+.init-title:focus {
+  outline: none;
+}
+
+.init-title:focus-visible {
+  outline: 3px solid #0b0b0b;
+  outline-offset: 4px;
+}
+
+.init-text {
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+.init-rules {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0 0 1.1rem;
+  padding-inline-start: 1.3rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.init-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.init-button {
+  min-width: 8rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.4rem;
+  background-color: var(--orange);
+  border: 3px solid var(--orange-dark);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0 var(--orange-dark);
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.init-button:hover {
+  background-color: #cf5510;
+}
+
+.init-button:active {
+  transform: translateY(0.2rem);
+  box-shadow: 0 0.05rem 0 var(--orange-dark);
+}
+
+.init-button--ghost {
+  background-color: #ffffff;
+  border-color: var(--teal);
+  box-shadow: 0 0.25rem 0 var(--teal-dark);
+  color: var(--ink);
+}
+
+.init-button--ghost:hover {
+  background-color: #e7f7f6;
+}
+
+.init-button:focus-visible {
+  outline: 3px solid #0b0b0b;
+  outline-offset: 3px;
+}
+
+/* --- MOVIMIENTO: solo si la persona lo permite y no detuvo las animaciones --- */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .sign label {
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  html:not([data-stop-animations='true']) .sign input:not(:disabled) + label:hover {
+    transform: translateY(-0.15rem);
+    box-shadow: 0 0.35rem 0 var(--teal-dark);
+  }
+
+  html:not([data-stop-animations='true']) .sign[data-visual='wrong'] label {
+    animation: stop-shake 420ms ease-in-out;
+  }
+
+  html:not([data-stop-animations='true']) .sign[data-visual='correct'] label {
+    animation: stop-pop 320ms ease-out;
+  }
+
+  html:not([data-stop-animations='true']) .pin[data-state='here'] .pin-inner {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: stop-pin-bounce 1.1s ease-in-out infinite;
+  }
+
+  html:not([data-stop-animations='true']) .pin[data-state='done'] .pin-inner {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: stop-pin-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .finish[data-reached='true'] .finish-flag {
+    animation: stop-flag-wave 600ms ease-in-out infinite alternate;
+  }
+
+  html:not([data-stop-animations='true']) .bubble {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: stop-bubble-pop 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html:not([data-stop-animations='true']) .init-button {
+    transition:
+      background-color 150ms ease-out,
+      transform 120ms ease-out;
+  }
+}
+
+@keyframes stop-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  20%,
+  60% {
+    translate: -0.35rem 0;
+  }
+
+  40%,
+  80% {
+    translate: 0.35rem 0;
+  }
+}
+
+@keyframes stop-pop {
+  0% {
+    scale: 1.03;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes stop-pin-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes stop-pin-pop {
+  0% {
+    transform: scale(0.5);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes stop-flag-wave {
+  0% {
+    transform: skewY(-4deg) scaleX(1);
+  }
+
+  100% {
+    transform: skewY(4deg) scaleX(0.92);
+  }
+}
+
+@keyframes stop-bubble-pop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .sign label {
+    border-color: ButtonText;
+  }
+
+  .sign label::before {
+    border-color: currentColor;
+  }
+
+  .sign[data-visual='chosen'] label,
+  .sign[data-visual='correct'] label {
+    border-color: Highlight;
+    border-width: 4px;
+  }
+
+  .sign[data-visual='wrong'] label,
+  .sign[data-visual='discarded'] label {
+    border-style: dashed;
+  }
+}

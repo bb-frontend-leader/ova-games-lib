@@ -53,8 +53,8 @@ export default tseslint.config(
             // 1. React y Bibliotecas externas (node_modules)
             ['^react', '^\\w'],
           
-            // 2. Aliases internos (@shared, @activities, @features, @games, @layouts, @ui, etc)
-            ['^@activities', '^@features', '^@games', '^@layouts', '^@ui', '^@shared', '^@/', '^@pages', '^@router', '^@styles', '^@'],
+            // 2. Alias interno (@/)
+            ['^@/', '^@'],
             
             // 3. Imports relativos parent (..)
             ['^\\.\\.'],

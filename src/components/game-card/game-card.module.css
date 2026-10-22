@@ -1,0 +1,108 @@
+.card {
+  --card-tag: var(--primary-200);
+
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  block-size: 100%;
+  overflow: hidden;
+  border: var(--border);
+  border-radius: 1.1rem;
+  background-color: var(--card);
+  box-shadow: var(--shadow-hard);
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.card[data-kind='activity'] {
+  --card-tag: var(--accent-200);
+}
+
+.card:hover,
+.card:focus-within {
+  box-shadow: 7px 7px 0 var(--ui-ink);
+  transform: translate(-2px, -2px);
+}
+
+.card__image {
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-block-end: var(--border);
+  background-color: var(--secondary-100);
+}
+
+.card__body {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+.card__category {
+  justify-self: start;
+  padding: 0.15rem 0.7rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--card-tag);
+  font-size: var(--fs-100);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card__title {
+  font-size: var(--fs-400);
+  line-height: 1.2;
+}
+
+/* El enlace cubre toda la tarjeta: un solo destino por juego para teclado y lector de pantalla. */
+.card__link {
+  color: var(--ui-ink);
+  text-decoration: none;
+}
+
+.card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.card__link:focus-visible {
+  outline: none;
+}
+
+.card:has(.card__link:focus-visible) {
+  outline: 3px solid var(--primary-600);
+  outline-offset: 3px;
+}
+
+.card__description {
+  color: var(--text-muted);
+  font-size: var(--fs-200);
+}
+
+.card__action {
+  align-self: end;
+  justify-self: start;
+  margin-block-start: 0.5rem;
+  padding: 0.3rem 1.1rem;
+  border: var(--border);
+  border-radius: 999px;
+  background-color: var(--accent-400);
+  color: var(--ui-ink);
+  font-size: var(--fs-200);
+  font-weight: 800;
+}
+
+.card:hover .card__action {
+  background-color: var(--accent-300);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .card:focus-within {
+    transform: none;
+  }
+}

@@ -1,0 +1,658 @@
+.container {
+  position: relative;
+}
+
+.space-container {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-gap: 1rem;
+  align-items: center;
+  min-height: 34rem;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.wrapper-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  justify-content: center;
+  height: 100%;
+  z-index: 2;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fullScreen__button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Question */
+
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eaf4fe;
+  border-radius: 8px;
+  border: 4px solid #875aa2;
+  color: #121212;
+}
+
+.icon {
+  width: 4rem;
+}
+
+/* Option */
+
+.disabled {
+  pointer-events: none;
+}
+
+.radioOption {
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.option {
+  display: flex;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  background: #eaf4fe;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 4px solid #9ba1c6;
+  height: 100%;
+  font-weight: 500;
+  position: relative;
+  color: #121212;
+  transition:
+    background-color 0.3s,
+    border 0.3s;
+}
+
+.option > span::first-letter {
+  font-weight: bold;
+}
+
+.option:hover {
+  background-color: #d2e7fd;
+}
+
+.options > div:not(.disabled) .radioOption:checked + label {
+  background-color: #d2e7fd;
+}
+
+/* Foco visible solo con teclado: dos tonos para que se vea sobre el espacio y sobre la opción */
+.options > div input:focus-visible + label {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #3a1d52;
+}
+
+.success {
+  background-color: var(--success);
+  border: 3px solid var(--white) !important;
+}
+
+.success::after {
+  content: '✔' / '';
+  color: var(--success);
+  background-color: var(--white);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.wrong {
+  background-color: var(--wrong);
+  color: var(--white);
+  border: 0.18rem solid var(--white) !important;
+}
+
+.wrong::after {
+  content: '✖' / '';
+  color: var(--wrong);
+  background-color: var(--white);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+/* El astronauta: guía del juego */
+
+.hero {
+  --halo: rgb(135 90 162 / 55%);
+
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  width: min(calc(100% - 1.6rem), 19rem);
+  margin-bottom: 2.4rem;
+}
+
+.hero[data-mood='success'] {
+  --halo: rgb(255 211 90 / 75%);
+}
+
+.hero[data-mood='wrong'] {
+  --halo: rgb(238 138 129 / 65%);
+}
+
+/* Comunicador: lo que dice el astronauta (también lo leen los lectores de pantalla) */
+.comm {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 4.6rem;
+  margin: 0 0 0.9rem;
+  padding: 0.5rem 0.8rem;
+  border: 3px solid #875aa2;
+  border-radius: 0.9rem;
+  background: #eaf4fe;
+  color: #121212;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* Colita del globo, hacia el casco */
+.comm::after {
+  content: '';
+  position: absolute;
+  bottom: -0.65rem;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  border-right: 3px solid #875aa2;
+  border-bottom: 3px solid #875aa2;
+  background: #eaf4fe;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.comm[data-mood='success'],
+.comm[data-mood='success']::after {
+  border-color: #1f7a4d;
+}
+
+.comm[data-mood='wrong'],
+.comm[data-mood='wrong']::after {
+  border-color: #b3261e;
+}
+
+/* Resplandor de su traje: cambia con el resultado */
+.halo {
+  position: absolute;
+  z-index: 1;
+  bottom: 4%;
+  left: -12%;
+  width: 124%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--halo) 0, transparent 62%);
+  pointer-events: none;
+}
+
+.astro-body {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.astronaut {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 0.6rem 0.8rem rgb(0 0 0 / 35%));
+}
+
+/* Efectos */
+
+/* Inicio y final: una sola columna centrada sobre el mismo fondo de la galaxia */
+
+.screen {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  padding: 1rem 0;
+}
+
+.screen-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(100%, 38rem);
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.screen-content .question {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.screen-title,
+.rules-title,
+.end-title {
+  margin: 0;
+  color: #3a1d52;
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.screen-hero {
+  width: min(100%, 15rem);
+}
+
+.screen-hero .comm {
+  margin-bottom: 0.9rem;
+}
+
+.space-button {
+  min-height: 2.75rem;
+  padding: 0.5rem 2rem;
+  background: #6f4489; /* Más oscuro que el borde de la escena: en modo oscuro el contenedor se atenúa */
+  border: 3px solid var(--white);
+  border-radius: 999px;
+  color: var(--white);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #3a1d52;
+  transition:
+    background-color 0.2s ease,
+    translate 0.2s ease;
+}
+
+.space-button:hover {
+  background: #5a3672;
+}
+
+.space-button--ghost {
+  background: #3a1d52;
+}
+
+/* Foco visible solo con teclado: dos tonos para que se vea sobre el espacio y sobre el botón */
+.space-button:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #3a1d52;
+}
+
+.rules-title:focus-visible {
+  outline: 3px solid #3a1d52;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.rules,
+.end-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  background: #eaf4fe;
+  border: 4px solid #875aa2;
+  border-radius: 8px;
+  color: #121212;
+  text-align: center;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  counter-reset: rule;
+}
+
+.rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  counter-increment: rule;
+}
+
+.rules-list li::before {
+  content: counter(rule) / '';
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: #875aa2;
+  border-radius: 50%;
+  color: var(--white);
+  font-weight: 800;
+}
+
+.screen-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.end {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: radial-gradient(circle, rgb(135 90 162 / 45%), rgb(12 4 30 / 82%));
+}
+
+.end-card {
+  width: min(100%, 24rem);
+}
+
+.end-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.35rem 1rem;
+  background: var(--white);
+  border: 2px solid #875aa2;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.end-stats dd {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 7; /* Por encima de la pantalla final (6) */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6rem;
+  height: 6rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+/* Animación de flotación: gravedad cero, con un leve vaivén */
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+}
+
+/* Animación de movimiento del asteroide */
+
+@keyframes planet-move {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(-4px) translateY(10px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes comm-pop {
+  from {
+    opacity: 0.2;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Estilos para las imágenes del universo */
+
+.icon-reverse {
+  transform: scaleX(-1); /* Voltea la imagen como un espejo */
+}
+
+.image_depth {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  transform: scale(1);
+  z-index: 0;
+}
+
+.planet,
+.meteor {
+  position: absolute;
+}
+
+.planet {
+  width: 80px;
+}
+
+.meteor {
+  width: 150px;
+}
+
+/* Posicionamiento específico de los planetas y meteoritos alrededor del astronauta */
+
+.planet:nth-child(2) {
+  top: 5%;
+  left: 2%;
+}
+
+.planet:nth-child(3) {
+  top: 15%;
+  left: 30%;
+}
+
+.meteor:nth-child(1) {
+  top: 17%;
+  right: 2%;
+}
+
+.meteor:nth-child(4) {
+  top: 20%;
+  left: 24%;
+}
+
+/* Media queries */
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .astronaut {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .planet,
+    .meteor {
+      animation: planet-move 6s ease-in-out infinite;
+    }
+
+    .comm {
+      animation: comm-pop 0.35s ease-out;
+    }
+
+    .rules,
+    .end-card {
+      animation: card-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .space-button:hover {
+      translate: 0 -2px;
+    }
+  }
+}
+
+/* Solo `scale` y `opacity`: la transformación se deja libre para gsap */
+@keyframes card-pop {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+}
+
+/* Dark mode */
+
+html[data-dark-mode='true'] .space-container {
+  opacity: 0.8;
+}
+
+html[data-dark-mode='true'] .wrong {
+  background-color: #ee8a81;
+}
+
+@media (forced-colors: active) {
+  .comm,
+  .option,
+  .rules,
+  .end-card,
+  .space-button {
+    border: 2px solid CanvasText;
+  }
+
+  .space-button:focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
+
+/* Responsive */
+
+@media screen and (max-width: 1680px) {
+  .image_depth {
+    transform: none;
+    right: 0;
+  }
+}
+
+@media screen and (max-width: 700px) and (orientation: portrait) {
+  .space-container {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .hero {
+    width: min(100%, 13rem);
+    margin: 1rem 0 0;
+  }
+
+  .comm {
+    min-height: 3.6rem;
+    font-size: 0.85rem;
+  }
+
+  .wrapper-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 1000px) and (orientation: landscape) {
+  .space-container {
+    height: fit-content;
+    min-height: 0;
+  }
+
+  .hero {
+    width: min(100%, 12rem);
+    margin-bottom: 1.4rem;
+  }
+
+  .comm {
+    min-height: 3.4rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .wrapper-container,
+  .options {
+    gap: 0.6rem;
+  }
+
+  .question,
+  .option {
+    padding: 0.2rem;
+  }
+}

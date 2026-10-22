@@ -1,0 +1,762 @@
+.radios__container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  position: relative;
+}
+
+html[data-dark-mode='true'] .radios__container {
+  opacity: 0.8;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.radio__options {
+  background-image: var(--bg-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  place-content: center;
+  padding: 2rem 1rem 6.5rem;
+  min-height: 16rem;
+  position: relative;
+}
+/* INIT */
+
+.init {
+  display: grid;
+  place-items: center;
+  min-height: 37rem; /* Misma altura que el nivel, para que el panel no cambie de tamaño al empezar */
+  padding: 1.5rem 1rem;
+  background-image: var(--bg-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.init-content {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(100%, 30rem);
+}
+
+.init-title {
+  margin: 0;
+  padding: 0.4rem 1.25rem;
+  background-color: #1c0d03;
+  border: 0.2rem solid #b0702a;
+  border-radius: 0.8rem;
+  color: #ffffff;
+  font-size: var(--fs-500);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.init-board {
+  display: block;
+  width: min(100%, 26rem);
+  height: auto;
+  filter: drop-shadow(0 0.6rem 0.6rem rgb(0 0 0 / 0.35));
+}
+
+.init-text {
+  margin: 0;
+  padding: 0.4rem 1rem;
+  background-color: #1c0d03;
+  border-radius: 0.6rem;
+  color: #ffffff;
+  font-weight: 600;
+  text-align: center;
+}
+
+.init-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.45rem 2.5rem;
+  background-color: #ab0500;
+  border: 0.15rem solid #ab0500;
+  border-radius: 0.8rem;
+  color: #ffffff;
+  font-size: var(--fs-400);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition:
+    filter 0.15s,
+    translate 0.15s;
+}
+
+.init-button:hover {
+  filter: brightness(1.12);
+  translate: 0 -2px;
+}
+
+.init-button:active {
+  translate: 0 1px;
+}
+
+.init-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #2a1405;
+}
+
+.init-button--ghost {
+  background-color: #1c0d03;
+  border-color: #ffffff;
+}
+
+.rules {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.25rem 1rem;
+  background-color: #1c0d03;
+  border: 0.2rem solid #b0702a;
+  border-radius: 1rem;
+  color: #ffffff;
+}
+
+.rules-title {
+  margin: 0;
+  color: #ffd9a0;
+  font-size: var(--fs-500);
+  font-weight: 800;
+  text-align: center;
+}
+
+.rules-title:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  counter-reset: rule;
+}
+
+.rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  counter-increment: rule;
+}
+
+.rules-list li::before {
+  content: counter(rule) / '';
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: #ab0500;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.init-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .init-content {
+      animation: init-in 0.5s ease-out both;
+    }
+
+    .init-board {
+      animation: init-bounce 1.6s ease-in-out 0.5s infinite;
+    }
+  }
+}
+
+@keyframes init-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+@keyframes init-bounce {
+  50% {
+    translate: 0 -0.5rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .init-title,
+  .init-text,
+  .rules,
+  .init-button {
+    border: 2px solid ButtonText;
+  }
+
+  .init-button:focus-visible,
+  .rules-title:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+/* SCOREBOARD */
+
+.scoreboard {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 0.2rem solid #b0702a;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.score-cell {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.score-digits {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 2ch;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffb627;
+  font-variant-numeric: tabular-nums;
+}
+
+.digits {
+  font-variant-numeric: tabular-nums;
+}
+
+.flame {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: #6b6b6b;
+}
+
+.score-cell[data-hot] .flame {
+  fill: #ff7a1a;
+}
+
+.score-cell[data-hot] .score-digits {
+  color: #ffd98a;
+}
+
+/* RADIOS */
+
+.radio__options_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  justify-items: center;
+  gap: 1rem;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.radio__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.radio__option > :first-child {
+  flex: 0 0 auto; /* fit-content */
+}
+
+.radio__option > :last-child {
+  flex: 1 1 0; /* ocupa todo el espacio restante */
+  min-width: 0; /* importante para que no desborde */
+}
+
+.radio_red {
+  position: relative;
+  width: fit-content;
+  z-index: 2;
+}
+
+.radio_red span {
+  font-size: var(--fs-500);
+  color: rgb(139, 51, 46);
+  font-weight: bold;
+  position: absolute;
+  right: 45%;
+  top: 23%;
+}
+
+/* La canasta a la que se apunta se ilumina */
+.radio_red[data-aimed] {
+  filter: drop-shadow(0 0 0.5rem #ffffff);
+}
+
+/** Radio button **/
+
+.radio_button {
+  position: relative;
+  transform: none;
+  margin-left: -10%;
+  margin-top: -10%;
+}
+
+.radioButton {
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+/* Mostrar el foco solo cuando es "visible" (teclado): dos tonos para que se vea sobre la cancha y sobre la opción */
+.radio__option:has(.radioButton:focus-visible) .button {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px #2a1405;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.2rem 0.6rem 0.2rem 3rem;
+  border: 0.15rem solid #d84a36;
+  border-radius: 2rem;
+  background: white;
+  color: #333333;
+  min-width: 14rem;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  font-size: var(--fs-300);
+}
+
+.button:hover {
+  border: 0.15rem solid #6072a5;
+}
+
+.radioButton:checked + .button {
+  border: 0.18rem solid #6072a5;
+}
+
+.success {
+  background-color: var(--success);
+  border: 3px solid var(--white) !important;
+  color: var(--white);
+  position: relative;
+}
+
+.success::after {
+  content: '✔' / '';
+  color: var(--success);
+  background-color: var(--white);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.wrong {
+  background-color: var(--wrong);
+  border: 0.18rem solid var(--white) !important;
+  color: var(--white);
+  position: relative;
+}
+
+.wrong::after {
+  content: '✖' / '';
+  color: var(--wrong);
+  background-color: var(--white);
+  box-shadow: 2px 2px 3px 0px #60606057;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+/* LANZAMIENTO: de aquí sale el balón y, después de encestar, aquí aparece el botón para seguir */
+
+.launch {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  transform: translateX(-50%);
+}
+
+.launch-ball {
+  width: 3rem;
+  height: 3rem;
+  filter: drop-shadow(0 0.45rem 0.25rem rgb(0 0 0 / 35%));
+}
+
+.launch-ball[data-gone] {
+  display: none;
+}
+
+.next-shot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.4rem;
+  border: 3px solid #ffffff;
+  border-radius: 0.8rem;
+  background-color: #ab0500;
+  box-shadow: 0 0.25rem 0 #5c0300;
+  color: #ffffff;
+  font-size: var(--fs-400);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.next-shot:hover {
+  filter: brightness(1.1);
+}
+
+.next-shot:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 8px #2a1405;
+}
+
+.next-shot-arrow {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/** Question **/
+
+.radio__question {
+  background-color: black;
+  color: white;
+  padding: 0.8rem 1rem;
+  text-align: center;
+}
+
+.radio__question_container {
+  display: flex;
+  align-items: center;
+  border: 0.1rem solid #ffffff;
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  gap: 1rem;
+}
+
+.radio__question_container span {
+  flex: 1;
+}
+
+/* MARCADOR FINAL */
+
+.final {
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  width: min(100%, 34rem);
+  margin-inline: auto;
+  padding: 1.5rem 1.2rem;
+  border: 0.25rem solid #b0702a;
+  border-radius: 1rem;
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+}
+
+.final-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffb627;
+}
+
+.final-title {
+  margin: 0;
+  font-size: var(--fs-600, 1.75rem);
+  line-height: 1.15;
+}
+
+.final-title:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
+}
+
+.final-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.final-ball {
+  width: 4rem;
+  height: 4rem;
+}
+
+.final-score {
+  margin: 0;
+}
+
+.final-digits {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffb627;
+  text-shadow: 0 0 0.8rem rgb(255 182 39 / 55%);
+}
+
+.final-rank {
+  margin: 0;
+  padding: 0.3rem 1.1rem;
+  border-radius: 100vw;
+  background-color: #ffb627;
+  color: #2b1200;
+  font-weight: 800;
+}
+
+.final-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+}
+
+.final-stats > div {
+  padding: 0.6rem;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 0.6rem;
+}
+
+.final-stats dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.final-stats dd {
+  margin: 0.2rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffb627;
+}
+
+/** Efectos **/
+
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.9rem;
+  height: 2.9rem;
+}
+
+.shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5rem;
+  height: 5rem;
+  border: 3px solid;
+  border-radius: 50%;
+}
+
+/* Los puntos que viajan del aro al marcador */
+.flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  border: 0.2rem solid #ffffff;
+  border-radius: 50%;
+  background-color: #ffb627;
+  box-shadow: 0 0.2rem 0 #a35f00;
+  color: #2b1200;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aim {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes flame-pop {
+  from {
+    transform: scale(0.4);
+  }
+
+  60% {
+    transform: scale(1.35);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .radio__option:not(.disabled) .radio_red {
+      transition: transform 0.2s;
+    }
+
+    .radio__option:not(.disabled):hover .radio_red {
+      transform: translateY(-3px);
+    }
+
+    .radio_red[data-aimed] {
+      animation: aim 0.35s;
+    }
+
+    .launch-ball,
+    .next-shot,
+    .final {
+      animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .score-cell[data-hot] .flame {
+      animation: flame-pop 0.5s;
+    }
+
+    .final-stats > div {
+      animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+      &:nth-child(1) {
+        animation-delay: 0.5s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: 0.65s;
+      }
+
+      &:nth-child(3) {
+        animation-delay: 0.8s;
+      }
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .button,
+  .next-shot,
+  .final,
+  .scoreboard {
+    border: 2px solid CanvasText;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .button {
+    min-width: auto;
+    padding-left: 0.6rem;
+  }
+  /* Poco ancho: el aro va encima de la opción para que el texto no se recorte */
+  .radio__option {
+    flex-direction: column;
+    width: 100%;
+  }
+  .radio__option > :last-child {
+    flex: none;
+    width: 100%;
+  }
+  .radio_button {
+    margin: -0.6rem 0 0;
+  }
+  .radio__options_container {
+    grid-template-columns: 1fr;
+  }
+  .radio__question_container {
+    flex-direction: column;
+  }
+  .final-digits {
+    font-size: 3.5rem;
+  }
+}

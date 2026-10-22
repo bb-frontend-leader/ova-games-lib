@@ -1,0 +1,12 @@
+.stage {
+  inline-size: min(100%, 60rem);
+  margin-inline: auto;
+}
+
+.stage[data-size='wide'] {
+  inline-size: min(100%, 78rem);
+}
+
+.stage[data-align='center'] {
+  text-align: center;
+}

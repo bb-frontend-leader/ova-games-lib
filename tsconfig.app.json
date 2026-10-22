@@ -7,16 +7,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@activities/*": ["./src/shared/components/activities/*"],
-      "@features/*": ["./src/shared/components/features/*"],
-      "@games/*": ["./src/shared/components/games/*"],
-      "@layouts": ["./src/shared/components/layouts"],
-      "@ui": ["./src/shared/components/ui"],
-      "@pages/*": ["./src/pages/*"],
-      "@router/*": ["./src/routers/*"],
-      "@styles/*": ["./src/styles/*"]
+      "@/*": ["./src/*"]
     },
 
     /* Bundler mode */

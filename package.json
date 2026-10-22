@@ -7,35 +7,24 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "setup:submodules": "git submodule update --init && git -C src/shared fetch origin && git -C src/shared checkout -B develop origin/develop"
+    "preview": "vite preview"
   },
-  "workspaces": [
-    "src/shared"
-  ],
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@popperjs/core": "2.11.8",
-    "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.18.0",
-    "@tailwindcss/postcss": "^4.1.18",
-    "canvas-confetti": "1.9.4",
+    "better-react-mathjax": "^2.0.4-beta1",
+    "books-ui": "^2.1.0",
+    "canvas-confetti": "^1.9.4",
     "clsx": "2.1.1",
     "gsap": "3.14.2",
-    "postcss": "^8.5.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^7.13.0",
-    "swiper": "^12.1.0",
-    "tailwindcss": "^4.1.18",
-    "three": "^0.185.1",
-    "wicg-inert": "3.1.3",
-    "wouter": "3.3.5",
-    "zustand": "^5.0.11"
+    "react-stately": "3.30.1"
   },
   "devDependencies": {
     "@eslint/js": "9.17.0",
-    "@spiriit/vite-plugin-svg-spritemap": "3.0.0",
-    "@types/canvas-confetti": "1.9.0",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.10.1",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
@@ -46,9 +35,9 @@
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-unused-imports": "4.4.1",
     "globals": "15.14.0",
+    "prettier": "3.4.2",
     "typescript": "~5.6.2",
     "typescript-eslint": "8.18.2",
-    "unocss": "0.65.3",
     "vite": "^6.4.4"
   }
 }

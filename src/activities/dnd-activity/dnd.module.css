@@ -1,0 +1,429 @@
+/* Arrastrar y soltar — "bahía de módulos" (lenguaje HUD de hud.css).
+   · Los drags son módulos: placas de casco con chaflán y trazo cian; el asa de mover va en ámbar (accionable).
+   · Las zonas son ranuras con chaflán; vacías muestran marcas de mira en las esquinas libres y, con un drag
+     encima, se encienden en ámbar. La bahía de origen lleva una rejilla de plano.
+   · Correcto/incorrecto se dice con el trazo, el relleno y un glifo (✔/✖), no solo con el color.
+   Todo es CSS estático: las animaciones (pocas) son transform/opacity y solo corren con movimiento permitido.
+
+   Los elementos los pinta books-ui (`data-type`), así que no se les puede aplicar `composes: hud-cut`; la receta
+   del chaflán se repite aquí una sola vez para los tres tipos y se configura con las mismas variables
+   (--hud-fill / --hud-edge / --hud-cut / --hud-fill-image). */
+
+.wrapper {
+  --dnd-cut: 0.55rem;
+  --dnd-pad: 0.25rem;
+  --dnd-chip-h: 2.5rem;
+  --dnd-slot-w: 26ch;
+
+  /* Módulo (drag) */
+  --dnd-hull: var(--primary-800);
+  --dnd-hull-edge: color-mix(in srgb, var(--primary-300) 70%, transparent);
+  --dnd-hull-edge-hot: var(--primary-300);
+  --dnd-hot: var(--accent);
+
+  /* Bahía y ranura (zonas) */
+  --dnd-bank-fill: color-mix(in srgb, var(--primary) 4%, var(--card));
+  --dnd-bank-edge: color-mix(in srgb, var(--edge-strong) 65%, transparent);
+  --dnd-slot-fill: color-mix(in srgb, var(--primary) 5%, var(--card));
+  --dnd-slot-edge: var(--edge-strong);
+  --dnd-slot-over: color-mix(in srgb, var(--accent) 20%, var(--card));
+
+  /* Resultado */
+  --dnd-right: var(--success);
+  --dnd-wrong: var(--wrong);
+}
+
+/* ─── Receta de chaflán (misma que .hud-cut) ───────────────────────────────────
+   Esquinas superior-izquierda e inferior-derecha cortadas; el trazo es un inset box-shadow más dos
+   degradados duros para la diagonal. clip-path recorta outline y sombras exteriores: nada de sombras
+   exteriores y los focos van dentro de la caja. */
+.wrapper :is(div[data-type='dnd-drag-item'], div[data-type='dnd-drop-item'], div[data-type='dnd-container-drag-item']) {
+  background-color: var(--surface-fill, transparent);
+  box-shadow: inset 0 0 0 1px var(--surface-edge, currentColor);
+  border-radius: var(--surface-radius, 0.55rem);
+}
+
+/* ─── Bahía de origen (DragAndDrop.Container) ──────────────────────────────── */
+
+.wrapper div[data-type='dnd-container-drag-item'] {
+  --surface-radius: 0.9rem;
+  --surface-fill: var(--dnd-bank-fill);
+  --surface-edge: var(--dnd-bank-edge);
+
+  /* Rejilla de plano sobre la receta: las dos primeras capas siguen siendo la diagonal. */
+  background-size:
+    var(--_c) var(--_c),
+    var(--_c) var(--_c),
+    1.25rem 1.25rem,
+    1.25rem 1.25rem;
+  background-position:
+    top left,
+    bottom right,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+  /* Alto de una fila: al vaciarse la bahía el contenido de abajo no da un salto. */
+  min-height: calc(var(--dnd-chip-h) + 2rem);
+  margin-block-end: 1rem;
+  padding: 1rem;
+}
+
+.wrapper div[data-type='dnd-container-drag-item'] div[data-type='dnd-drag-item'] {
+  flex: 1 1 10rem;
+  min-width: min(100%, 10rem);
+  max-width: min(100%, 16rem);
+}
+
+/* ─── Módulo (DragAndDrop.Drag) ────────────────────────────────────────────── */
+
+.wrapper div[data-type='dnd-drag-item'] {
+  --surface-radius: var(--dnd-cut);
+  --surface-fill: var(--dnd-hull);
+  --surface-edge: var(--dnd-hull-edge);
+
+  position: relative;
+  min-height: var(--dnd-chip-h);
+  padding: 0.3rem 0.9rem 0.3rem 0.3rem;
+  color: var(--white);
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  cursor: grab;
+  user-select: none;
+}
+
+.wrapper div[data-type='dnd-drag-item'] > :global(.c-draggable-content) {
+  gap: 0.35rem;
+  min-height: calc(var(--dnd-chip-h) - 0.6rem);
+}
+
+/* Dentro de una ranura el módulo ocupa todo su ancho. */
+.wrapper div[data-type='dnd-drop-item'] div[data-type='dnd-drag-item'] {
+  align-self: stretch;
+}
+
+.wrapper div[data-type='dnd-drag-item']:not([data-validation], [data-disabled]):hover {
+  --surface-edge: var(--dnd-hull-edge-hot);
+}
+
+.wrapper div[data-type='dnd-drag-item']:not([data-validation], [data-disabled]):active {
+  cursor: grabbing;
+}
+
+/* El elemento que se está arrastrando queda marcado en su sitio. */
+.wrapper div[data-type='dnd-drag-item'][data-dragging] {
+  --surface-edge: var(--dnd-hot);
+
+  opacity: 0.6;
+  cursor: grabbing;
+}
+
+/* Fijo (dragDisabled): no se mueve, así que no ofrece el gesto de agarre. */
+.wrapper div[data-type='dnd-drag-item'][data-disabled] {
+  --surface-edge: color-mix(in srgb, var(--primary-300) 35%, transparent);
+
+  cursor: default;
+}
+
+/* ─── Asa de mover (⋮) ─────────────────────────────────────────────────────── */
+
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button'] {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.75rem;
+  min-block-size: 1.75rem;
+  margin: 0;
+  padding: 0;
+  color: var(--dnd-hot);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button']:not(:disabled):hover,
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button'][aria-expanded='true'] {
+  background: color-mix(in srgb, var(--dnd-hot) 22%, transparent);
+}
+
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button']:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* El chaflán recorta el outline exterior: el foco de teclado se dibuja dentro del asa. */
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button']:focus-visible {
+  outline: 2px solid var(--dnd-hot);
+  outline-offset: -2px;
+}
+
+html[data-focus-indicator='true']
+  .wrapper
+  div[data-type='dnd-drag-item']
+  button[data-type='dnd-drag-move-button']:focus-visible {
+  outline-offset: -3px !important;
+  box-shadow: none !important;
+}
+
+.wrapper div[data-type='dnd-drag-item'] button[data-type='dnd-drag-move-button']:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* ─── Resultado en el módulo ───────────────────────────────────────────────── */
+
+.wrapper div[data-type='dnd-drag-item'][data-validation] {
+  padding-inline-end: 2.1rem;
+  cursor: default;
+}
+
+.wrapper div[data-type='dnd-drag-item'][data-validation]::after {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wrapper div[data-type='dnd-drag-item'][data-validation='true'] {
+  --surface-fill: color-mix(in srgb, var(--dnd-right) 32%, var(--primary-900));
+  --surface-edge: var(--dnd-right);
+}
+
+.wrapper div[data-type='dnd-drag-item'][data-validation='true']::after {
+  content: '✔';
+  color: color-mix(in srgb, var(--dnd-right) 55%, white);
+}
+
+.wrapper div[data-type='dnd-drag-item'][data-validation='false'] {
+  --surface-fill: color-mix(in srgb, var(--dnd-wrong) 30%, var(--primary-900));
+  --surface-edge: var(--dnd-wrong);
+}
+
+.wrapper div[data-type='dnd-drag-item'][data-validation='false']::after {
+  content: '✖';
+  color: color-mix(in srgb, var(--dnd-wrong) 55%, white);
+}
+
+/* ─── Ranura (DragAndDrop.Drop) ────────────────────────────────────────────── */
+
+.wrapper div[data-type='dnd-drop-item'] {
+  --surface-radius: var(--dnd-cut);
+  --surface-fill: var(--dnd-slot-fill);
+  --surface-edge: var(--dnd-slot-edge);
+
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--dnd-pad);
+  vertical-align: middle;
+  min-width: min(100%, var(--dnd-slot-w));
+  min-height: calc(var(--dnd-chip-h) + var(--dnd-pad) * 2);
+  padding: var(--dnd-pad);
+}
+
+/* Ranura vacía: marcas de mira en las dos esquinas libres (las otras dos son el chaflán). */
+.wrapper div[data-type='dnd-drop-item'][data-empty]::before {
+  --_m: var(--dnd-hot);
+  --_l: 0.6rem;
+
+  content: '';
+  position: absolute;
+  inset: 0.35rem;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--_m), var(--_m)) right top / var(--_l) 2px no-repeat,
+    linear-gradient(var(--_m), var(--_m)) right top / 2px var(--_l) no-repeat,
+    linear-gradient(var(--_m), var(--_m)) left bottom / var(--_l) 2px no-repeat,
+    linear-gradient(var(--_m), var(--_m)) left bottom / 2px var(--_l) no-repeat;
+}
+
+/* Un drag que esta ranura acepta está encima. */
+.wrapper div[data-type='dnd-drop-item'][data-over],
+.wrapper div[data-type='dnd-container-drag-item'][data-over] {
+  --surface-edge: var(--dnd-hot);
+}
+
+.wrapper div[data-type='dnd-drop-item'][data-over] {
+  --surface-fill: var(--dnd-slot-over);
+}
+
+/* Resultado: la ranura toma el color de lo que contiene. */
+.wrapper div[data-type='dnd-drop-item']:has([data-validation='true']) {
+  --surface-edge: var(--dnd-right);
+  --surface-fill: color-mix(in srgb, var(--dnd-right) 12%, var(--card));
+}
+
+.wrapper div[data-type='dnd-drop-item']:has([data-validation='false']) {
+  --surface-edge: var(--dnd-wrong);
+  --surface-fill: color-mix(in srgb, var(--dnd-wrong) 12%, var(--card));
+}
+
+/* ─── Frase (DndActivity.Phrase) ───────────────────────────────────────────────
+   Fila de ranuras para ordenar una frase. Las ranuras se reparten el ancho de la fila y no cambian de
+   tamaño al recibir una palabra; en pantallas angostas la fila salta de línea. */
+
+.phrase {
+  --dnd-slot-w: 9.5rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.phrase > div[data-type='dnd-drop-item'] {
+  flex: 1 1 var(--dnd-slot-w);
+  max-width: 14rem;
+}
+
+/* ─── Menú para mover (popover) ────────────────────────────────────────────────
+   El menú se pinta en un portal fuera de .wrapper; se acota con :has para no tocar otros popovers.
+   Sin chaflán: lleva una flecha que sobresale y clip-path la recortaría. */
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) {
+  --popover-modal-bg: var(--primary-900);
+  --popover-modal-arrow-bg: var(--primary-900);
+
+  max-width: min(18rem, calc(100vw - 2rem));
+  padding: 0.35rem;
+  color: var(--white);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-300) 70%, transparent);
+}
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) :global(.c-draggable-menu) {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) :global(.c-draggable-menu) li {
+  padding: 0;
+}
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) :global(.c-draggable-menu) button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: normal;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+/* Marca ámbar a la izquierda de la opción activa (como la cabecera del visor de imágenes). */
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) :global(.c-draggable-menu) button:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) :global(.c-draggable-menu) button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+html[data-focus-indicator='true']
+  :global(.c-popover-modal):has(:global(.c-draggable-menu))
+  :global(.c-draggable-menu)
+  button:focus-visible {
+  outline-offset: -3px !important;
+  box-shadow: none !important;
+}
+
+:global(.c-popover-modal):has(:global(.c-draggable-menu)) > p {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* ─── Animaciones: solo transform/opacity y solo con movimiento permitido ──── */
+
+@keyframes dnd-success-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes dnd-shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+
+  20%,
+  80% {
+    transform: translateX(3px);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translateX(-5px);
+  }
+
+  40%,
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .wrapper div[data-type='dnd-drag-item'] {
+    transition:
+      transform 120ms ease,
+      opacity 120ms ease;
+  }
+
+  html:not([data-stop-animations='true'])
+    .wrapper
+    div[data-type='dnd-drag-item']:not([data-validation], [data-disabled], [data-dragging]):hover {
+    transform: translateY(-1px);
+  }
+
+  html:not([data-stop-animations='true']) .wrapper div[data-type='dnd-drag-item'][data-validation='true'] {
+    animation: dnd-success-pop 0.45s ease;
+  }
+
+  html:not([data-stop-animations='true']) .wrapper div[data-type='dnd-drag-item'][data-validation='false'] {
+    animation: dnd-shake 0.4s ease;
+  }
+}
+
+/* Alto contraste del sistema: sin clip-path el borde real hace de límite (igual que hud.css). */
+@media (forced-colors: active) {
+  .wrapper
+    :is(div[data-type='dnd-drag-item'], div[data-type='dnd-drop-item'], div[data-type='dnd-container-drag-item']) {
+    clip-path: none;
+    border: 1px solid ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .wrapper div[data-type='dnd-drop-item'][data-empty]::before {
+    display: none;
+  }
+}

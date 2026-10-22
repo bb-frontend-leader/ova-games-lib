@@ -1,0 +1,178 @@
+.container {
+  --w: clamp(4.25rem, 12vw, 6.75rem);
+
+  position: relative;
+  padding: 0.4rem 0.35rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 0.75rem;
+}
+
+.container:disabled {
+  cursor: default;
+}
+
+/* El vaivén va en un contenedor propio: la entrada y el hover no se pisan con él */
+.float {
+  position: relative;
+  display: block;
+}
+
+.art {
+  position: relative;
+  display: block;
+  width: var(--w);
+  aspect-ratio: 108 / 61;
+}
+
+.art > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+/* La botella destapada es un poco más corta (le falta el corcho) */
+.art[data-open] > img {
+  width: 93.5%;
+}
+
+.letter {
+  position: absolute;
+  top: 50%;
+  left: 37%;
+  font-size: calc(var(--w) * 0.28);
+  font-weight: 700;
+  line-height: 1;
+  color: #10282c;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
+  transform: translate(-50%, -50%);
+}
+
+/* Elegida: la botella queda hundida y sin letra (la letra ya está en la bandeja) */
+.container:disabled .art {
+  filter: grayscale(1);
+  opacity: 0.55;
+  transform: translateY(0.45rem) rotate(10deg) scale(0.9);
+}
+
+.container:disabled .letter {
+  opacity: 0;
+}
+
+/* El corcho nace donde estaba el tapón y, con movimiento, sale disparado (sin él no se ve).
+   Va fuera de `.art` para no heredar su gris, su opacidad ni su hundimiento. */
+.cork {
+  position: absolute;
+  top: 26%;
+  left: 86%;
+  display: block;
+  width: calc(var(--w) * 0.17);
+  height: auto;
+  opacity: 0;
+}
+
+/* Fondo suave y anillo de foco de dos tonos (oscuro, blanco, oscuro) */
+.container:hover:not(:disabled),
+.container:focus-visible {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.container:focus-visible {
+  outline: 0.1875rem solid #fff;
+  outline-offset: 0.125rem;
+  box-shadow: 0 0 0 0.4375rem var(--bt-focus, #0b3b4a);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) .container {
+    animation: bottle_in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) var(--enter, 0s) backwards;
+    transition: background-color 0.2s;
+  }
+
+  html:not([data-stop-animations='true']) .container:not(:disabled) .float {
+    animation: bob var(--bob-dur, 3.5s) ease-in-out var(--bob-delay, 0s) infinite;
+  }
+
+  html:not([data-stop-animations='true']) .art {
+    transition:
+      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.4s;
+  }
+
+  html:not([data-stop-animations='true']) .container:not(:disabled):hover .art,
+  html:not([data-stop-animations='true']) .container:focus-visible .art {
+    transform: translateY(-0.2rem) rotate(-5deg) scale(1.08);
+  }
+
+  html:not([data-stop-animations='true']) .container:not(:disabled):active .art {
+    transition-duration: 0.08s;
+    transform: scale(0.94);
+  }
+
+  /* Reaparece con un chapoteo (en cascada si vuelven todas a la vez) */
+  html:not([data-stop-animations='true']) .container[data-used]:not(:disabled) .art {
+    animation: plop 0.6s ease-out var(--respawn, 0s) backwards;
+  }
+
+  html:not([data-stop-animations='true']) .cork {
+    animation: cork_pop 1s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  }
+}
+
+@keyframes bottle_in {
+  from {
+    opacity: 0;
+    transform: translateY(-3.5rem) rotate(-25deg) scale(0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(calc(var(--tilt, 3deg) * -1));
+  }
+
+  50% {
+    transform: translateY(0.5rem) rotate(var(--tilt, 3deg));
+  }
+}
+
+@keyframes plop {
+  0% {
+    opacity: 0;
+    transform: translateY(-1.2rem) scale(0.4, 1.5);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(0) scale(1.2, 0.8);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cork_pop {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+
+  45% {
+    opacity: 1;
+    transform: translate(calc(var(--cork-x, 30px) * 0.7), -3.2rem) rotate(calc(var(--cork-spin, 480deg) * 0.5));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--cork-x, 30px), -0.8rem) rotate(var(--cork-spin, 480deg));
+  }
+}

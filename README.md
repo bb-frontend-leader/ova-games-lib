@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# Biblioteca de juegos para OVA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Galería donde los docentes exploran, prueban y eligen los juegos y las actividades que usarán en sus Objetos Virtuales de Aprendizaje (OVA). Cada uno tiene su demo en vivo y una explicación de cómo funciona: descripción, qué pasa si el estudiante acierta, qué pasa si falla y recomendaciones para el docente (cuántas preguntas, cuántas opciones, qué cuidar).
 
-Currently, two official plugins are available:
+El catálogo distingue dos tipos: **juegos** (con ambientación, puntos y animaciones) y **actividades** (sobrias, para practicar y comprobar un contenido).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+La aplicación es **independiente**: los juegos y los componentes que necesitan viven en este repositorio, con su propio diseño. No depende del repositorio `core` de las OVA.
 
-## React Compiler
+## Puesta en marcha
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone git@github.com:bb-frontend-leader/ova-games-lib.git
+cd ova-games-lib
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Comando           | Qué hace                      |
+| ----------------- | ----------------------------- |
+| `npm run dev`     | Servidor de desarrollo        |
+| `npm run build`   | Revisa tipos y genera `dist/` |
+| `npm run lint`    | ESLint                        |
+| `npm run preview` | Sirve el build de producción  |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Estructura
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├─ activities/   Actividades: radio, checkbox, true-false, table-true-false, select, select-group, input, crossword, dnd, relation-concept y pair-logic
+├─ components/
+│  ├─ ui/        Button, Modal, ModalFeedback, Panel, ValidationStatus, pantalla completa
+│  └─ …          AppLayout, GameCard, GamePage, GameActions, Stage, ResultModals (la galería)
+├─ constants/    Sonidos (SOUNDS)
+├─ data/         dataGames.tsx: catálogo (título, resumen, categoría, portada)
+├─ games/        Un directorio por juego, más lib/fx (efectos con GSAP)
+├─ hooks/        useCanAnimate, useDeferredResult, usePlaySound, useLang, …
+├─ pages/        home.tsx (catálogo) y una página por juego (game*.tsx) y por actividad (activity*.tsx)
+├─ routers/      AppRouter.tsx (rutas con carga diferida)
+├─ styles/       tokens.css (colores, tipografía) y base.css (base y utilidades)
+└─ utils/
+```
+
+El diseño sale de `src/styles/tokens.css`: los juegos y componentes solo leen esas variables (`--primary-*`, `--accent-*`, `--success`, `--wrong`, `--fs-*`…). Para cambiar la paleta basta editar ese archivo.
+
+## Agregar un juego al catálogo
+
+Sirve igual para juegos y actividades; la diferencia es el prefijo de la ruta (`/juegos/nombre` o `/actividades/nombre`, en minúsculas y con guiones) y el campo `kind` (`'game'` o `'activity'`).
+
+1. Agregue la portada en `public/assets/images/imgsGames/`.
+2. Agregue una entrada en `src/data/dataGames.tsx` (`link`, `kind`, `title`, `description`, `url`, `alt` y `category`).
+3. Cree la página con `GamePage`. De `link` salen el título y el resumen; usted aporta `description`, `correct`, `incorrect` y `recommendations` (todas obligatorias), y el juego como contenido. Use `Stage` para centrar el contenido (no use `Row`/`Col`: su ancho cambia con la pantalla) y `ResultModals` para los modales de acierto y error.
+4. Registre la ruta, con `lazy`, en `src/routers/AppRouter.tsx`.
+
+## Traer un juego nuevo del core
+
+Los juegos del core se copian a mano:
+
+1. Copie el directorio del juego a `src/games/` (o la actividad a `src/activities/`).
+2. Ajuste sus importaciones a los módulos locales: `@/hooks`, `@/constants`, `@/utils`, `@/components/ui` y `@/games/lib/fx`.
+3. Reemplace `useOvaStore((s) => s.lang)` por `useLang()`, y quite lo que no se use aquí (audio, intérprete, gamificación).
+4. Si el CSS usa clases `hud-*` del core, cámbielas por `surface`, `tag` o `rule` (ver `base.css`).
+5. Siga los pasos de «Agregar un juego al catálogo».

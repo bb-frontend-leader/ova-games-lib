@@ -1,0 +1,178 @@
+/* ─── Fila: enunciado + interruptor V/F ─────────────────────────────────────────
+   El interruptor es el mismo de TrueFalseActivity (placa con chaflán, punto de marcado, estados
+   correcto/incorrecto): se compone desde su módulo para que ambas actividades no puedan
+   divergir. Aquí solo se resuelve la disposición en tabla. */
+
+.optionContainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.answer {
+  composes: wrapper-radio from '../true-false-activity/true-false.module.css';
+}
+
+/* Mismo ancho para todos los interruptores (Verdadero/Falso, Sí/No): las filas quedan alineadas en columna. */
+.buttons .answer {
+  min-width: 9.5rem;
+}
+
+.answer__dot {
+  composes: wrapper-radio__dot from '../true-false-activity/true-false.module.css';
+}
+
+.answer__label {
+  composes: wrapper-radio__label from '../true-false-activity/true-false.module.css';
+}
+
+/* Número del enunciado + texto. */
+.list {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.list > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-900);
+  font-weight: bold;
+}
+
+/* Pantalla estrecha: el enunciado pasa arriba y los dos interruptores se reparten la fila. */
+@media screen and (max-width: 40rem) {
+  .optionContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .buttons {
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+  }
+
+  .buttons .answer {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 0.5rem;
+  }
+}
+
+/* ─── Feedback por enunciado (consola HUD) ──────────────────────────────────────
+   Mismo panel que el feedback de select-activity: placa de casco con glifo ✔/✖ + título en mono
+   + texto (+ audio e intérprete). */
+
+.feedback {
+  composes: surface from global;
+
+  --surface-radius: 0.9rem;
+  --surface-fill: var(--primary-800);
+  --surface-edge: color-mix(in srgb, var(--primary-300) 70%, transparent);
+  --feedback-accent: var(--primary-300);
+
+  display: grid;
+  align-items: center;
+  gap: 1.25rem;
+  grid-template-columns: 3.5rem 1fr;
+  padding: 1.25rem 1.5rem;
+  color: var(--white);
+}
+
+.feedback[data-result='true'] {
+  --surface-edge: var(--success);
+  --feedback-accent: color-mix(in srgb, var(--success) 60%, white);
+}
+
+.feedback[data-result='false'] {
+  --surface-edge: var(--wrong);
+  --feedback-accent: color-mix(in srgb, var(--wrong) 55%, white);
+}
+
+.icon {
+  composes: surface from global;
+
+  --surface-radius: 0.5rem;
+  --surface-fill: var(--accent);
+  --surface-edge: transparent;
+
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  color: var(--primary-900);
+  font-family: var(--font-mono);
+  font-size: var(--fs-600, 1.5rem);
+  font-weight: 700;
+}
+
+.feedback[data-result='true'] .icon {
+  --surface-fill: var(--success);
+
+  color: var(--card);
+}
+
+.feedback[data-result='false'] .icon {
+  --surface-fill: var(--wrong);
+
+  color: var(--card);
+}
+
+.feedback__title {
+  composes: tag from global;
+
+  --tag-color: var(--feedback-accent);
+
+  font-size: 0.95rem;
+}
+
+.feedback:has(.feedback__video-interpreter) {
+  grid-template-columns: 3.5rem 2fr 1fr;
+}
+
+.feedback__video-interpreter {
+  width: auto;
+  height: auto;
+  border-radius: 0.15rem;
+}
+
+@media (max-width: 53.75rem) {
+  .feedback:has(.feedback__video-interpreter) {
+    grid-template-columns: 3.5rem 1fr;
+  }
+
+  .feedback:has(.feedback__video-interpreter) .feedback__video-interpreter {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 22rem;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 48rem) {
+  .icon {
+    width: 3.5rem;
+  }
+
+  .feedback,
+  .feedback:has(.feedback__video-interpreter) {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .feedback__video-interpreter {
+    width: 100%;
+    margin-left: 0;
+  }
+}
