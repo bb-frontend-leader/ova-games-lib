@@ -151,3 +151,24 @@ export const flyChip = (
       .to(el, { y: end.y, duration: FLIGHT_S * 0.55, ease: 'power2.in' }, FLIGHT_S * 0.45);
   });
 };
+
+/**
+ * Da el foco a `el` sin saltar y, si su tarjeta (o él mismo) queda fuera de la pantalla, la acerca con suavidad.
+ * Sirve a los juegos con el elemento interactivo arriba y la pregunta debajo: al pasar de uno a otro el que toca
+ * queda a la vista. Con movimiento reducido el desplazamiento es inmediato.
+ */
+export const focusInView = (el: HTMLElement | null | undefined) => {
+  if (!el) return;
+
+  el.focus({ preventScroll: true });
+
+  const box = el.closest<HTMLElement>('section') ?? el;
+  const rect = box.getBoundingClientRect();
+  const height = window.innerHeight;
+
+  if (rect.top >= 0 && rect.bottom <= height) return;
+
+  const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  box.scrollIntoView({ block: rect.height > height ? 'start' : 'nearest', behavior });
+};

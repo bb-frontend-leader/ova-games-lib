@@ -55,6 +55,16 @@ const GamePlinkoPage = lazy(() => import('../pages/gamePlinko'));
 const GameCastlePage = lazy(() => import('../pages/gameCastle'));
 const GameLegoPage = lazy(() => import('../pages/gameLego'));
 const GameMillionsPage = lazy(() => import('../pages/gameMillions'));
+const GameCatapultPage = lazy(() => import('../pages/gameCatapult'));
+const GameCometaPage = lazy(() => import('../pages/gameCometa'));
+const GameLaneRacePage = lazy(() => import('../pages/gameLaneRace'));
+const GameLoteriaPage = lazy(() => import('../pages/gameLoteria'));
+const GameMountainClimbPage = lazy(() => import('../pages/gameMountainClimb'));
+const GameParquesPage = lazy(() => import('../pages/gameParques'));
+const GameRanaPage = lazy(() => import('../pages/gameRana'));
+const GameSnakesLaddersPage = lazy(() => import('../pages/gameSnakesLadders'));
+const GameTejoPage = lazy(() => import('../pages/gameTejo'));
+const GameTreasureMapPage = lazy(() => import('../pages/gameTreasureMap'));
 const GameSlotsPage = lazy(() => import('../pages/gameSlots'));
 const GameMinesweeperPage = lazy(() => import('../pages/gameMinesweeper'));
 const GameNavalBattlePage = lazy(() => import('../pages/gameNavalBattle'));
@@ -104,6 +114,16 @@ export default function AppRouter() {
           <Route path="/juegos/castillo" element={<GameCastlePage />} />
           <Route path="/juegos/construye-la-respuesta" element={<GameLegoPage />} />
           <Route path="/juegos/quien-quiere-ser-millonario" element={<GameMillionsPage />} />
+          <Route path="/juegos/catapulta" element={<GameCatapultPage />} />
+          <Route path="/juegos/cometas" element={<GameCometaPage />} />
+          <Route path="/juegos/carrera-de-carriles" element={<GameLaneRacePage />} />
+          <Route path="/juegos/loteria" element={<GameLoteriaPage />} />
+          <Route path="/juegos/escalada" element={<GameMountainClimbPage />} />
+          <Route path="/juegos/parques" element={<GameParquesPage />} />
+          <Route path="/juegos/rana" element={<GameRanaPage />} />
+          <Route path="/juegos/serpientes-y-escaleras" element={<GameSnakesLaddersPage />} />
+          <Route path="/juegos/tejo" element={<GameTejoPage />} />
+          <Route path="/juegos/mapa-del-tesoro" element={<GameTreasureMapPage />} />
           <Route path="/juegos/tragamonedas" element={<GameSlotsPage />} />
           <Route path="/juegos/buscaminas" element={<GameMinesweeperPage />} />
           <Route path="/juegos/batalla-naval" element={<GameNavalBattlePage />} />

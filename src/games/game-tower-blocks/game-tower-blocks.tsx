@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react';
 import gsap from 'gsap';
 
-import { burst, centerIn, ring } from '@/games/lib/fx';
+import { burst, centerIn, focusInView, ring } from '@/games/lib/fx';
 import { useCanAnimate, useDeferredResult, useLang } from '@/hooks';
 import { useGSAP } from '@gsap/react';
 
@@ -515,7 +515,7 @@ const GameTowerBlocks: React.FC<Props> & SubComponents = ({ questions, onResult,
         done: summaryRef
       }[state.phase as Exclude<Phase, 'dropping'>];
 
-      target?.current?.focus({ preventScroll: true });
+      focusInView(target?.current);
     });
 
     return () => cancelAnimationFrame(frame);

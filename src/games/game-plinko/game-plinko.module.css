@@ -98,6 +98,7 @@
   align-content: start;
   gap: 0.75rem;
   width: 100%;
+  max-width: 44rem;
   min-width: 0;
 }
 
@@ -757,26 +758,14 @@
   }
 }
 
-/* Pantalla ancha: el tablero a la izquierda y la pregunta (o la ficha) a la derecha */
+/* El elemento interactivo va arriba (más grande en pantalla ancha) y la pregunta, la guía o el control debajo */
 @container (min-width: 44rem) {
-  .play {
-    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
-    justify-items: stretch;
-  }
-
   .board-wrap {
-    width: 100%;
+    width: min(100%, 26rem);
   }
 
   .init {
     min-height: 40.5rem;
-  }
-}
-
-/* Pantalla estrecha: mientras se responde, la pregunta va arriba y el tablero (solo de adorno) debajo */
-@container (max-width: 43.99rem) {
-  .plinko:is([data-phase='question'], [data-phase='checked']) .side {
-    order: -1;
   }
 }
 
@@ -819,5 +808,12 @@
   .answer:has(.answer-input:focus-visible),
   .btn:focus-visible {
     outline-color: Highlight;
+  }
+}
+
+/* El contenedor del juego es más angosto que la pantalla: el marcador pasa a 2 × 2 según su propio ancho */
+@container (max-width: 29.99rem) {
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

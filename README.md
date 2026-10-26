@@ -13,7 +13,7 @@ Cada juego tiene su **demo en vivo** 🕹️ y una explicación clara de cómo f
 
 | Tipo               | Cuántos | Cómo son                                         |
 | ------------------ | ------- | ------------------------------------------------ |
-| 🎮 **Juegos**      | 23      | Con ambientación, puntos y animaciones           |
+| 🎮 **Juegos**      | 33      | Con ambientación, puntos y animaciones           |
 | 📝 **Actividades** | 11      | Sobrias, para practicar y comprobar un contenido |
 
 En la página de inicio se puede 🔎 buscar por texto y filtrar por tipo y por categoría.
@@ -65,6 +65,16 @@ npm run dev
 | ❓ Preguntas | ⚓ Batalla Naval del Saber              | `/juegos/batalla-naval`               |
 | ❓ Preguntas | 🏗️ Torre de Bloques del Saber           | `/juegos/torre-de-bloques`            |
 | ❓ Preguntas | 🔐 Escape Room del Saber                | `/juegos/escape-room`                 |
+| ❓ Preguntas | 🏹 Catapulta del Saber                  | `/juegos/catapulta`                   |
+| ❓ Preguntas | 🪁 Cometas de Agosto                    | `/juegos/cometas`                     |
+| ❓ Preguntas | 🏁 Carrera de Carriles                  | `/juegos/carrera-de-carriles`         |
+| ❓ Preguntas | 🎴 Lotería del Saber                    | `/juegos/loteria`                     |
+| ❓ Preguntas | 🧗 Escalada de Montaña                  | `/juegos/escalada`                    |
+| ❓ Preguntas | 🎲 Parqués del Saber                    | `/juegos/parques`                     |
+| ❓ Preguntas | 🐸 Rana del Saber                       | `/juegos/rana`                        |
+| ❓ Preguntas | 🐍 Serpientes y Escaleras del Saber     | `/juegos/serpientes-y-escaleras`      |
+| ❓ Preguntas | 🥏 Tejo del Saber                       | `/juegos/tejo`                        |
+| ❓ Preguntas | 🗺️ Mapa del Tesoro                      | `/juegos/mapa-del-tesoro`             |
 | 🔤 Palabras  | 🎈 Globos de Palabras: Ordena y Aprende | `/juegos/globos`                      |
 | 🔤 Palabras  | 🤿 Rescate Submarino de Letras          | `/juegos/rescate-submarino`           |
 | 🔤 Palabras  | 🎣 Pesca Correcta                       | `/juegos/pesca`                       |
@@ -142,8 +152,10 @@ Sirve igual para juegos y actividades; la diferencia es el prefijo de la ruta (`
 
 🚫 Del core no están en la galería: `game-phrase-and-image` (se excluyó a propósito) y `game-circular-quiz` (aún no se ha traído).
 
-## ❤️ Hecho con el 💙 en Books&Books  
+🔄 Cuando el core mejora un juego que ya tenemos (por ejemplo, el diseño para pantallas angostas), se copian a mano solo los archivos que cambiaron y se repiten los ajustes de arriba.
 
-Nos enorgullece desarrollar este proyecto como parte del compromiso de **Books&Books** con la educación y la innovación tecnológica. 🌟🏆💪  
+## ❤️ Hecho con el 💙 en Books&Books
 
-Gracias por visitar nuestro proyecto. ¡Juntos podemos hacer del aprendizaje una experiencia increíble! 🥳✨🎉🚀  
+Nos enorgullece desarrollar este proyecto como parte del compromiso de **Books&Books** con la educación y la innovación tecnológica. 🌟🏆💪
+
+Gracias por visitar nuestro proyecto. ¡Juntos podemos hacer del aprendizaje una experiencia increíble! 🥳✨🎉🚀

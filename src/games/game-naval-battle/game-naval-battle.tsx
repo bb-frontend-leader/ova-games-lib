@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react';
 import gsap from 'gsap';
 
-import { burst, centerIn, ring } from '@/games/lib/fx';
+import { burst, centerIn, focusInView, ring } from '@/games/lib/fx';
 import { useCanAnimate, useDeferredResult, useLang } from '@/hooks';
 import { useGSAP } from '@gsap/react';
 
@@ -526,11 +526,9 @@ const GameNavalBattle: React.FC<Props> & SubComponents = ({
       if (state.phase === 'aim') {
         const back = before === 'shot' && state.shot ? cellEl(state.shot.id) : null;
 
-        (
+        focusInView(
           back ?? rootRef.current?.querySelector<HTMLElement>('[data-cell]:is([data-view="water"], [data-view="ping"])')
-        )?.focus({
-          preventScroll: true
-        });
+        );
         return;
       }
 
@@ -538,7 +536,7 @@ const GameNavalBattle: React.FC<Props> & SubComponents = ({
         state.phase as 'question' | 'checked' | 'shot' | 'done'
       ];
 
-      target?.current?.focus({ preventScroll: true });
+      focusInView(target?.current);
     });
 
     return () => cancelAnimationFrame(frame);

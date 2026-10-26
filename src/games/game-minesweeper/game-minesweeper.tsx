@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 import gsap from 'gsap';
 
-import { burst, centerIn, ring } from '@/games/lib/fx';
+import { burst, centerIn, focusInView, ring } from '@/games/lib/fx';
 import { useCanAnimate, useDeferredResult, useLang } from '@/hooks';
 import { useGSAP } from '@gsap/react';
 
@@ -391,15 +391,13 @@ const GameMinesweeper: React.FC<Props> & SubComponents = ({
       if (state.phase === 'board') {
         const back = state.currentId !== null ? cellEl(state.currentId) : null;
 
-        (back ?? rootRef.current?.querySelector<HTMLElement>('[data-cell]:not(:disabled)'))?.focus({
-          preventScroll: true
-        });
+        focusInView(back ?? rootRef.current?.querySelector<HTMLElement>('[data-cell]:not(:disabled)'));
         return;
       }
 
       const target = { question: headingRef, checked: nextRef, done: summaryRef }[state.phase];
 
-      target.current?.focus({ preventScroll: true });
+      focusInView(target.current);
     });
 
     return () => cancelAnimationFrame(frame);

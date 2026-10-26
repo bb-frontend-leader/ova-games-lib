@@ -204,6 +204,96 @@ export const games: Game[] = [
     category: 'questions'
   },
   {
+    link: '/juegos/catapulta',
+    kind: 'game',
+    title: 'Catapulta del Saber',
+    description: 'Cada acierto gana una piedra: elige el ángulo y la fuerza y derriba la torre enemiga.',
+    url: 'assets/images/imgsGames/catapult.png',
+    alt: 'Catapulta lanzando una piedra contra una torre enemiga',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/cometas',
+    kind: 'game',
+    title: 'Cometas de Agosto',
+    description: 'Cada acierto sube la cometa un peldaño; cuidado con las ráfagas de viento.',
+    url: 'assets/images/imgsGames/cometa.png',
+    alt: 'Cometa de colores subiendo por el cielo con una cola de lazos',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/carrera-de-carriles',
+    kind: 'game',
+    title: 'Carrera de Carriles',
+    description: 'Cada respuesta es un carril: elige el correcto y corre hacia la meta contra tres rivales.',
+    url: 'assets/images/imgsGames/laneRace.png',
+    alt: 'Pista con varios carriles y un coche de carreras',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/loteria',
+    kind: 'game',
+    title: 'Lotería del Saber',
+    description: 'El cantor lee una pista y tú marcas la carta correcta en tu tabla.',
+    url: 'assets/images/imgsGames/loteria.png',
+    alt: 'Tabla de lotería con cartas ilustradas y frijoles',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/escalada',
+    kind: 'game',
+    title: 'Escalada de Montaña',
+    description: 'Cada acierto sube un tramo del sendero; administra tus fuerzas hasta la cumbre.',
+    url: 'assets/images/imgsGames/mountainClimb.png',
+    alt: 'Montaña con un sendero, campamentos y una cumbre nevada',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/parques',
+    kind: 'game',
+    title: 'Parqués del Saber',
+    description: 'Cada acierto da una tirada de dados: lleva tus fichas al cielo antes que el rival.',
+    url: 'assets/images/imgsGames/parques.png',
+    alt: 'Tablero de parqués con fichas amarillas y rojas y dos dados',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/rana',
+    kind: 'game',
+    title: 'Rana del Saber',
+    description: 'Cada acierto da una moneda para lanzar a la mesa de rana: ¿entrará en la boca?',
+    url: 'assets/images/imgsGames/rana.png',
+    alt: 'Mesa de rana con la rana, el molino, el puente y la tortuga',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/serpientes-y-escaleras',
+    kind: 'game',
+    title: 'Serpientes y Escaleras del Saber',
+    description: 'Cada acierto da una tirada de dado: sube por las escaleras y esquiva las serpientes.',
+    url: 'assets/images/imgsGames/snakesLadders.png',
+    alt: 'Tablero de serpientes y escaleras con una ficha y un dado',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/tejo',
+    kind: 'game',
+    title: 'Tejo del Saber',
+    description: 'Cada acierto da un tejo para lanzar a la caja de arcilla: apunta al bocín y revienta la mecha.',
+    url: 'assets/images/imgsGames/tejo.png',
+    alt: 'Cancha de tejo con la caja de arcilla, el bocín y las mechas',
+    category: 'questions'
+  },
+  {
+    link: '/juegos/mapa-del-tesoro',
+    kind: 'game',
+    title: 'Mapa del Tesoro',
+    description: 'Cada isla esconde una pregunta: navega por el mapa hasta encontrar el tesoro.',
+    url: 'assets/images/imgsGames/treasureMap.png',
+    alt: 'Mapa con islas, rutas, un barco y un cofre del tesoro',
+    category: 'questions'
+  },
+  {
     link: '/juegos/tragamonedas',
     kind: 'game',
     title: 'Tragamonedas del Saber',

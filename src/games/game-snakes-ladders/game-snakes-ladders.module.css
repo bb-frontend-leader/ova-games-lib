@@ -1,0 +1,993 @@
+/* Juego de la oca: tapete verde. El tablero ocupa todo el ancho y es lo único fijo; la pregunta, el dado y los avisos
+   son tarjetas que se apoyan encima (la pregunta sobre el tablero oscurecido; el dado y las paradas, pequeñas, en el
+   lado contrario al de la ficha) */
+
+.snakes,
+.init {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  color: #ffffff;
+  background:
+    radial-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px) 0 0 / 1.2rem 1.2rem,
+    radial-gradient(circle at 90% 0%, rgb(255 201 51 / 0.2), transparent 45%),
+    linear-gradient(165deg, #1d6b4f, #0b3326 80%);
+  border-radius: 1.25rem;
+  container-type: inline-size;
+}
+
+.snakes {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+/* Marcador */
+.hud {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hud-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon label'
+    'icon value';
+  column-gap: 0.55rem;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  background: rgb(0 0 0 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 0.7rem;
+}
+
+.hud-icon {
+  grid-area: icon;
+  font-size: 1.5rem;
+  color: #ffc933;
+}
+
+.hud-item[data-id='streak'] .hud-icon {
+  font-size: 1.9rem;
+  color: #ff8a3d;
+}
+
+.hud-item[data-id='shield'] .hud-icon {
+  color: #9fd8ff;
+}
+
+.hud-item[data-id='cell'] .hud-icon {
+  color: #7fe3a5;
+}
+
+.hud-label {
+  grid-area: label;
+  font-size: 0.75rem;
+  line-height: 1.1;
+  color: #d8efe3;
+}
+
+.hud-value {
+  grid-area: value;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffc933;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mesa: el tablero y, encima, las tarjetas (todo en la misma celda de la rejilla) */
+.table {
+  position: relative;
+  display: grid;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #0e3f2e;
+  border: 3px solid #ffc933;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.board-layer {
+  grid-area: 1 / 1;
+  align-self: start;
+  min-width: 0;
+  padding: 0.75rem;
+}
+
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
+  width: 100%;
+  max-width: 54rem;
+  margin-inline: auto;
+  aspect-ratio: var(--ratio);
+  container-type: inline-size;
+}
+
+/* Casillas: el tamaño del número y del icono sigue al de la casilla (cqw es el ancho del tablero) */
+.tile {
+  --tile-bg: #f3e6c4;
+  --tile-ink: #1e2b25;
+
+  position: relative;
+  display: grid;
+  gap: 0.1em;
+  place-content: center;
+  place-items: center;
+  margin: 2px;
+  font-weight: 800;
+  color: var(--tile-ink);
+  background: var(--tile-bg);
+  border-radius: 0.5rem;
+}
+
+.tile[data-odd] {
+  --tile-bg: #dcecc9;
+}
+
+.tile[data-here] {
+  box-shadow: inset 0 0 0 3px #ff7a59;
+}
+
+.tile-n {
+  position: absolute;
+  top: 0.15em;
+  left: 0.3em;
+  font-size: max(0.62rem, calc(24cqw / var(--cols)));
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile[data-kind='start'] .tile-n,
+.tile[data-kind='goal'] .tile-n {
+  position: static;
+  font-size: max(0.62rem, calc(21cqw / var(--cols)));
+  text-transform: uppercase;
+}
+
+.tile-icon {
+  font-size: calc(46cqw / var(--cols));
+}
+
+.tile[data-kind='start'] {
+  --tile-bg: #7fe3a5;
+}
+
+.tile[data-kind='goal'] {
+  --tile-bg: #ffd24a;
+  --tile-ink: #4a3000;
+}
+
+.tile[data-kind='ladder'] {
+  --tile-bg: #f4d6a0;
+  --tile-ink: #4a2a08;
+}
+
+.tile[data-kind='snake'] {
+  --tile-bg: #f6b0aa;
+  --tile-ink: #5a1010;
+}
+
+/* Escaleras y serpientes: un dibujo sobre las casillas (unidades = casillas) y bajo la ficha */
+.links {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Ficha: ocupa la casilla en la que está; el juego mueve `left` y `top` (en % del tablero) */
+.pawn {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: calc(100% / var(--cols));
+  height: calc(100% / var(--rows));
+  pointer-events: none;
+}
+
+.pawn-body {
+  display: grid;
+  place-items: center;
+  width: 72%;
+  aspect-ratio: 1;
+  font-size: calc(34cqw / var(--cols));
+  color: #ffffff;
+  background: radial-gradient(circle at 35% 30%, #ff9a7a, #d93a22 75%);
+  border: max(2px, calc(2cqw / var(--cols))) solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0.18em 0 rgb(0 0 0 / 0.4);
+}
+
+/* Capas sobre el tablero */
+.overlay {
+  z-index: 3;
+  display: grid;
+  grid-area: 1 / 1;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.overlay > * {
+  pointer-events: auto;
+}
+
+.overlay[data-kind='card'] {
+  padding: 1rem;
+  place-items: center;
+  background: rgb(5 26 18 / 0.8);
+  pointer-events: auto;
+}
+
+.overlay[data-kind='card'] > .card {
+  width: min(100%, 40rem);
+}
+
+.overlay[data-kind='dock'] {
+  align-content: end;
+  justify-items: center;
+  padding: 0.75rem;
+}
+
+.overlay[data-kind='dock'][data-side='top'] {
+  align-content: start;
+}
+
+/* Tarjetas */
+.card,
+.dock {
+  --ghost-ink: #1e2b25;
+
+  color: #1e2b25;
+  background: #fff8e6;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.card[data-summary] {
+  justify-items: center;
+  text-align: center;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: #1b6b4d;
+  border-radius: 999px;
+}
+
+.card-question {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.card-question:focus-visible,
+.guide-title:focus-visible,
+.rules-title:focus-visible {
+  outline: 3px solid #1e2b25;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.answers {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.answer {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.9rem 0.6rem 0.6rem;
+  background: #ffffff;
+  border: 2px solid #d9cba5;
+  border-radius: 0.85rem;
+  cursor: pointer;
+}
+
+.answer:hover {
+  border-color: #1b6b4d;
+}
+
+.answer[data-picked] {
+  background: #e1f2e8;
+  border-color: #1b6b4d;
+}
+
+.answer:has(.answer-input:focus-visible) {
+  outline: 3px solid #1e2b25;
+  outline-offset: 3px;
+}
+
+.answer[data-discarded] {
+  background: #ece6d8;
+  border-color: #d8cfba;
+  cursor: default;
+}
+
+.answer[data-discarded] .answer-text {
+  text-decoration: line-through;
+  color: #5e5340;
+}
+
+.answer[data-state='ok'] {
+  background: #dff5e1;
+  border-color: #2e7d32;
+}
+
+.answer[data-state='ko'] {
+  background: #fde3e3;
+  border-color: #c62828;
+}
+
+.answer[data-state] .answer-text {
+  text-decoration: none;
+  color: inherit;
+}
+
+.answer-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #1b6b4d;
+  border-radius: 50%;
+}
+
+.answer-text {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.answer-mark {
+  font-size: 1.4rem;
+}
+
+.answer[data-state='ok'] .answer-mark {
+  color: #2e7d32;
+}
+
+.answer[data-state='ko'] .answer-mark {
+  color: #c62828;
+}
+
+.verdict {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  color: #5a1010;
+  background: #fdeaea;
+  border-left: 0.4rem solid #c62828;
+  border-radius: 0.5rem;
+}
+
+.verdict[data-ok] {
+  color: #14351a;
+  background: #e6f7e8;
+  border-left-color: #2e7d32;
+}
+
+.verdict[data-kind='miss'] {
+  color: #4a3200;
+  background: #fff1cc;
+  border-left-color: #d68a00;
+}
+
+.verdict-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.verdict-title svg {
+  flex: none;
+}
+
+.points {
+  margin-left: auto;
+  padding: 0.05rem 0.7rem;
+  color: #ffc933;
+  background: #1e2b25;
+  border-radius: 999px;
+}
+
+.verdict-hint {
+  margin: 0;
+}
+
+.guide-title {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+/* Dado y paradas */
+.dock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: center;
+  width: min(100%, 36rem);
+  padding: 0.8rem 1rem;
+}
+
+.dock[data-kind='stop'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dock[data-kind='moving'] {
+  grid-template-columns: auto auto;
+  width: auto;
+  padding: 0.4rem 1rem 0.4rem 0.5rem;
+  border-radius: 999px;
+}
+
+.dock-body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.dock-title {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.dock-text {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.die {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  width: 3.6rem;
+  height: 3.6rem;
+  padding: 0.45rem;
+  background: #ffffff;
+  border: 3px solid #1e2b25;
+  border-radius: 0.7rem;
+  box-shadow:
+    0 0.2rem 0 rgb(0 0 0 / 0.3),
+    inset 0 -0.2rem 0 rgb(0 0 0 / 0.08);
+}
+
+.dock[data-kind='moving'] .die {
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0.3rem;
+  border-width: 2px;
+  border-radius: 0.5rem;
+}
+
+.pip {
+  place-self: center;
+  width: 0.62rem;
+  height: 0.62rem;
+  background: #1e2b25;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.dock[data-kind='moving'] .pip {
+  width: 0.4rem;
+  height: 0.4rem;
+}
+
+.die[data-face='1'] .pip:nth-child(5),
+.die[data-face='2'] .pip:is(:nth-child(1), :nth-child(9)),
+.die[data-face='3'] .pip:is(:nth-child(1), :nth-child(5), :nth-child(9)),
+.die[data-face='4'] .pip:is(:nth-child(1), :nth-child(3), :nth-child(7), :nth-child(9)),
+.die[data-face='5'] .pip:is(:nth-child(1), :nth-child(3), :nth-child(5), :nth-child(7), :nth-child(9)),
+.die[data-face='6'] .pip:is(:nth-child(1), :nth-child(3), :nth-child(4), :nth-child(6), :nth-child(7), :nth-child(9)) {
+  opacity: 1;
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.5rem;
+  font: inherit;
+  font-weight: 800;
+  color: #1b1b1b;
+  background: #ffc933;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 0.25rem 0 #9a7400;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn:active:not(:disabled) {
+  translate: 0 0.2rem;
+  box-shadow: 0 0.05rem 0 #9a7400;
+}
+
+.btn:disabled {
+  color: #edf5f0;
+  background: #5d7a6c;
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn[data-variant='ghost'] {
+  color: var(--ghost-ink, #ffffff);
+  background: transparent;
+  border-color: currentcolor;
+  box-shadow: none;
+}
+
+.btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 9px #0b3326;
+}
+
+.card .btn:focus-visible,
+.dock .btn:focus-visible,
+.rules .btn:focus-visible {
+  outline-color: #1e2b25;
+  box-shadow: 0 0 0 9px #fff8e6;
+}
+
+/* Casillas especiales (leyenda) */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-item {
+  --tile-bg: #ffffff;
+  --tile-ink: #1e2b25;
+
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--tile-ink);
+  background: var(--tile-bg);
+  border-radius: 999px;
+}
+
+.legend-item[data-kind='ladder'] {
+  --tile-bg: #f4d6a0;
+  --tile-ink: #4a2a08;
+}
+
+.legend-item[data-kind='snake'] {
+  --tile-bg: #f6b0aa;
+  --tile-ink: #5a1010;
+}
+
+.legend-item[data-kind='shield'] {
+  --tile-bg: #bfe3f7;
+  --tile-ink: #0b3d52;
+}
+
+/* Progreso */
+.track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track-item {
+  display: grid;
+  place-items: center;
+  min-width: 2.4rem;
+  height: 1.8rem;
+  padding-inline: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #ffc933;
+  background: #12503b;
+  border: 2px solid #7fb59a;
+  border-radius: 999px;
+}
+
+.track-item[data-state='solved'] {
+  color: #ffffff;
+  background: #2e7d32;
+  border-color: #9cf59c;
+}
+
+.track-item[data-state='review'] {
+  border-style: dashed;
+  border-color: #ffffff;
+}
+
+/* Resumen */
+.medal {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 2.6rem;
+  color: #7a4a00;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc928 55%, #d68a00);
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 0 #a56a00;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+}
+
+.stat {
+  display: grid;
+  flex: 1 1 8rem;
+  max-width: 11.5rem;
+  gap: 0.1rem;
+  padding: 0.6rem;
+  background: #ffffff;
+  border: 2px solid #d9cba5;
+  border-radius: 0.75rem;
+}
+
+.stat dt {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #5e5340;
+}
+
+.stat dd {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+/* Efectos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4rem;
+  height: 4rem;
+  border: 4px solid;
+  border-radius: 50%;
+}
+
+/* Inicio */
+.init-frame {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.init {
+  /* El fondo es una ilustración SVG propia del juego (snakes-init-bg); aquí solo el color de base. */
+  background: #0e3f2e;
+  display: grid;
+  place-items: center;
+  min-height: 46rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.init-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.init-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  width: min(100%, 40rem);
+}
+
+.init-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6cqw, 2.4rem);
+  line-height: 1.1;
+  color: #ffd24a;
+  text-shadow: 0 0.15rem 0 rgb(0 0 0 / 0.55);
+}
+
+.init-text {
+  max-width: 30rem;
+  margin: 0;
+  font-size: 1.05rem;
+  text-shadow: 0 0.1rem 0 rgb(0 0 0 / 0.7);
+}
+
+.init-field {
+  width: 100%;
+  padding: 0.5rem;
+  background: #0e3f2e;
+  border: 3px solid #ffc933;
+  border-radius: 0.9rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.rules {
+  --ghost-ink: #1e2b25;
+
+  display: grid;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 1.25rem;
+  text-align: left;
+  color: #1e2b25;
+  background: #fff8e6;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.rules-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+  line-height: 1.4;
+}
+
+/* Movimiento: solo si el sistema lo permite y el estudiante no detuvo las animaciones */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .answer {
+      transition:
+        translate 0.15s,
+        border-color 0.15s,
+        background-color 0.15s;
+    }
+
+    .answer:hover:not([data-discarded]) {
+      translate: 0.2rem 0;
+    }
+
+    .hud-item[data-hot] .hud-icon {
+      animation: flame 0.9s ease-in-out infinite alternate;
+    }
+
+    .pawn-body {
+      animation: bob 1.4s ease-in-out infinite;
+    }
+
+    .tile[data-here] {
+      animation: here 1.2s ease-in-out infinite alternate;
+    }
+
+    .overlay[data-kind='dock'] > * {
+      animation: dock-in 0.3s ease-out both;
+    }
+
+    .overlay[data-kind='card'] > .card {
+      animation: card-in 0.3s ease-out both;
+    }
+
+    .init-content {
+      animation: init-in 0.5s ease-out both;
+    }
+  }
+}
+
+@keyframes flame {
+  to {
+    scale: 1.2;
+    rotate: -6deg;
+  }
+}
+
+@keyframes bob {
+  50% {
+    translate: 0 -6%;
+  }
+}
+
+@keyframes here {
+  to {
+    box-shadow: inset 0 0 0 5px #ff7a59;
+  }
+}
+
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes init-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+/* Pantalla ancha: respuestas en dos columnas */
+@container (min-width: 40rem) {
+  .init {
+    min-height: 50rem;
+  }
+
+  .answers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Pantalla estrecha: el dado siempre abajo (el tablero es bajo y deja sitio) y el botón en su propia fila */
+@container (max-width: 39.99rem) {
+  .overlay[data-kind='dock'][data-side='top'] {
+    align-content: end;
+  }
+
+  .dock[data-kind='roll'] {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .dock[data-kind='roll'] .btn {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 30rem) {
+  .snakes {
+    padding: 1rem 0.75rem;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hud-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .card,
+  .rules {
+    padding: 1rem;
+  }
+
+  .card-question {
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .board-layer {
+    padding: 0.4rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .card,
+  .dock,
+  .rules,
+  .answer,
+  .btn,
+  .hud-item,
+  .tile {
+    border: 2px solid ButtonText;
+  }
+
+  .answer:has(.answer-input:focus-visible),
+  .btn:focus-visible {
+    outline-color: Highlight;
+  }
+}

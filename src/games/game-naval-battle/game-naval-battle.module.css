@@ -119,6 +119,7 @@
   align-content: start;
   gap: 0.75rem;
   width: 100%;
+  max-width: 44rem;
   min-width: 0;
 }
 
@@ -886,26 +887,14 @@
   }
 }
 
-/* Pantalla ancha: el campo a la izquierda y la pregunta (o la guía) a la derecha */
+/* El elemento interactivo va arriba (más grande en pantalla ancha) y la pregunta, la guía o el control debajo */
 @container (min-width: 44rem) {
-  .play {
-    grid-template-columns: minmax(0, 25rem) minmax(0, 1fr);
-    justify-items: stretch;
-  }
-
   .field-wrap {
-    width: 100%;
+    width: min(100%, 31rem);
   }
 
   .init {
     min-height: 40.5rem;
-  }
-}
-
-/* Pantalla estrecha: mientras se responde, la pregunta va arriba y el campo debajo */
-@container (max-width: 43.99rem) {
-  .naval:is([data-phase='question'], [data-phase='checked'], [data-phase='shot']) .side {
-    order: -1;
   }
 }
 
@@ -950,5 +939,12 @@
   .btn:focus-visible,
   .cell:focus-visible {
     outline-color: Highlight;
+  }
+}
+
+/* El contenedor del juego es más angosto que la pantalla: el marcador pasa a 2 × 2 según su propio ancho */
+@container (max-width: 29.99rem) {
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

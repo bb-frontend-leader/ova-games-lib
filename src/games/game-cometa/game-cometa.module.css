@@ -1,0 +1,848 @@
+/* Cometas de agosto: un cielo de día con la cometa que sube con cada acierto, la regla de altura al costado y la pregunta debajo */
+
+.cometa,
+.init {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  color: #ffffff;
+  background:
+    radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px) 0 0 / 1.2rem 1.2rem,
+    radial-gradient(circle at 10% 0%, rgb(252 209 22 / 0.22), transparent 45%),
+    linear-gradient(165deg, #4a1737, #1c0a16 80%);
+  border-radius: 1.25rem;
+  container-type: inline-size;
+}
+
+.cometa {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+/* Campo de batalla: marcador arriba y escenario debajo, en un mismo marco */
+.screen {
+  overflow: hidden;
+  background: #1c0a16;
+  border: 3px solid #fcd116;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.6rem;
+  list-style: none;
+  background: #2d1024;
+}
+
+.hud-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon label'
+    'icon value';
+  column-gap: 0.55rem;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  background: rgb(0 0 0 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 0.7rem;
+}
+
+.hud-icon {
+  grid-area: icon;
+  font-size: 1.5rem;
+  color: #fcd116;
+}
+
+.hud-item[data-id='streak'] .hud-icon {
+  font-size: 1.9rem;
+  color: #ff8a3d;
+}
+
+.hud-label {
+  grid-area: label;
+  font-size: 0.75rem;
+  line-height: 1.1;
+  color: #f3d9e8;
+}
+
+.hud-value {
+  grid-area: value;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fcd116;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+/* Consola */
+.console {
+  display: grid;
+  min-width: 0;
+}
+
+/* Tarjetas */
+.card {
+  --ghost-ink: #2b1d12;
+
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  color: #2b1d12;
+  background: #fbf3e1;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.card[data-summary] {
+  justify-items: center;
+  text-align: center;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: #2a6fb0;
+  border-radius: 999px;
+}
+
+.card-question {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.card-question:focus-visible,
+.guide-title:focus-visible,
+.rules-title:focus-visible {
+  outline: 3px solid #2b1d12;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.answers {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.answer {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.9rem 0.6rem 0.6rem;
+  background: #ffffff;
+  border: 2px solid #dcc9a8;
+  border-radius: 0.85rem;
+  cursor: pointer;
+}
+
+.answer:hover {
+  border-color: #2a6fb0;
+}
+
+.answer[data-picked] {
+  background: #f7e3d3;
+  border-color: #2a6fb0;
+}
+
+.answer:has(.answer-input:focus-visible) {
+  outline: 3px solid #2b1d12;
+  outline-offset: 3px;
+}
+
+.answer[data-discarded] {
+  background: #ece6d8;
+  border-color: #d8cfba;
+  cursor: default;
+}
+
+.answer[data-discarded] .answer-text {
+  text-decoration: line-through;
+  color: #5e5340;
+}
+
+.answer[data-state='ok'] {
+  background: #dff5e1;
+  border-color: #2e7d32;
+}
+
+.answer[data-state='ko'] {
+  background: #fde3e3;
+  border-color: #c62828;
+}
+
+.answer[data-state] .answer-text {
+  text-decoration: none;
+  color: inherit;
+}
+
+.answer-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #2a6fb0;
+  border-radius: 50%;
+}
+
+.answer-text {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.answer-mark {
+  font-size: 1.4rem;
+}
+
+.answer[data-state='ok'] .answer-mark {
+  color: #2e7d32;
+}
+
+.answer[data-state='ko'] .answer-mark {
+  color: #c62828;
+}
+
+.verdict {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  color: #5a1010;
+  background: #fdeaea;
+  border-left: 0.4rem solid #c62828;
+  border-radius: 0.5rem;
+}
+
+.verdict[data-ok] {
+  color: #14351a;
+  background: #e6f7e8;
+  border-left-color: #2e7d32;
+}
+
+.verdict[data-kind='miss'] {
+  color: #4a3200;
+  background: #fff1cc;
+  border-left-color: #d68a00;
+}
+
+.verdict-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.points {
+  margin-left: auto;
+  padding: 0.05rem 0.7rem;
+  color: #fcd116;
+  background: #2b1d12;
+  border-radius: 999px;
+}
+
+.verdict-hint {
+  margin: 0;
+}
+
+.perks {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+  list-style: none;
+}
+
+.perks li {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.verdict-title svg,
+.perks svg {
+  flex: none;
+}
+
+/* Puntería */
+.guide-title {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.5rem;
+  font: inherit;
+  font-weight: 800;
+  color: #1b1b1b;
+  background: #fcd116;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 0.25rem 0 #a68a00;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn:active:not(:disabled) {
+  translate: 0 0.2rem;
+  box-shadow: 0 0.05rem 0 #a68a00;
+}
+
+.btn:disabled {
+  color: #f2f8f8;
+  background: #6d5560;
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn[data-variant='ghost'] {
+  color: var(--ghost-ink, #ffffff);
+  background: transparent;
+  border-color: currentcolor;
+  box-shadow: none;
+}
+
+.btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 9px #1c0a16;
+}
+
+.card .btn:focus-visible,
+.rules .btn:focus-visible {
+  outline-color: #2b1d12;
+  box-shadow: 0 0 0 9px #fbf3e1;
+}
+
+/* Progreso */
+.track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track-item {
+  display: grid;
+  place-items: center;
+  min-width: 2.4rem;
+  height: 1.8rem;
+  padding-inline: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #fcd116;
+  background: #3b1630;
+  border: 2px solid #d9a1c4;
+  border-radius: 999px;
+}
+
+.track-item[data-state='solved'] {
+  color: #ffffff;
+  background: #2e7d32;
+  border-color: #9cf59c;
+}
+
+.track-item[data-state='review'] {
+  border-style: dashed;
+  border-color: #ffffff;
+}
+
+/* Resumen */
+.medal {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 2.6rem;
+  color: #7a4a00;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc928 55%, #d68a00);
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 0 #a56a00;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+}
+
+.stat {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.6rem;
+  background: #ffffff;
+  border: 2px solid #dcc9a8;
+  border-radius: 0.75rem;
+}
+
+.stat dt {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #5e5340;
+}
+
+.stat dd {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+/* Efectos */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--fx-color);
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4rem;
+  height: 4rem;
+  border: 4px solid;
+  border-radius: 50%;
+}
+
+.float {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fcd116;
+  text-shadow: 0 2px 0 #3b2a00;
+}
+
+.boom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #ff7a1a;
+  text-shadow:
+    0 3px 0 #5a1700,
+    0 0 0.8rem rgb(255 200 60 / 0.8);
+  white-space: nowrap;
+}
+
+/* Inicio */
+.init-frame {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.init {
+  /* El fondo es una ilustración SVG propia del juego (cometa-init-bg); aquí solo el color de base. */
+  background: #1a0914;
+  display: grid;
+  place-items: center;
+  min-height: 46rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.init-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.init-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  width: min(100%, 40rem);
+}
+
+.init-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6cqw, 2.4rem);
+  line-height: 1.1;
+  color: #fcd116;
+  text-shadow: 0 0.15rem 0 rgb(0 0 0 / 0.5);
+}
+
+.init-text {
+  max-width: 30rem;
+  margin: 0;
+  font-size: 1.05rem;
+  text-shadow: 0 0.1rem 0 rgb(0 0 0 / 0.6);
+}
+
+.init-field {
+  width: 100%;
+  overflow: hidden;
+  border: 3px solid #fcd116;
+  border-radius: 0.9rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.rules {
+  --ghost-ink: #2b1d12;
+
+  display: grid;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 1.25rem;
+  text-align: left;
+  color: #2b1d12;
+  background: #fbf3e1;
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 0 rgb(0 0 0 / 0.4);
+}
+
+.rules-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.rules-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+  line-height: 1.4;
+}
+
+/* Movimiento: solo si el sistema lo permite y el estudiante no detuvo las animaciones */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .answer {
+      transition:
+        translate 0.15s,
+        border-color 0.15s,
+        background-color 0.15s;
+    }
+
+    .answer:hover:not([data-discarded]) {
+      translate: 0.2rem 0;
+    }
+
+    .hud-item[data-hot] .hud-icon {
+      animation: flame 0.9s ease-in-out infinite alternate;
+    }
+
+    .init-content {
+      animation: init-in 0.5s ease-out both;
+    }
+  }
+}
+
+@keyframes flame {
+  to {
+    scale: 1.2;
+    rotate: -6deg;
+  }
+}
+
+@keyframes init-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+/* Pantalla ancha: respuestas y controles en dos columnas, resumen en cuatro */
+@container (min-width: 40rem) {
+  .init {
+    min-height: 50rem;
+  }
+
+  .answers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container (max-width: 39.99rem) {
+}
+
+@media (max-width: 30rem) {
+  .cometa {
+    padding: 1rem 0.75rem;
+  }
+}
+
+/* El resto se ajusta al ancho del juego (no al de la ventana): el panel que lo contiene puede ser más estrecho que ella */
+@container (max-width: 29.99rem) {
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card,
+  .rules {
+    padding: 1rem;
+  }
+
+  .card-question {
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions .btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .card,
+  .rules,
+  .answer,
+  .btn,
+  .tool,
+  .hud-item {
+    border: 2px solid ButtonText;
+  }
+
+  .answer:has(.answer-input:focus-visible),
+  .btn:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+/* Tema de día: el cielo es claro, así que el marco y el marcador pasan a tonos azules */
+.cometa {
+  color: #12304a;
+  background: linear-gradient(180deg, #7cc4ff 0%, #cfeaff 30%, #d8f3ff 42%, #8fd36a 66%, #4a9a45 100%);
+}
+
+.screen {
+  background: #e6f6ff;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0.35rem 0 rgb(0 40 80 / 0.35);
+}
+
+.hud {
+  background: #cfe8fb;
+}
+
+.hud-item {
+  background: #ffffff;
+  border-color: #a9d3f2;
+}
+
+.hud-icon {
+  color: #e08a00;
+}
+
+.hud-item[data-id='streak'] .hud-icon {
+  color: #e8590c;
+}
+
+.hud-item[data-id='spool'] .hud-icon {
+  color: #2a6fb0;
+}
+
+.hud-item[data-id='height'] .hud-icon {
+  color: #1f7a4d;
+}
+
+.hud-label {
+  color: #3d5a73;
+}
+
+.hud-value {
+  color: #12304a;
+}
+
+.track-item {
+  color: #12304a;
+  background: #ffffff;
+  border-color: #2a6fb0;
+}
+
+.track-item[data-state='solved'] {
+  color: #ffffff;
+  background: #2e7d32;
+  border-color: #1b5e20;
+}
+
+.track-item[data-state='review'] {
+  border-style: dashed;
+  border-color: #12304a;
+}
+
+/* Escenario */
+.marker {
+  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 12%;
+}
+
+.bow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.streak {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--fx-color);
+  border-radius: 999px;
+}
+
+.summary-kicker {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #4a5a66;
+}
+
+.summary-text {
+  max-width: 32rem;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.medal[data-rank='2'] {
+  background: radial-gradient(circle at 35% 30%, #ffffff, #cfd8dc 55%, #90a4ae);
+  box-shadow: 0 0.25rem 0 #607d8b;
+}
+
+.medal[data-rank='3'] {
+  background: radial-gradient(circle at 35% 30%, #ffe0c2, #d8935a 55%, #a05a22);
+  box-shadow: 0 0.25rem 0 #7a3f12;
+}
+
+.medal[data-rank='4'] {
+  background: radial-gradient(circle at 35% 30%, #d7efff, #7cc4ff 55%, #2a6fb0);
+  box-shadow: 0 0.25rem 0 #1b4f80;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-stop-animations='true']) {
+    .cloud {
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .cloud-slow {
+      animation: drift 22s ease-in-out infinite alternate-reverse;
+    }
+
+    .sway {
+      animation: sway 2.6s ease-in-out infinite alternate;
+    }
+
+    .bow {
+      animation: pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+    }
+  }
+}
+
+@keyframes drift {
+  to {
+    translate: 46px 0;
+  }
+}
+
+@keyframes sway {
+  from {
+    rotate: -5deg;
+  }
+
+  to {
+    rotate: 5deg;
+  }
+}
+
+@keyframes pop {
+  from {
+    scale: 0;
+  }
+}
