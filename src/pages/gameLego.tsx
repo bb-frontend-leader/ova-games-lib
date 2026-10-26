@@ -38,16 +38,25 @@ export default function GameLegoPage() {
       recommendations={
         <ul>
           <li>
-            Cada pregunta tiene <strong>una sola respuesta correcta</strong> (<code>state=&quot;success&quot;</code>).
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1: cada actividad contiene una sola pregunta. Si
+            quieres más, envíalas todas y las ponemos en secciones distintas.
           </li>
-          <li>Usa entre 3 y 4 piezas: el modelo está pensado para ese número.</li>
           <li>
-            Empieza cada texto con su letra y un espacio (<code>A. Texto</code>): la letra se muestra en la pieza y en
-            el espacio donde encaja.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Escribe respuestas cortas: tienen que caber dentro de una pieza.</li>
           <li>
-            Con varias preguntas, usa un <code>name</code> distinto en cada una.
+            <strong>Respuestas:</strong> 3 o 4 respuestas, cada una en una pieza: textos cortos que quepan dentro de la
+            pieza, con <strong>una sola correcta</strong> (márcala). Escríbelas cortas y de longitud parecida.
+          </li>
+          <li>
+            <strong>Letra:</strong> empieza cada respuesta con su letra (A., B., C.…); la letra se muestra en la pieza.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid`}</pre>
           </li>
         </ul>
       }

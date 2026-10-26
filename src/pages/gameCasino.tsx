@@ -89,19 +89,28 @@ export default function GameCasinoPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 5 rondas mantienen el interés; cada ronda es una pregunta.</li>
-          <li>Usa 3 opciones por ronda, con una sola correcta.</li>
           <li>
-            La apuesta mínima es de 10 fichas, así que una pregunta fallada nunca deja al estudiante sin poder
-            continuar.
+            <strong>Cantidad de preguntas:</strong> mínimo 3, máximo 5. Cada pregunta es una ronda de apuestas.
           </li>
           <li>
-            Marca la última ronda con <code>last</code> y cambia la <code>key</code> de cada <code>Level</code> para que
-            el juego muestre la pregunta nueva.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Funciona mejor con preguntas que el estudiante sepa con distinto grado de seguridad: así decide cuánto
-            apostar.
+            <strong>Respuestas:</strong> 3 respuestas por pregunta, con <strong>una sola correcta</strong> (márcala).
+            Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Redacción:</strong> funciona mejor con preguntas que el estudiante domine con distinto grado de
+            seguridad: así decide cuánto apostar.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

@@ -58,16 +58,24 @@ export default function ActivitySelectGroupPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 5 filas, con el mismo número de elementos en las dos columnas.</li>
           <li>
-            Los <code>id</code> de todas las opciones (de las dos columnas) deben ser distintos entre sí.
+            <strong>Cantidad de filas:</strong> mínimo 3, máximo 5, con el mismo número de elementos en las dos
+            columnas.
           </li>
           <li>
-            Primero van todos los menús de la columna A y luego todos los de la columna B: así la actividad sabe a qué
-            columna pertenece cada uno.
+            <strong>Cada fila:</strong> un elemento de la columna A y el de la columna B que le corresponde (por
+            ejemplo, animal y sonido).
           </li>
           <li>
-            Describe las parejas válidas en <code>correctAnswers</code>; el orden de las filas no importa.
+            <strong>Opciones:</strong> todas distintas entre sí, también entre columnas. El orden de las filas no
+            importa.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Columna A | Columna B
+Perro → Ladra
+Gato → Maúlla
+Vaca → Muge`}</pre>
           </li>
         </ul>
       }

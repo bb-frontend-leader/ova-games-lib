@@ -69,13 +69,24 @@ export default function ActivityCrosswordPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 6 palabras. Con más, la cuadrícula crece y se vuelve difícil de ver en el celular.</li>
           <li>
-            Cada palabra se ubica con <code>row</code>, <code>col</code> y <code>direction</code> (<code>across</code> o{' '}
-            <code>down</code>); la numeración se calcula sola.
+            <strong>Cantidad de palabras:</strong> mínimo 3, máximo 6: con más, la cuadrícula crece y se vuelve difícil
+            de ver en el celular.
           </li>
-          <li>Donde dos palabras se cruzan, la letra de la celda debe ser la misma en ambas.</li>
-          <li>Escribe pistas cortas y sin repetir la respuesta dentro de ellas.</li>
+          <li>
+            <strong>Cada palabra:</strong> una respuesta sin espacios y una <strong>pista corta</strong> que no contenga
+            la respuesta.
+          </li>
+          <li>
+            <strong>Cruces:</strong> procura que algunas palabras compartan letras; donde se crucen, la letra debe ser
+            la misma en ambas. Nosotros armamos la cuadrícula y la numeración.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`1) Pista: Planeta rojo. → MARTE
+2) Pista: Satélite de la Tierra. → LUNA
+3) ...`}</pre>
+          </li>
         </ul>
       }
     >

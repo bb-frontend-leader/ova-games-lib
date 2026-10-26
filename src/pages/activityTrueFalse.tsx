@@ -45,13 +45,17 @@ export default function ActivityTrueFalsePage() {
       recommendations={
         <ul>
           <li>
-            Entre 3 y 5 enunciados por actividad. Pasa a <code>minSelected</code> el número de enunciados: «Comprobar»
-            se habilita cuando todos tienen respuesta.
+            <strong>Cantidad de enunciados:</strong> mínimo 3, máximo 5 por actividad.
           </li>
-          <li>Mezcla verdaderos y falsos: si todos son verdaderos, el estudiante lo notará.</li>
-          <li>Escribe afirmaciones cortas y sin dobles negaciones.</li>
           <li>
-            Cada enunciado es un grupo con su propio <code>name</code>.
+            <strong>Cada enunciado:</strong> una afirmación corta, sin dobles negaciones. Mezcla verdaderos y falsos: si
+            todos son verdaderos, el estudiante lo notará.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`1) La Tierra es plana. → Falso
+2) El agua hierve a 100 °C al nivel del mar. → Verdadero
+3) ...`}</pre>
           </li>
         </ul>
       }

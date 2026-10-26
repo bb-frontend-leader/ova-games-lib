@@ -42,14 +42,24 @@ export default function ActivityCheckboxPage() {
       recommendations={
         <ul>
           <li>
-            Pasa a <code>minSelected</code> cuántas opciones correctas hay: «Comprobar» se habilita al marcar esa
-            cantidad.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1 por actividad. Si quieres más, envíalas todas y
+            las ponemos en secciones distintas.
           </li>
-          <li>Entre 4 y 6 opciones, con 2 o 3 correctas.</li>
-          <li>Di en el enunciado cuántas debe marcar («Marca las tres opciones…»): evita adivinar la cantidad.</li>
           <li>
-            Marca las correctas con <code>state=&quot;success&quot;</code> y las demás con{' '}
-            <code>state=&quot;wrong&quot;</code>.
+            <strong>Respuestas:</strong> mínimo 4, máximo 6 opciones, con <strong>2 o 3 correctas</strong> (márcalas
+            todas).
+          </li>
+          <li>
+            <strong>Enunciado:</strong> di cuántas opciones debe marcar («Marca las tres opciones…»): así se evita
+            adivinar la cantidad.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta: Marca los dos números pares.
+A) 2 (correcta)
+B) 3
+C) 4 (correcta)
+D) 7`}</pre>
           </li>
         </ul>
       }

@@ -127,6 +127,18 @@
   margin-block-start: 0.35rem;
 }
 
+.panel__content pre {
+  margin: 0.4rem 0 0;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 70%);
+  font-family: inherit;
+  font-size: 0.9em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
 @media screen and (max-width: 48rem) {
   .info__grid {
     grid-template-columns: minmax(0, 1fr);

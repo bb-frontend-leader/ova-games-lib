@@ -37,13 +37,26 @@ export default function GameBotlesPage() {
       recommendations={
         <ul>
           <li>
-            Cada botella es una letra: usa palabras de entre 4 y 8 letras para que quepan las botellas en pantalla.
+            <strong>Cantidad de palabras:</strong> mínimo 1, máximo 1 por actividad. Si quieres más, envíalas todas y
+            las ponemos en secciones distintas.
           </li>
           <li>
-            Escribe <code>word</code> en mayúsculas y sin espacios.
+            <strong>Longitud de la palabra:</strong> mínimo 4 letras, máximo 8: cada botella es una letra y deben caber
+            en pantalla.
           </li>
-          <li>Elige palabras conocidas y sin letras repetidas en exceso: así el reto es ordenar, no adivinar.</li>
-          <li>Si la palabra responde a una pista, escríbela en el enunciado de tu OVA, antes del juego.</li>
+          <li>
+            <strong>Cada palabra:</strong> conocida por el estudiante, sin espacios y sin muchas letras repetidas: el
+            reto es ordenar, no adivinar.
+          </li>
+          <li>
+            <strong>Pista:</strong> si la palabra responde a una pista o pregunta, envíala también para ponerla antes
+            del juego.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pista: Satélite natural de la Tierra.
+Palabra: LUNA`}</pre>
+          </li>
         </ul>
       }
     >

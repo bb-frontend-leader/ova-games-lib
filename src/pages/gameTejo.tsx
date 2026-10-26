@@ -91,15 +91,23 @@ export default function GameTejoPage() {
       recommendations={
         <ul>
           <li>
-            Termina cuando <strong>todas las preguntas están acertadas</strong> y se lanzó el último tejo.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Cada pregunta da un tejo.
           </li>
           <li>
-            Una «moñona» (embocinar y reventar una mecha a la vez) da más puntos; cada tres aciertos seguidos se gana un
-            pulso firme.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Con 5 a 8 preguntas la partida dura lo justo.</li>
           <li>
-            Usa 3 o 4 opciones por pregunta, con un <code>id</code> único y estable.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

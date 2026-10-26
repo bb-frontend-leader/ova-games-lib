@@ -37,16 +37,26 @@ export default function GameBalloonsPage() {
       recommendations={
         <ul>
           <li>
-            Divide la oración en <strong>entre 4 y 8 globos</strong>: con más, el cielo se llena y cuesta leer cada uno.
+            <strong>Cantidad de oraciones:</strong> mínimo 1, máximo 1 por actividad. Si quieres más, envíalas todas y
+            las ponemos en secciones distintas.
           </li>
           <li>
-            Los fragmentos de <code>words</code>, unidos con un espacio y en orden, deben dar exactamente la oración de{' '}
-            <code>sentence</code> (incluidas tildes y puntuación).
+            <strong>Cantidad de globos:</strong> mínimo 4, máximo 8 fragmentos por oración: con más, el cielo se llena y
+            cuesta leer cada uno.
           </li>
           <li>
-            Agrupa palabras que van juntas («alrededor del Sol») en un solo globo: ordenar es más fácil y natural.
+            <strong>Cada oración:</strong> escríbela completa, con tildes y puntuación, y con un solo orden posible para
+            que no haya respuestas válidas distintas.
           </li>
-          <li>Usa oraciones con un solo orden posible para que no haya respuestas válidas distintas.</li>
+          <li>
+            <strong>Fragmentos:</strong> agrupa en un mismo globo las palabras que van juntas («alrededor del Sol»); así
+            ordenar es más natural.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Oración: La Tierra gira alrededor del Sol.
+Globos: La Tierra | gira | alrededor del Sol.`}</pre>
+          </li>
         </ul>
       }
     >

@@ -74,16 +74,29 @@ export default function GameBasketballPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 5 tiros hacen un partido corto; más de 8 se vuelve repetitivo.</li>
-          <li>Usa 3 opciones por tiro (cada una es una canasta) y una sola correcta.</li>
           <li>
-            Cambia la <code>key</code> de <code>GameBasketball.Provider</code> en cada tiro: así el juego se reinicia
-            con la pregunta nueva.
+            <strong>Cantidad de preguntas:</strong> mínimo 3, máximo 8. Entre 3 y 5 tiros hacen un partido corto; con
+            más de 8 se vuelve repetitivo.
           </li>
           <li>
-            Marca el último tiro con <code>last</code>: es el que muestra el resumen final del partido.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Redacta preguntas cortas; el texto se muestra sobre la cancha.</li>
+          <li>
+            <strong>Respuestas:</strong> 3 respuestas (cada una es una canasta) por pregunta, con{' '}
+            <strong>una sola correcta</strong> (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Redacción:</strong> preguntas cortas: el texto se muestra sobre la cancha.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

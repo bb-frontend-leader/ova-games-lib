@@ -52,16 +52,23 @@ export default function ActivityRelationConceptPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 6 parejas (6 a 12 tarjetas).</li>
           <li>
-            Dos tarjetas forman una pareja cuando comparten el mismo <code>pair</code>; cada tarjeta lleva un{' '}
-            <code>id</code> único.
+            <strong>Cantidad de parejas:</strong> mínimo 3, máximo 6 (de 6 a 12 tarjetas).
           </li>
           <li>
-            Una tarjeta puede ser una imagen: usa un <code>label</code> que termine en <code>.svg</code>,{' '}
-            <code>.webp</code> o <code>.png</code> y agrega su <code>alt</code>.
+            <strong>Cada pareja:</strong> dos tarjetas que se relacionan: concepto y definición, palabra y traducción,
+            término e imagen.
           </li>
-          <li>Escribe textos cortos: las tarjetas son pequeñas.</li>
+          <li>
+            <strong>Textos:</strong> cortos: las tarjetas son pequeñas. Una tarjeta puede ser una imagen (envíala como
+            archivo, con una breve descripción).
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pareja 1: Mamífero — Ballena
+Pareja 2: Reptil — Serpiente
+Pareja 3: ...`}</pre>
+          </li>
         </ul>
       }
     >

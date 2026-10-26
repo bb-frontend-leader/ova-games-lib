@@ -37,14 +37,25 @@ export default function GameThisOrThatPage() {
       recommendations={
         <ul>
           <li>
-            Usa <strong>exactamente 2 opciones</strong>: es lo que da sentido al «esto o aquello».
+            <strong>Cantidad de preguntas:</strong> mínimo 3, máximo 6. Como hay un 50 % de acierto al azar, úsalo con
+            varias preguntas seguidas.
           </li>
           <li>
-            Pensado para conceptos que se confunden entre sí (mamífero o reptil, sustantivo o verbo, vertebrado o
-            invertebrado).
+            <strong>Cada pregunta:</strong> un concepto que se confunde con otro (mamífero o reptil, sustantivo o verbo,
+            vertebrado o invertebrado).
           </li>
-          <li>Como hay un 50 % de acierto al azar, úsalo con varias preguntas seguidas o junto a otro juego.</li>
-          <li>Escribe las dos opciones con textos de longitud parecida.</li>
+          <li>
+            <strong>Respuestas:</strong> <strong>exactamente 2 opciones</strong>, una correcta (márcala), de longitud
+            parecida.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿La ballena es…?
+A) Mamífero (correcta)
+B) Pez
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

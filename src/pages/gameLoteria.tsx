@@ -58,17 +58,22 @@ export default function GameLoteriaPage() {
       recommendations={
         <ul>
           <li>
-            Aquí cada pregunta no lleva opciones: lleva una <strong>pista</strong> y la <code>card</code> que la
-            responde (nombre y <code>emoji</code> o <code>image</code>).
+            <strong>Cantidad de preguntas:</strong> mínimo 6, máximo 12: la tabla se arma con una carta por pregunta.
           </li>
-          <li>La tabla se arma con las cartas de todas las preguntas: usa entre 6 y 12 para que se vea bien.</li>
           <li>
-            Escribe pistas que solo describan una carta de la tabla; si dos cartas pueden responder, el estudiante se
-            confunde.
+            <strong>Cada pregunta:</strong> aquí no hay opciones: es una <strong>pista</strong> que describe una sola
+            carta de la tabla. Si dos cartas pueden responderla, el estudiante se confunde.
           </li>
-          <li>Los nombres de las cartas deben ser cortos (una palabra) y distintos entre sí.</li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable, y debes pasarlas como constante.
+            <strong>Cada carta:</strong> un nombre corto (una palabra), distinto al de las demás, y un emoji o una
+            imagen que la represente.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pista 1: Vuela y canta en los árboles.
+Carta: Pájaro 🐦
+
+Pista 2: ...`}</pre>
           </li>
         </ul>
       }

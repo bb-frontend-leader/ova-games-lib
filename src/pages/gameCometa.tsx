@@ -91,15 +91,24 @@ export default function GameCometaPage() {
       recommendations={
         <ul>
           <li>
-            Termina cuando <strong>todas las preguntas están acertadas</strong> y la cometa llegó a la cima.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Cada pregunta hace subir la cometa; con 5 a 8 la
+            partida dura lo justo.
           </li>
-          <li>Cada tres aciertos seguidos se gana un carrete de reserva: la próxima ráfaga no hace perder altura.</li>
           <li>
-            El puesto final (de 1 a 4) depende de los aciertos a la primera: anima a leer con calma antes de responder.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Usa 3 o 4 opciones por pregunta y entre 5 y 8 preguntas.</li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable, y debes pasarlas como constante.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

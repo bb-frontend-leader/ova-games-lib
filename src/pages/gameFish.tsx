@@ -86,18 +86,26 @@ export default function GameFishPage() {
       recommendations={
         <ul>
           <li>
-            Cada pregunta debe tener <strong>una sola respuesta correcta</strong> entre todos los peces.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 6. Cada pregunta tiene su propia pecera.
           </li>
-          <li>Usa entre 4 y 6 peces: con menos es muy fácil acertar al azar y con más la pecera se llena.</li>
           <li>
-            Puedes formular la pregunta de forma directa (¿cuál es…?) o como una frase por completar con{' '}
+            <strong>Cada pregunta:</strong> una pregunta directa («¿cuál es…?») o una frase por completar con{' '}
             <code>___</code>.
           </li>
-          <li>Escribe respuestas de una o dos palabras: el texto va dentro de cada pez.</li>
-          <li>Evita respuestas casi iguales: el estudiante tiene que poder distinguirlas de un vistazo.</li>
           <li>
-            Con varias preguntas, usa un <code>id</code> y un <code>name</code> distintos por pregunta; si se repiten,
-            las opciones de una pecera se mezclan con las de otra.
+            <strong>Respuestas:</strong> de <strong>4 a 6 peces</strong> por pregunta, con{' '}
+            <strong>una sola correcta</strong> (márcala). De una o dos palabras, bien distintas entre sí: con menos
+            peces es fácil acertar al azar y con más la pecera se llena.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: El agua hierve a ___ grados Celsius.
+A) 100 (correcta)
+B) 50
+C) 80
+D) 120
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

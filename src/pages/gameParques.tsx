@@ -91,15 +91,23 @@ export default function GameParquesPage() {
       recommendations={
         <ul>
           <li>
-            La partida termina cuando <strong>todas las preguntas están acertadas</strong>: gana quien tenga sus fichas
-            más cerca del cielo.
-          </li>
-          <li>Es un juego largo: usa 5 a 8 preguntas.</li>
-          <li>
-            Un estudiante que aún no conoce el parqués necesita leer con calma las reglas de la pantalla de inicio.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Es un juego largo.
           </li>
           <li>
-            Usa 3 o 4 opciones por pregunta, con un <code>id</code> único y estable.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

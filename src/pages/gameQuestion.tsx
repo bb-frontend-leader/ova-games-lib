@@ -37,15 +37,28 @@ export default function GameQuestionPage() {
       }
       recommendations={
         <ul>
-          <li>Usa entre 3 y 4 opciones, con una sola correcta.</li>
           <li>
-            Pasa a <code>questionNumber</code> el número de la pregunta si tu OVA tiene varias en seguidilla.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1: cada actividad contiene una sola pregunta. Si
+            quieres más, envíalas todas y las ponemos en secciones distintas.
           </li>
           <li>
-            Los espacios en blanco se escriben con guiones bajos (<code>______</code>): el enunciado queda como una
-            frase por completar.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Escribe las opciones con una longitud parecida, para que la correcta no destaque por ser más larga.</li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas, de longitud parecida para que la correcta no destaque por ser
+            más larga, con <strong>una sola correcta</strong> (márcala). Escríbelas cortas y de longitud parecida.
+          </li>
+          <li>
+            <strong>Frase por completar:</strong> si quieres un espacio en blanco, escríbelo con guiones bajos (
+            <code>______</code>).
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid`}</pre>
+          </li>
         </ul>
       }
     >

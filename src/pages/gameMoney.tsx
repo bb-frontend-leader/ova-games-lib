@@ -38,12 +38,30 @@ export default function GameMoneyPage() {
       }
       recommendations={
         <ul>
-          <li>Cada juego contiene una sola pregunta: para varias, usa varias instancias en secciones distintas.</li>
-          <li>Usa 3 opciones, con una sola correcta y respuestas cortas.</li>
           <li>
-            Escribe un texto de inicio breve en <code>textInit</code>: dice al estudiante qué se espera de él.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1: cada actividad contiene una sola pregunta. Si
+            quieres más, envíalas todas y las ponemos en secciones distintas.
           </li>
-          <li>La pregunta debe poder responderse sin ayuda externa: el juego no ofrece pistas.</li>
+          <li>
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 respuestas, cortas, con <strong>una sola correcta</strong> (márcala).
+            Escríbelas cortas y de longitud parecida.
+          </li>
+          <li>
+            <strong>Texto de inicio:</strong> una frase breve que diga al estudiante qué se espera de él.
+          </li>
+          <li>
+            <strong>Cuidado:</strong> la pregunta debe poder responderse sin ayuda externa: el juego no ofrece pistas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid`}</pre>
+          </li>
         </ul>
       }
     >

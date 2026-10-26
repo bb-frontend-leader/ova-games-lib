@@ -92,14 +92,24 @@ export default function GameSlotsPage() {
       recommendations={
         <ul>
           <li>
-            Se gana cuando <strong>todas las preguntas están acertadas</strong> y todas las tiradas se hicieron.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Cada pregunta da una tirada.
           </li>
-          <li>Cada pregunta da una tirada: con 5 a 8 preguntas la partida dura lo justo.</li>
-          <li>Cada tres aciertos seguidos se gana una tirada extra, y el jackpot regala otra.</li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
-          <li>Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida.</li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

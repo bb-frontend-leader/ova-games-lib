@@ -145,23 +145,33 @@ export default function GameJeopardyPage() {
       recommendations={
         <ul>
           <li>
-            Se gana cuando <strong>todas las casillas están acertadas</strong>.
+            <strong>Cantidad de categorías:</strong> mínimo 3, máximo 6.
           </li>
           <li>
-            El máximo recomendado es de 6 categorías de hasta 5 preguntas; para un OVA, 3 categorías de 3 preguntas se
-            juegan bien.
+            <strong>Preguntas por categoría:</strong> mínimo 3, máximo 5. Para un OVA, 3 categorías de 3 preguntas se
+            juegan muy bien.
           </li>
           <li>
-            Ordena las preguntas de cada categoría de la más fácil a la más difícil: la primera es la de menos puntos.
+            <strong>Orden:</strong> dentro de cada categoría, de la pregunta más fácil a la más difícil: la primera es
+            la que menos puntos vale.
           </li>
           <li>
-            Cada pregunta necesita un <code>id</code> único en todo el tablero; las categorías también.
+            <strong>Respuestas:</strong> 3 o 4 por pregunta, con <strong>una sola correcta</strong> (márcala), cortas y
+            de longitud parecida.
           </li>
           <li>
-            Con <code>dailyDoubles</code> eliges cuántas apuestas dobles se esconden (<code>0</code> las quita) y con{' '}
-            <code>lifelines</code> cuántos comodines 50:50 tiene el estudiante.
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Categoría: Geografía
+  Pregunta 1 (fácil): ¿Cuál es la capital de Colombia?
+  A) Bogotá (correcta)
+  B) Medellín
+  C) Cali
+  Pregunta 2 (media): ...
+  Pregunta 3 (difícil): ...
+
+Categoría: Ciencias
+  ...`}</pre>
           </li>
-          <li>Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida.</li>
         </ul>
       }
     >

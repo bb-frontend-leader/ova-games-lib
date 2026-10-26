@@ -95,20 +95,27 @@ export default function GameMillionsPage() {
       recommendations={
         <ul>
           <li>
-            La página lleva el control de la partida: la pregunta actual, el <code>money</code> acumulado y cuáles ya se
-            resolvieron (<code>solved</code>), para que «Atrás» muestre la respuesta correcta ya marcada.
-          </li>
-          <li>Usa entre 3 y 5 respuestas por pregunta, con una sola correcta.</li>
-          <li>
-            Puedes escribir la pregunta como una frase por completar con <code>___</code>: la respuesta elegida cae en
-            el espacio.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 10. El estudiante suma un millón por acierto.
           </li>
           <li>
-            Pasa <code>onFinish</code> en la última pregunta para mostrar <code>GameMilions.End</code>, con el total y
-            «Jugar de nuevo».
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Usa un <code>id</code> distinto por cada respuesta y un <code>name</code> distinto por cada pregunta.
+            <strong>Respuestas:</strong> 3 a 5 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Redacción:</strong> puedes escribir la pregunta como una frase por completar con <code>___</code>:
+            la respuesta elegida cae en el espacio.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

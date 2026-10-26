@@ -91,12 +91,23 @@ export default function GameRanaPage() {
       recommendations={
         <ul>
           <li>
-            Termina cuando <strong>todas las preguntas están acertadas</strong> y se lanzó la última moneda.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Cada pregunta da una moneda.
           </li>
-          <li>En cada turno un hoyo vale el doble; la racha y la «mano firme» suben la probabilidad.</li>
-          <li>Con 5 a 8 preguntas la partida dura lo justo.</li>
           <li>
-            Usa 3 o 4 opciones por pregunta, con un <code>id</code> único y estable.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

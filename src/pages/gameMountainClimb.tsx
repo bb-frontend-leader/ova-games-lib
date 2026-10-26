@@ -100,15 +100,24 @@ export default function GameMountainClimbPage() {
       recommendations={
         <ul>
           <li>
-            Termina al <strong>llegar a la cumbre</strong>, es decir, cuando todas las preguntas están acertadas.
-          </li>
-          <li>Usa 6 o más preguntas: con menos no alcanza a haber campamentos.</li>
-          <li>Cada tres aciertos seguidos se recupera una fuerza.</li>
-          <li>
-            Las preguntas de los tramos perdidos en una caída se repiten: conviene tener un buen banco de preguntas.
+            <strong>Cantidad de preguntas:</strong> mínimo 6, máximo 10. Con menos de 6 no alcanza a haber campamentos;
+            al caer se repiten preguntas, así que conviene tener un buen banco.
           </li>
           <li>
-            Usa 3 o 4 opciones por pregunta, con un <code>id</code> único y estable.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

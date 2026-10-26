@@ -45,17 +45,22 @@ export default function GameMemoryCardPage() {
       recommendations={
         <ul>
           <li>
-            El tablero es de <strong>8 tarjetas (4 parejas)</strong>: ni más ni menos.
+            <strong>Cantidad de parejas:</strong> exactamente <strong>4 parejas</strong> (8 tarjetas): ni más ni menos.
           </li>
           <li>
-            Las dos tarjetas de una pareja comparten el mismo <code>id</code>; cada pareja debe tener un <code>id</code>{' '}
-            distinto.
+            <strong>Cada pareja:</strong> dos tarjetas que se completan entre sí: país y capital, palabra y definición
+            corta, término y símbolo.
           </li>
           <li>
-            Relaciona conceptos que se completen entre sí (país y capital, palabra y definición corta, término y
-            símbolo).
+            <strong>Textos:</strong> una o dos palabras por tarjeta, para que se lean al voltearlas.
           </li>
-          <li>Mantén los textos de las tarjetas en una o dos palabras para que se lean al voltearlas.</li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pareja 1: Colombia — Bogotá
+Pareja 2: Francia — París
+Pareja 3: ...
+Pareja 4: ...`}</pre>
+          </li>
         </ul>
       }
     >

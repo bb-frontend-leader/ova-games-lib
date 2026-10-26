@@ -99,13 +99,24 @@ export default function GameTreasureMapPage() {
       }
       recommendations={
         <ul>
-          <li>Cada pregunta es una isla: con 5 a 8 preguntas el mapa queda equilibrado.</li>
           <li>
-            Se termina cuando <strong>todas las islas están exploradas</strong>.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Cada pregunta es una isla del mapa.
           </li>
-          <li>Usa de 2 a 5 respuestas por pregunta (3 o 4 queda mejor), con una sola correcta.</li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable, y debes pasarlas como constante.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 2 a 5 respuestas (lo mejor son 3 o 4) por pregunta, con{' '}
+            <strong>una sola correcta</strong> (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

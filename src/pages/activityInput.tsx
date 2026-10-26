@@ -37,14 +37,27 @@ export default function ActivityInputPage() {
       recommendations={
         <ul>
           <li>
-            Cada campo acepta varias respuestas válidas (<code>correctAnswers</code>): inclúyelas con y sin tilde y los
-            sinónimos más comunes.
+            <strong>Cantidad de campos:</strong> mínimo 2, máximo 4 por actividad.
           </li>
-          <li>Prefiere respuestas de una o dos palabras: son más fáciles de escribir y de validar.</li>
           <li>
-            Usa <code>maxLength</code> para limitar el largo y <code>hint</code> para decir qué formato se espera.
+            <strong>Cada campo:</strong> una pregunta o frase con un espacio por completar, con respuesta de una o dos
+            palabras: son más fáciles de escribir y de validar.
           </li>
-          <li>Entre 2 y 4 campos por actividad.</li>
+          <li>
+            <strong>Respuestas válidas:</strong> envía todas las que aceptes por campo: con y sin tilde, y los sinónimos
+            más comunes.
+          </li>
+          <li>
+            <strong>Ayuda:</strong> si hace falta, indica el formato esperado (por ejemplo «escribe en minúsculas») y el
+            máximo de caracteres.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Campo 1: La capital de Colombia es ___.
+Respuestas válidas: Bogotá | Bogota
+
+Campo 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

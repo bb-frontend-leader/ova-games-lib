@@ -91,13 +91,23 @@ export default function GameLaneRacePage() {
       recommendations={
         <ul>
           <li>
-            La carrera termina cuando <strong>todas las preguntas están acertadas</strong>: el último acierto cruza la
-            meta.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. Con más preguntas la carrera se alarga.
           </li>
-          <li>Cada respuesta es un carril, así que usa entre 2 y 5 respuestas por pregunta (3 o 4 queda mejor).</li>
-          <li>Con más preguntas la carrera es más larga: 5 a 8 es un buen número.</li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable, y debes pasarlas como constante.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 2 a 5 respuestas (lo mejor son 3 o 4); cada una es un carril por pregunta, con{' '}
+            <strong>una sola correcta</strong> (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

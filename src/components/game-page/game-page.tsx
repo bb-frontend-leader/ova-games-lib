@@ -13,7 +13,7 @@ interface Props {
   correct: React.ReactNode;
   /** Qué pasa cuando el estudiante responde mal. */
   incorrect: React.ReactNode;
-  /** Consejos para el docente: cuántas preguntas, cuántas opciones, qué cuidar al redactar. */
+  /** Guía para el docente: mínimo y máximo de preguntas, cómo redactarlas y un ejemplo del formato en que enviarlas. */
   recommendations: React.ReactNode;
   /** El juego o la actividad en funcionamiento (y sus modales). */
   children: React.ReactNode;
@@ -68,7 +68,7 @@ export const GamePage: React.FC<Props> = ({ link, description, correct, incorrec
           </article>
 
           <article className={`${css.panel} ${css.panel_wide} ${css.panel_tips}`}>
-            <h3 className={css.panel__title}>Recomendaciones para tu OVA</h3>
+            <h3 className={css.panel__title}>Recomendaciones docente</h3>
             <div className={css.panel__content}>{recommendations}</div>
           </article>
         </div>

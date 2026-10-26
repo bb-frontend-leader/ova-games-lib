@@ -94,18 +94,28 @@ export default function GameStopCardPage() {
       recommendations={
         <ul>
           <li>
-            <strong>El máximo es de 10 preguntas</strong> (10 paradas). Para un OVA, entre 4 y 6 mantienen el ritmo del
-            recorrido.
+            <strong>Cantidad de preguntas:</strong> mínimo 4, máximo 10. Cada pregunta es una parada de la ruta; para un
+            OVA, entre 4 y 6 mantienen el ritmo.
           </li>
           <li>
-            Pasa a <code>questionCount</code> el mismo número de paradas que escribas: si no coinciden, el camino no
-            termina bien.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Los <code>id</code> de las paradas deben terminar en su número (<code>stop-1</code>, <code>stop-2</code>…).
+            <strong>Respuestas:</strong> 2 o 3 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
           </li>
-          <li>Usa entre 2 y 3 opciones por pregunta, con una sola correcta y respuestas cortas.</li>
-          <li>Ordena las preguntas de la más fácil a la más difícil: el estudiante gana confianza mientras avanza.</li>
+          <li>
+            <strong>Orden:</strong> de la más fácil a la más difícil: el estudiante gana confianza mientras avanza.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

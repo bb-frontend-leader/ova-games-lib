@@ -60,12 +60,25 @@ export default function ActivityPairLogicPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 4 y 6 parejas: con más, el tablero se vuelve largo en el celular.</li>
           <li>
-            Cada pareja lleva un <code>id</code> único, una imagen con su <code>alt</code> y un texto corto.
+            <strong>Cantidad de parejas:</strong> mínimo 4, máximo 6: con más, el tablero se vuelve largo en el celular.
           </li>
-          <li>Usa imágenes del mismo tamaño y estilo: así la forma no delata la respuesta.</li>
-          <li>La actividad mezcla el orden de los textos sola; no tienes que desordenarlos.</li>
+          <li>
+            <strong>Cada pareja:</strong> una imagen y un texto corto. Usa imágenes del mismo tamaño y estilo, para que
+            la forma no delate la respuesta.
+          </li>
+          <li>
+            <strong>Imágenes:</strong> envía cada imagen como archivo, con una breve descripción para lectores de
+            pantalla.
+          </li>
+          <li>
+            <strong>Orden:</strong> no te preocupes por desordenarlas: la actividad mezcla los textos sola.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pareja 1: imagen-gato.png (Un gato) — «Gato»
+Pareja 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

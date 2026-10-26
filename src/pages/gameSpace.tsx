@@ -38,13 +38,24 @@ export default function GameSpacePage() {
       recommendations={
         <ul>
           <li>
-            Cada galaxia es una pregunta con <strong>2 a 4 opciones</strong>: cada opción es un planeta.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 5: cada pregunta es una galaxia. Si prefieres una
+            sola por sección, envíalas todas y las repartimos.
           </li>
-          <li>Escribe respuestas muy cortas (una o dos palabras): el texto va junto a cada planeta.</li>
           <li>
-            Elige el fondo con <code>universeType</code> (<code>1</code> o <code>2</code>) para variar entre preguntas.
+            <strong>Respuestas:</strong> <strong>2 a 4</strong> por pregunta (cada una es un planeta), con{' '}
+            <strong>una sola correcta</strong> (márcala). Muy cortas: una o dos palabras.
           </li>
-          <li>Funciona muy bien para preguntas de ciencias, pero sirve para cualquier tema.</li>
+          <li>
+            <strong>Temas:</strong> funciona muy bien para ciencias, pero sirve para cualquier tema.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es el planeta más cercano al Sol?
+A) Mercurio (correcta)
+B) Venus
+C) La Tierra
+D) Marte`}</pre>
+          </li>
         </ul>
       }
     >

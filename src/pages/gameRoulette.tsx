@@ -106,24 +106,28 @@ export default function GameRoulettePage() {
       recommendations={
         <ul>
           <li>
-            Se gana cuando <strong>todas las preguntas están acertadas</strong>: el estudiante no termina si deja una
-            casilla pendiente.
+            <strong>Cantidad de preguntas:</strong> mínimo 6, máximo 16. Lo recomendado es de 6 a 10; con más de 16 el
+            texto no cabe en la ruleta.
           </li>
           <li>
-            Usa entre 6 y 10 preguntas; el máximo recomendado es 16, porque con más casillas el texto no cabe en la
-            ruleta.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Escribe en <code>category</code> el tema de cada pregunta (una palabra): aparece sobre su casilla.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
           </li>
           <li>
-            Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida y con 2 opciones la otra sería obvia.
+            <strong>Tema:</strong> una palabra por pregunta (ej. «Geografía»): aparece sobre su casilla en la ruleta.
           </li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable.
-          </li>
-          <li>
-            Con <code>specials={[]}</code> quitas el comodín y el doble.
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1 — Tema: Geografía
+¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2 — Tema: ...`}</pre>
           </li>
         </ul>
       }

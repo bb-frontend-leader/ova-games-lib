@@ -45,12 +45,26 @@ export default function GameCastlePage() {
       recommendations={
         <ul>
           <li>
-            La pregunta lleva <code>question</code>, <code>answers</code> y <code>correct</code>: la respuesta correcta
-            debe ser <strong>idéntica</strong> a una de las opciones.
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1: cada actividad contiene una sola pregunta. Si
+            quieres más, envíalas todas y las ponemos en secciones distintas.
           </li>
-          <li>Usa entre 3 y 4 respuestas: cada una es un bloque y con más se apelmazan.</li>
-          <li>Escribe respuestas cortas (una o dos palabras): el texto va dentro del bloque.</li>
-          <li>Evita respuestas repetidas: el bloque se identifica por su texto.</li>
+          <li>
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas, cada una en un bloque del castillo: de una o dos palabras,
+            con <strong>una sola correcta</strong> (márcala). Escríbelas cortas y de longitud parecida.
+          </li>
+          <li>
+            <strong>Cuidado:</strong> no repitas respuestas: cada bloque se identifica por su texto.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid`}</pre>
+          </li>
         </ul>
       }
     >

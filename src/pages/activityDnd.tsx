@@ -50,14 +50,25 @@ export default function ActivityDndPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 5 fichas: en pantallas pequeñas arrastrar cuesta más cuando hay muchas.</li>
           <li>
-            Pasa a <code>minCorrectDrags</code> el número de fichas que deben quedar bien.
+            <strong>Cantidad de fichas:</strong> mínimo 3, máximo 5: en pantallas pequeñas arrastrar cuesta más cuando
+            hay muchas.
           </li>
           <li>
-            Cada zona indica con <code>validate</code> el <code>id</code> de la ficha que acepta.
+            <strong>Cada ficha:</strong> un texto corto que debe ir a una zona (un espacio en una frase o un grupo).
           </li>
-          <li>Pon las fichas en un orden distinto al de las zonas, para que no se resuelva de arriba abajo.</li>
+          <li>
+            <strong>Zonas:</strong> una zona por ficha, cada una con la ficha que le corresponde.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Frase: El Sol es una ___ y la Luna es un ___.
+Fichas: estrella | satélite
+
+Ficha → zona:
+estrella → primer espacio
+satélite → segundo espacio`}</pre>
+          </li>
         </ul>
       }
     >

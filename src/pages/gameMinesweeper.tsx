@@ -101,20 +101,25 @@ export default function GameMinesweeperPage() {
       recommendations={
         <ul>
           <li>
-            Se gana cuando <strong>todas las casillas seguras están despejadas</strong>.
+            <strong>Cantidad de preguntas:</strong> mínimo 6, máximo 9. Cada pregunta es una casilla segura; se esconde
+            una mina por cada tres preguntas.
           </li>
           <li>
-            Cada pregunta es una casilla segura; por defecto se esconde una mina por cada tres preguntas. Con 6 a 9
-            preguntas el campo queda bien.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Con <code>columns</code> (4 por defecto) cambias el ancho del campo y con <code>mines</code> el mínimo de
-            minas.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
           </li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable.
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
-          <li>Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida.</li>
         </ul>
       }
     >

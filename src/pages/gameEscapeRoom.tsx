@@ -83,20 +83,28 @@ export default function GameEscapeRoomPage() {
       recommendations={
         <ul>
           <li>
-            Termina cuando <strong>se abre la puerta de la última sala</strong>; las pistas que sobran suman al final.
+            <strong>Cantidad de preguntas:</strong> mínimo 4, máximo 8. Cada sala tiene 4 preguntas: envía 4 para una
+            sala u 8 para dos (siempre múltiplos de 4).
           </li>
           <li>
-            Cada objeto es una pregunta. Por defecto cada sala tiene 4 objetos (<code>perRoom</code>): usa 4 preguntas
-            para una sala u 8 para dos.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Las salas salen de dividir las preguntas entre <code>perRoom</code>: usa un número de preguntas múltiplo de
-            ese valor.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
           </li>
           <li>
-            Cada pregunta necesita un <code>id</code> único y estable.
+            <strong>Redacción:</strong> cada pregunta abre un candado: que sean independientes, sin depender de otra.
           </li>
-          <li>Usa 3 o 4 opciones por pregunta: al fallar se descarta la elegida.</li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

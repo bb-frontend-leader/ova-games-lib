@@ -90,14 +90,25 @@ export default function GameSnakesLaddersPage() {
       }
       recommendations={
         <ul>
-          <li>El tablero crece con el número de preguntas (unas 5 casillas por pregunta, mínimo 14).</li>
           <li>
-            Termina cuando <strong>todas las preguntas están acertadas</strong>: ese último acierto lleva la ficha a la
-            meta.
+            <strong>Cantidad de preguntas:</strong> mínimo 5, máximo 8. El tablero crece con las preguntas (unas 5
+            casillas por pregunta).
           </li>
-          <li>Con 5 a 8 preguntas la partida dura lo justo.</li>
           <li>
-            Usa 3 o 4 opciones por pregunta, con un <code>id</code> único y estable.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
+          </li>
+          <li>
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
           </li>
         </ul>
       }

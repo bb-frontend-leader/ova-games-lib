@@ -85,18 +85,31 @@ export default function GameRaceCardPage() {
       recommendations={
         <ul>
           <li>
-            Se gana la carrera con <strong>al menos el 60 % de respuestas correctas</strong>. Con 5 preguntas, hay que
-            acertar 3.
+            <strong>Cantidad de preguntas:</strong> mínimo 4, máximo 8. Entre 4 y 6 dan una carrera con ritmo; más de 8
+            se vuelve larga.
           </li>
           <li>
-            Pasa a <code>questionCount</code> el mismo número de preguntas que tengas: el podio aparece solo cuando se
-            responden todas.
+            <strong>Cada pregunta:</strong> un enunciado corto y claro, que se pueda responder sin ayuda externa.
           </li>
           <li>
-            Los <code>id</code> de las escenas deben empezar por <code>question-svg-</code> y terminar en su número.
+            <strong>Respuestas:</strong> 3 o 4 respuestas por pregunta, con <strong>una sola correcta</strong>{' '}
+            (márcala). Escríbelas cortas, de longitud parecida y sin repetirlas.
           </li>
-          <li>Entre 4 y 6 preguntas dan una carrera con ritmo; más de 8 se vuelve larga.</li>
-          <li>Usa 3 o 4 opciones por pregunta y textos cortos, para que se lean bien sobre la pista.</li>
+          <li>
+            <strong>Para ganar:</strong> hay que acertar al menos el 60 % de las preguntas (3 de 5).
+          </li>
+          <li>
+            <strong>Redacción:</strong> textos cortos, para que se lean bien sobre la pista.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta 1: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+
+Pregunta 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

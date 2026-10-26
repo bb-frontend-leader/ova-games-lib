@@ -63,15 +63,25 @@ export default function ActivityTableTrueFalsePage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 6 filas: la tabla se lee de un vistazo.</li>
           <li>
-            Escribe una retroalimentación distinta para cada fila (<code>success</code> y <code>wrong</code>): explica
-            por qué, no solo si acertó.
+            <strong>Cantidad de filas:</strong> mínimo 3, máximo 6: la tabla se lee de un vistazo.
           </li>
           <li>
-            Usa <code>variant=&quot;yesno&quot;</code> en una fila si prefieres las etiquetas «Sí / No».
+            <strong>Cada fila:</strong> una afirmación corta, sin dobles negaciones. Mezcla verdaderas y falsas. Si
+            prefieres «Sí / No», indícalo.
           </li>
-          <li>Mezcla filas verdaderas y falsas.</li>
+          <li>
+            <strong>Retroalimentación:</strong> una explicación distinta por fila, para cuando acierta y para cuando
+            falla: explica por qué, no solo si acertó.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Afirmación 1: El Sol es una estrella. → Verdadero
+  Si acierta: El Sol es la estrella más cercana a la Tierra.
+  Si falla: Revisa: el Sol emite luz propia, como las estrellas.
+
+Afirmación 2: ...`}</pre>
+          </li>
         </ul>
       }
     >

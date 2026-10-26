@@ -52,13 +52,23 @@ export default function ActivitySelectPage() {
       }
       recommendations={
         <ul>
-          <li>Entre 3 y 5 filas. Ofrece una o dos opciones más que filas, para que no se resuelva por descarte.</li>
           <li>
-            Cada fila indica su respuesta con <code>correctAnswer</code>, que es el <code>id</code> de la opción.
+            <strong>Cantidad de filas:</strong> mínimo 3, máximo 5.
           </li>
-          <li>Escribe las descripciones en la columna del texto y deja las opciones como términos cortos.</li>
           <li>
-            Dale a cada menú una <code>label</code> clara: la leen los lectores de pantalla.
+            <strong>Cada fila:</strong> una descripción en texto y un menú desplegable donde se elige la respuesta.
+          </li>
+          <li>
+            <strong>Opciones del menú:</strong> términos cortos. Ofrece una o dos opciones más que filas, para que no se
+            resuelva por descarte.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Opciones: Mamífero | Reptil | Ave | Pez | Anfibio
+
+Fila 1: Tiene plumas y pone huevos. → Ave
+Fila 2: Respira por branquias. → Pez
+Fila 3: ...`}</pre>
           </li>
         </ul>
       }

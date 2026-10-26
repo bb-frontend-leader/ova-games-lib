@@ -40,12 +40,25 @@ export default function ActivityRadioPage() {
       recommendations={
         <ul>
           <li>
-            Entre 2 y 4 opciones por pregunta, con una sola correcta (la marcas con{' '}
-            <code>state=&quot;success&quot;</code>).
+            <strong>Cantidad de preguntas:</strong> mínimo 1, máximo 1 por actividad. Si quieres más, envíalas todas y
+            las ponemos en secciones distintas.
           </li>
-          <li>Para falso o verdadero, deja solo dos opciones.</li>
-          <li>Una pregunta por actividad: si necesitas varias, repite la actividad en secciones distintas.</li>
-          <li>Escribe en el modal por qué la respuesta es correcta: ahí está lo que el estudiante aprende.</li>
+          <li>
+            <strong>Respuestas:</strong> mínimo 2, máximo 4 opciones, con <strong>una sola correcta</strong> (márcala).
+            Para falso o verdadero, deja solo dos.
+          </li>
+          <li>
+            <strong>Retroalimentación:</strong> escribe por qué la respuesta es correcta: ahí está lo que el estudiante
+            aprende.
+          </li>
+          <li>
+            <strong>Envíanoslo así:</strong>
+            <pre>{`Pregunta: ¿Cuál es la capital de Francia?
+A) París (correcta)
+B) Roma
+C) Madrid
+Explicación: París es la capital y la ciudad más grande de Francia.`}</pre>
+          </li>
         </ul>
       }
     >
