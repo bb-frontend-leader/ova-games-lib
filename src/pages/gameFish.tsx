@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameFish } from '@/games/game-fish';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-const QUESTIONS: { label: string; answers: Answer[]; explanation: string }[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
-    label: '¿Cuál de estos animales es un mamífero?',
+    question: '¿Cuál de estos animales es un mamífero?',
     answers: [
       { label: 'Tiburón', state: 'wrong' },
       { label: 'Delfín', state: 'success' },
@@ -20,7 +19,7 @@ const QUESTIONS: { label: string; answers: Answer[]; explanation: string }[] = [
     explanation: '¡Muy bien! El delfín es un mamífero: respira aire y alimenta a sus crías con leche.'
   },
   {
-    label: '¿Cuál es el animal más grande del mundo?',
+    question: '¿Cuál es el animal más grande del mundo?',
     answers: [
       { label: 'Elefante', state: 'wrong' },
       { label: 'Jirafa', state: 'wrong' },
@@ -32,7 +31,7 @@ const QUESTIONS: { label: string; answers: Answer[]; explanation: string }[] = [
     explanation: '¡Correcto! La ballena azul es el animal más grande que existe: puede medir más de 25 metros.'
   },
   {
-    label: 'Las gallinas ponen ___.',
+    question: 'Las gallinas ponen ___.',
     answers: [
       { label: 'Leche', state: 'wrong' },
       { label: 'Miel', state: 'wrong' },
@@ -45,10 +44,27 @@ const QUESTIONS: { label: string; answers: Answer[]; explanation: string }[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 6,
+  minAnswers: 4,
+  maxAnswers: 6,
+  explanation: true
+};
+
 type Feedback = { type: 'success' | 'wrong'; question: number } | null;
 
 export default function GameFishPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'fish');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<Feedback>(null);
+
+  // Con preguntas nuevas se descarta el modal que estuviera abierto.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setFeedback(null);
+  }
 
   const handleResult =
     (question: number) =>
@@ -58,6 +74,8 @@ export default function GameFishPage() {
   return (
     <GamePage
       link="/juegos/pesca"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -121,10 +139,10 @@ Pregunta 2: ...`}</pre>
         </Panel.Section>
 
         {QUESTIONS.map((question, q) => (
-          <Panel.Section key={question.label}>
+          <Panel.Section key={question.id}>
             <Stage size="wide">
               <GameFish onResult={handleResult(q)}>
-                <GameFish.Level label={question.label}>
+                <GameFish.Level label={question.question}>
                   {question.answers.map((answer, i) => (
                     <GameFish.Fish
                       key={answer.label}
@@ -152,7 +170,9 @@ Pregunta 2: ...`}</pre>
       <ResultModals
         open={feedback?.type ?? null}
         onClose={() => setFeedback(null)}
-        success={QUESTIONS[feedback?.question ?? 0].explanation}
+        success={
+          QUESTIONS[feedback?.question ?? 0]?.explanation || '¡Muy bien! Pescaste el pez con la respuesta correcta.'
+        }
         wrong="Ese pez no tiene la respuesta correcta. ¡Sigue pescando!"
       />
     </GamePage>

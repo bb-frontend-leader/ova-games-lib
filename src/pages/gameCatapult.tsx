@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { CatapultQuestion } from '@/games/game-catapult';
 import { GameCatapult } from '@/games/game-catapult';
 
-const QUESTIONS: CatapultQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'catapult-1',
     question: '¿Cuántos días tiene una semana?',
@@ -54,7 +53,16 @@ const QUESTIONS: CatapultQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameCatapultPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'catapult');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameCatapultPage() {
   return (
     <GamePage
       link="/juegos/catapulta"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

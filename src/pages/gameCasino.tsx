@@ -1,13 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameCasino } from '@/games/game-casino';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-const ROUNDS: { id: string; question: string; answers: Answer[] }[] = [
+const DEFAULT_ROUNDS: EditableQuestion[] = [
   {
     id: 'r1',
     question: '¿Cuántas patas tiene una araña?',
@@ -37,11 +35,30 @@ const ROUNDS: { id: string; question: string; answers: Answer[] }[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 3,
+  maxQuestions: 5,
+  minAnswers: 3,
+  maxAnswers: 3
+};
+
 export default function GameCasinoPage() {
+  const editor = useQuestionsEditor(DEFAULT_ROUNDS, 'r');
+  const ROUNDS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
   const [current, setCurrent] = useState(0);
   const [bet, setBet] = useState(0);
   const [points, setPoints] = useState(0);
+
+  // Con preguntas nuevas la partida empieza de cero.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setCurrent(0);
+    setBet(0);
+    setPoints(0);
+    setFeedback(null);
+  }
 
   const round = ROUNDS[current];
   const isLast = current === ROUNDS.length - 1;
@@ -64,6 +81,8 @@ export default function GameCasinoPage() {
   return (
     <GamePage
       link="/juegos/apuesta-inteligente"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

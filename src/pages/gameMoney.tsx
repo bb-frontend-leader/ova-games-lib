@@ -1,11 +1,33 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameMoney } from '@/games/game-money';
 
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: '¿Cuál es la capital de Francia?',
+    answers: [
+      { label: 'París', state: 'success' },
+      { label: 'Roma', state: 'wrong' },
+      { label: 'Madrid', state: 'wrong' }
+    ],
+    explanation: '¡Muy bien! París es la capital de Francia y el banquero abre la caja fuerte.'
+  }
+];
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 1,
+  minAnswers: 3,
+  maxAnswers: 3,
+  explanation: true
+};
+
 export default function GameMoneyPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'money');
+  const [item] = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -13,6 +35,8 @@ export default function GameMoneyPage() {
   return (
     <GamePage
       link="/juegos/elige-y-gana"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -77,10 +101,16 @@ C) Madrid`}</pre>
           <Stage center>
             <p className="u-font-bold">Selecciona la respuesta correcta.</p>
             <GameMoney onResult={handleResult}>
-              <GameMoney.Level label="¿Cuál es la capital de Francia?">
-                <GameMoney.Radio label="París" state="success" id="money-1" name="money" />
-                <GameMoney.Radio label="Roma" state="wrong" id="money-2" name="money" />
-                <GameMoney.Radio label="Madrid" state="wrong" id="money-3" name="money" />
+              <GameMoney.Level label={item.question}>
+                {item.answers.map((answer, index) => (
+                  <GameMoney.Radio
+                    key={answer.label}
+                    label={answer.label}
+                    state={answer.state}
+                    id={`money-${index + 1}`}
+                    name="money"
+                  />
+                ))}
               </GameMoney.Level>
               <GameActions>
                 <GameMoney.Button>
@@ -98,7 +128,7 @@ C) Madrid`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Muy bien! París es la capital de Francia y el banquero abre la caja fuerte."
+        success={item.explanation || '¡Muy bien! Respondiste bien y el banquero abre la caja fuerte.'}
         wrong="Esa no es la respuesta correcta. ¡Inténtalo otra vez!"
       />
     </GamePage>

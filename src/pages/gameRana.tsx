@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { RanaQuestion } from '@/games/game-rana';
 import { GameRana } from '@/games/game-rana';
 
-const QUESTIONS: RanaQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'rana-1',
     question: '¿Cuál es el animal más grande del mundo?',
@@ -54,7 +53,16 @@ const QUESTIONS: RanaQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameRanaPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'rana');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameRanaPage() {
   return (
     <GamePage
       link="/juegos/rana"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

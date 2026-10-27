@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { TreasureQuestion } from '@/games/game-treasure-map';
 import { GameTreasureMap } from '@/games/game-treasure-map';
 
-const QUESTIONS: TreasureQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'treasure-1',
     question: '¿Qué color resulta de mezclar azul con amarillo?',
@@ -63,7 +62,16 @@ const QUESTIONS: TreasureQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 2,
+  maxAnswers: 5
+};
+
 export default function GameTreasureMapPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'treasure');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -71,6 +79,8 @@ export default function GameTreasureMapPage() {
   return (
     <GamePage
       link="/juegos/mapa-del-tesoro"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

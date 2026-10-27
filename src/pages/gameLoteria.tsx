@@ -1,27 +1,54 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { FieldsConfig, FieldsItem, ResultState } from '@/components';
+import { FieldsEditor, GamePage, ResultModals, Stage } from '@/components';
 import { Panel } from '@/components/ui';
 import type { LoteriaQuestion } from '@/games/game-loteria';
 import { GameLoteria } from '@/games/game-loteria';
+import { useGameEditor } from '@/hooks';
 
-const QUESTIONS: LoteriaQuestion[] = [
-  { id: 'loteria-1', question: 'Vuela y canta en los árboles.', card: { label: 'Pájaro', emoji: '🐦' } },
-  { id: 'loteria-2', question: 'Nos da luz y calor durante el día.', card: { label: 'Sol', emoji: '☀️' } },
-  { id: 'loteria-3', question: 'Es el mejor amigo del ser humano.', card: { label: 'Perro', emoji: '🐶' } },
-  { id: 'loteria-4', question: 'Se bebe y es esencial para la vida.', card: { label: 'Agua', emoji: '💧' } },
-  { id: 'loteria-5', question: 'Brilla en el cielo por la noche.', card: { label: 'Luna', emoji: '🌙' } },
-  { id: 'loteria-6', question: 'Es una fruta roja que crece en los árboles.', card: { label: 'Manzana', emoji: '🍎' } },
-  {
-    id: 'loteria-7',
-    question: 'Es un vehículo de dos ruedas que se pedalea.',
-    card: { label: 'Bicicleta', emoji: '🚲' }
-  },
-  { id: 'loteria-8', question: 'Da leche y hace «muuu».', card: { label: 'Vaca', emoji: '🐮' } }
+const DEFAULT_CARDS: FieldsItem[] = [
+  { hint: 'Vuela y canta en los árboles.', label: 'Pájaro', emoji: '🐦' },
+  { hint: 'Nos da luz y calor durante el día.', label: 'Sol', emoji: '☀️' },
+  { hint: 'Es el mejor amigo del ser humano.', label: 'Perro', emoji: '🐶' },
+  { hint: 'Se bebe y es esencial para la vida.', label: 'Agua', emoji: '💧' },
+  { hint: 'Brilla en el cielo por la noche.', label: 'Luna', emoji: '🌙' },
+  { hint: 'Es una fruta roja que crece en los árboles.', label: 'Manzana', emoji: '🍎' },
+  { hint: 'Es un vehículo de dos ruedas que se pedalea.', label: 'Bicicleta', emoji: '🚲' },
+  { hint: 'Da leche y hace «muuu».', label: 'Vaca', emoji: '🐮' }
 ];
 
+const CONFIG: FieldsConfig = {
+  noun: 'pista',
+  min: 6,
+  max: 12,
+  intro:
+    'Cada pista describe una sola carta de la tabla. Todas las cartas de la tabla salen de las pistas que escribas.',
+  fields: [
+    {
+      key: 'hint',
+      label: 'Pista',
+      hint: 'Si dos cartas pueden responderla, el estudiante se confunde.',
+      multiline: true
+    },
+    { key: 'label', label: 'Nombre de la carta', hint: 'Una palabra, distinta a la de las demás.', maxLength: 16 },
+    { key: 'emoji', label: 'Emoji de la carta', optional: true, maxLength: 8 }
+  ],
+  validate: (items) => {
+    const labels = items.map((item) => item.label.toLowerCase());
+    return new Set(labels).size === labels.length
+      ? null
+      : 'Hay cartas con el mismo nombre: cada carta debe ser distinta.';
+  }
+};
+
 export default function GameLoteriaPage() {
+  const editor = useGameEditor(DEFAULT_CARDS);
+  const QUESTIONS: LoteriaQuestion[] = editor.content.map((item, index) => ({
+    id: `loteria-${index + 1}`,
+    question: item.hint,
+    card: { label: item.label, ...(item.emoji && { emoji: item.emoji }) }
+  }));
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -29,6 +56,9 @@ export default function GameLoteriaPage() {
   return (
     <GamePage
       link="/juegos/loteria"
+      editor={editor}
+      editorNoun="pistas"
+      editorDialog={<FieldsEditor editor={editor} config={CONFIG} />}
       description={
         <>
           <p>

@@ -1,11 +1,60 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { FieldsConfig, FieldsItem, ResultState } from '@/components';
+import { FieldsEditor, GameActions, GamePage, ResultModals, Stage } from '@/components';
 import { Button } from '@/components/ui';
 import { GameBalloons } from '@/games/game-balloons';
+import { useGameEditor } from '@/hooks';
+
+const DEFAULT_ITEMS: FieldsItem[] = [
+  { pieces: 'La Tierra | gira | alrededor del Sol | y tarda | un año | en dar una vuelta.' }
+];
+
+const splitPieces = (text: string) =>
+  text
+    .split('|')
+    .map((piece) => piece.trim())
+    .filter(Boolean);
+
+/** Desordena los fragmentos; si el azar los deja en el orden correcto, los rota un lugar. */
+const scramble = (pieces: string[]) => {
+  const out = [...pieces];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out.every((piece, i) => piece === pieces[i]) ? [...out.slice(1), out[0]] : out;
+};
+
+const CONFIG: FieldsConfig = {
+  noun: 'oración',
+  min: 1,
+  max: 1,
+  intro:
+    'Escribe la oración dividida en fragmentos, en el orden correcto y separados con «|». El juego los desordena y los reparte en los globos.',
+  fields: [
+    {
+      key: 'pieces',
+      label: 'Fragmentos de la oración',
+      hint: 'Ejemplo: La Tierra | gira | alrededor del Sol.',
+      multiline: true
+    }
+  ],
+  validate: ([item]) => {
+    const count = splitPieces(item.pieces).length;
+    return count < 4 || count > 8
+      ? `La oración debe tener de 4 a 8 fragmentos separados con «|»; tiene ${count}.`
+      : null;
+  }
+};
 
 export default function GameBalloonsPage() {
+  const editor = useGameEditor(DEFAULT_ITEMS);
+  const pieces = splitPieces(editor.content[0].pieces);
+  const sentence = pieces.join(' ');
+  // Se desordena una sola vez por contenido: si cambiara en cada render, el juego reiniciaría los globos.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const words = useMemo(() => scramble(pieces), [editor.content]);
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -13,6 +62,9 @@ export default function GameBalloonsPage() {
   return (
     <GamePage
       link="/juegos/globos"
+      editor={editor}
+      editorNoun="oraciones"
+      editorDialog={<FieldsEditor editor={editor} config={CONFIG} />}
       description={
         <>
           <p>
@@ -62,10 +114,7 @@ Globos: La Tierra | gira | alrededor del Sol.`}</pre>
     >
       <GameBalloons onResult={handleResult}>
         <Stage size="wide">
-          <GameBalloons.Level
-            words={['y tarda', 'La Tierra', 'en dar una vuelta.', 'alrededor del Sol', 'un año', 'gira']}
-            sentence="La Tierra gira alrededor del Sol y tarda un año en dar una vuelta."
-          />
+          <GameBalloons.Level words={words} sentence={sentence} />
           <GameActions>
             <GameBalloons.Button>
               <Button label="Comprobar" />
@@ -80,7 +129,7 @@ Globos: La Tierra | gira | alrededor del Sol.`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Excelente! Armaste la oración: la Tierra gira alrededor del Sol y tarda un año en dar una vuelta."
+        success={`¡Excelente! Armaste la oración: ${sentence}`}
         wrong="El orden no es el correcto. Lee la oración con calma y vuelve a intentarlo."
       />
     </GamePage>

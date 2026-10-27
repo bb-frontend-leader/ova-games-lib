@@ -1,17 +1,15 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { StopCard } from '@/games/game-stop-card';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-// Una pregunta por parada. El máximo del juego es de 10 paradas.
-const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
+// Una pregunta por parada. La página antepone el nombre de la parada a cada enunciado.
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'stop-1',
-    question: '<strong>Primera parada</strong> - ¿Cuál es la capital de Colombia?',
+    question: '¿Cuál es la capital de Colombia?',
     answers: [
       { label: 'Bogotá', state: 'success' },
       { label: 'Medellín', state: 'wrong' },
@@ -20,7 +18,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'stop-2',
-    question: '<strong>Segunda parada</strong> - ¿Cuántos días tiene una semana?',
+    question: '¿Cuántos días tiene una semana?',
     answers: [
       { label: 'Cinco días', state: 'wrong' },
       { label: 'Siete días', state: 'success' },
@@ -29,7 +27,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'stop-3',
-    question: '<strong>Tercera parada</strong> - ¿Qué planeta se conoce como el planeta rojo?',
+    question: '¿Qué planeta se conoce como el planeta rojo?',
     answers: [
       { label: 'Venus', state: 'wrong' },
       { label: 'Júpiter', state: 'wrong' },
@@ -38,7 +36,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'stop-4',
-    question: '<strong>Cuarta parada</strong> - ¿Cuál es el océano más grande del mundo?',
+    question: '¿Cuál es el océano más grande del mundo?',
     answers: [
       { label: 'Océano Pacífico', state: 'success' },
       { label: 'Océano Atlántico', state: 'wrong' },
@@ -47,7 +45,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'stop-5',
-    question: '<strong>Quinta parada</strong> - ¿Qué gas necesitamos respirar para vivir?',
+    question: '¿Qué gas necesitamos respirar para vivir?',
     answers: [
       { label: 'Helio', state: 'wrong' },
       { label: 'Oxígeno', state: 'success' },
@@ -56,7 +54,29 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   }
 ];
 
+const ORDINALS = [
+  'Primera',
+  'Segunda',
+  'Tercera',
+  'Cuarta',
+  'Quinta',
+  'Sexta',
+  'Séptima',
+  'Octava',
+  'Novena',
+  'Décima'
+];
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 4,
+  maxQuestions: 10,
+  minAnswers: 2,
+  maxAnswers: 3
+};
+
 export default function GameStopCardPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'stop');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -64,6 +84,8 @@ export default function GameStopCardPage() {
   return (
     <GamePage
       link="/juegos/paradas-del-saber"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -123,14 +145,20 @@ Pregunta 2: ...`}</pre>
         <StopCard questionCount={QUESTIONS.length}>
           <Panel.Section>
             <Stage center>
-              <StopCard.Init textInitial="En la ruta encontrarás cinco paradas y, en cada una, una pregunta con una sola respuesta correcta. Tu objetivo es llegar a la meta: una playa de la costa colombiana." />
+              <StopCard.Init
+                textInitial={`En la ruta encontrarás ${QUESTIONS.length} paradas y, en cada una, una pregunta con una sola respuesta correcta. Tu objetivo es llegar a la meta: una playa de la costa colombiana.`}
+              />
             </Stage>
           </Panel.Section>
 
-          {QUESTIONS.map((item) => (
+          {QUESTIONS.map((item, index) => (
             <Panel.Section key={item.id}>
               <Stage size="wide" center>
-                <StopCard.Scene id={item.id} question={item.question} onResult={handleResult}>
+                <StopCard.Scene
+                  id={item.id}
+                  question={`<strong>${ORDINALS[index]} parada</strong> - ${item.question}`}
+                  onResult={handleResult}
+                >
                   {item.answers.map((answer, index) => (
                     <StopCard.Radio
                       key={`${item.id}-${index}`}

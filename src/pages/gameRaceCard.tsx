@@ -1,13 +1,13 @@
-import { GamePage, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits } from '@/components';
+import { GamePage, QuestionsEditor, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
 import { RaceCard } from '@/games/game-race-card';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
+// La página antepone «Pregunta N:» a cada enunciado.
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'q1',
-    question: 'Pregunta 1: ¿Cuántos lados tiene un triángulo?',
+    question: '¿Cuántos lados tiene un triángulo?',
     answers: [
       { label: 'Tres', state: 'success' },
       { label: 'Cuatro', state: 'wrong' },
@@ -16,7 +16,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'q2',
-    question: 'Pregunta 2: ¿Cuánto es 15 − 7?',
+    question: '¿Cuánto es 15 − 7?',
     answers: [
       { label: '6', state: 'wrong' },
       { label: '8', state: 'success' },
@@ -25,7 +25,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'q3',
-    question: 'Pregunta 3: ¿Qué color resulta de mezclar azul con amarillo?',
+    question: '¿Qué color resulta de mezclar azul con amarillo?',
     answers: [
       { label: 'Naranja', state: 'wrong' },
       { label: 'Morado', state: 'wrong' },
@@ -34,7 +34,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'q4',
-    question: 'Pregunta 4: ¿Cuál es el río más largo de Colombia?',
+    question: '¿Cuál es el río más largo de Colombia?',
     answers: [
       { label: 'Río Magdalena', state: 'success' },
       { label: 'Río Cauca', state: 'wrong' },
@@ -43,7 +43,7 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   },
   {
     id: 'q5',
-    question: 'Pregunta 5: ¿Cuántos continentes hay en el mundo?',
+    question: '¿Cuántos continentes hay en el mundo?',
     answers: [
       { label: 'Cinco', state: 'wrong' },
       { label: 'Siete', state: 'success' },
@@ -52,10 +52,22 @@ const QUESTIONS: { id: string; question: string; answers: Answer[] }[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 4,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameRaceCardPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'q');
+  const QUESTIONS = editor.questions;
+
   return (
     <GamePage
       link="/juegos/carrera"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -124,7 +136,7 @@ Pregunta 2: ...`}</pre>
           {QUESTIONS.map((item, index) => (
             <Panel.Section key={item.id}>
               <Stage size="wide" center>
-                <RaceCard.Scene id={`question-svg-${index + 1}`} question={item.question}>
+                <RaceCard.Scene id={`question-svg-${index + 1}`} question={`Pregunta ${index + 1}: ${item.question}`}>
                   {item.answers.map((answer, answerIndex) => (
                     <RaceCard.Radio
                       key={`${item.id}-${answerIndex}`}

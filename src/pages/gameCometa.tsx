@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { CometaQuestion } from '@/games/game-cometa';
 import { GameCometa } from '@/games/game-cometa';
 
-const QUESTIONS: CometaQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'cometa-1',
     question: '¿Con qué sentido percibimos los sonidos?',
@@ -54,7 +53,16 @@ const QUESTIONS: CometaQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameCometaPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'cometa');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameCometaPage() {
   return (
     <GamePage
       link="/juegos/cometas"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

@@ -1,13 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameBasketball } from '@/games/game-basketball';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-const SHOTS: { id: string; question: string; answers: Answer[] }[] = [
+const DEFAULT_SHOTS: EditableQuestion[] = [
   {
     id: 's1',
     question: '¿Qué animal es conocido como el rey de la selva?',
@@ -37,9 +35,26 @@ const SHOTS: { id: string; question: string; answers: Answer[] }[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 3,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 3
+};
+
 export default function GameBasketballPage() {
+  const editor = useQuestionsEditor(DEFAULT_SHOTS, 's');
+  const SHOTS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
   const [current, setCurrent] = useState(0);
+
+  // Con preguntas nuevas el partido empieza de cero.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setCurrent(0);
+    setFeedback(null);
+  }
 
   const shot = SHOTS[current];
   const isLast = current === SHOTS.length - 1;
@@ -49,6 +64,8 @@ export default function GameBasketballPage() {
   return (
     <GamePage
       link="/juegos/baloncesto"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

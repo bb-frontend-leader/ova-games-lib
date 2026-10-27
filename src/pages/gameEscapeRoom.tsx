@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { EscapeQuestion } from '@/games/game-escape-room';
 import { GameEscapeRoom } from '@/games/game-escape-room';
 
-const QUESTIONS: EscapeQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'escape-1',
     question: '¿Cuántas horas tiene un día?',
@@ -45,7 +44,16 @@ const QUESTIONS: EscapeQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 4,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameEscapeRoomPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'escape');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -53,6 +61,8 @@ export default function GameEscapeRoomPage() {
   return (
     <GamePage
       link="/juegos/escape-room"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

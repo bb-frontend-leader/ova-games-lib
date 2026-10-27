@@ -45,7 +45,7 @@ export const PanelNav = () => {
   };
 
   return (
-    <nav className={css.nav} aria-label={t.group}>
+    <nav className={css.nav} aria-label={t.group} data-screenshot-ignore>
       <p className={css.nav__status} aria-live="polite">
         {t.section} {current + 1} {t.of} {total}
       </p>

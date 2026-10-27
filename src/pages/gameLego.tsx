@@ -1,11 +1,34 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameLego } from '@/games/game-lego';
 
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: '¿Cuántos lados tiene un triángulo?',
+    answers: [
+      { label: 'Dos', state: 'wrong' },
+      { label: 'Tres', state: 'success' },
+      { label: 'Cuatro', state: 'wrong' },
+      { label: 'Cinco', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! Un triángulo tiene tres lados y la pieza encaja en el modelo.'
+  }
+];
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 1,
+  minAnswers: 3,
+  maxAnswers: 4,
+  explanation: true
+};
+
 export default function GameLegoPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'lego');
+  const [item] = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -13,6 +36,8 @@ export default function GameLegoPage() {
   return (
     <GamePage
       link="/juegos/construye-la-respuesta"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -71,11 +96,16 @@ C) Madrid`}</pre>
         <Panel.Section>
           <Stage size="wide">
             <GameLego onResult={handleResult}>
-              <GameLego.Question label="¿Cuántos lados tiene un triángulo?">
-                <GameLego.Option id="lego-1" name="lego" label="A. Dos" state="wrong" />
-                <GameLego.Option id="lego-2" name="lego" label="B. Tres" state="success" />
-                <GameLego.Option id="lego-3" name="lego" label="C. Cuatro" state="wrong" />
-                <GameLego.Option id="lego-4" name="lego" label="D. Cinco" state="wrong" />
+              <GameLego.Question label={item.question}>
+                {item.answers.map((answer, index) => (
+                  <GameLego.Option
+                    key={answer.label}
+                    id={`lego-${index + 1}`}
+                    name="lego"
+                    label={`${String.fromCharCode(65 + index)}. ${answer.label}`}
+                    state={answer.state}
+                  />
+                ))}
               </GameLego.Question>
               <GameActions>
                 <GameLego.Button>
@@ -93,8 +123,12 @@ C) Madrid`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Correcto! Un triángulo tiene tres lados y la pieza encaja en el modelo."
-        wrong="Esa pieza no encaja. Cuenta los lados de un triángulo e inténtalo otra vez."
+        success={item.explanation || '¡Correcto! La pieza encaja en el modelo.'}
+        wrong={
+          editor.customized
+            ? 'Esa pieza no encaja. Lee la pregunta con calma e inténtalo otra vez.'
+            : 'Esa pieza no encaja. Cuenta los lados de un triángulo e inténtalo otra vez.'
+        }
       />
     </GamePage>
   );

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { RouletteQuestion } from '@/games/game-roulette';
 import { GameRoulette } from '@/games/game-roulette';
 
-const QUESTIONS: RouletteQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'roulette-1',
     category: 'Geografía',
@@ -69,7 +68,17 @@ const QUESTIONS: RouletteQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 6,
+  maxQuestions: 16,
+  minAnswers: 3,
+  maxAnswers: 4,
+  category: true
+};
+
 export default function GameRoulettePage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'roulette');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -77,6 +86,8 @@ export default function GameRoulettePage() {
   return (
     <GamePage
       link="/juegos/ruleta"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

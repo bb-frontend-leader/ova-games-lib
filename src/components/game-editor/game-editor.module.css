@@ -1,0 +1,181 @@
+.modal {
+  --modal-max-width: 50rem;
+}
+
+.form {
+  display: grid;
+  gap: 1.25rem;
+  padding-block-start: 0.5rem;
+  text-align: start;
+}
+
+.intro {
+  display: grid;
+  gap: 0.5rem;
+  padding-inline-end: 2.5rem;
+}
+
+.title {
+  color: var(--ui-ink);
+  font-size: var(--fs-500);
+  line-height: 1.15;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: var(--fs-200);
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  min-inline-size: 0;
+}
+
+.fieldset {
+  display: grid;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 1rem 1.1rem 1.1rem;
+  border: var(--border);
+  border-radius: 1rem;
+  background-color: var(--secondary-50);
+}
+
+.legend {
+  padding-inline: 0.5rem;
+  color: var(--ui-ink);
+  font-weight: 800;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.label {
+  color: var(--ui-ink);
+  font-size: var(--fs-200);
+  font-weight: 700;
+}
+
+.control {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 2px solid var(--edge-strong);
+  border-radius: 0.6rem;
+  background-color: var(--white);
+  color: var(--text-main);
+  font-size: var(--fs-200);
+  line-height: 1.35;
+}
+
+textarea.control {
+  resize: vertical;
+}
+
+.answers {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.answer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.radio {
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  margin: 0;
+  accent-color: var(--success);
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: 2px solid var(--edge-strong);
+  border-radius: 50%;
+  background-color: var(--white);
+  color: var(--ui-ink);
+  font-size: var(--fs-100);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.iconButton:hover:not(:disabled) {
+  background-color: var(--wrong-light);
+}
+
+.iconButton:disabled,
+.textButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.textButton {
+  justify-self: start;
+  padding: 0.3rem 0.1rem;
+  border: 0;
+  background: none;
+  color: var(--primary-800);
+  font-size: var(--fs-200);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.textButton[data-danger] {
+  color: var(--wrong);
+}
+
+.error {
+  padding: 0.6rem 0.9rem;
+  border: var(--border);
+  border-radius: 0.6rem;
+  background-color: var(--wrong-light);
+  color: var(--ui-ink);
+  font-weight: 700;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Botón y aviso que `GamePage` muestra sobre el juego. */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+}
+
+.status {
+  color: var(--text-muted);
+  font-size: var(--fs-200);
+  font-weight: 700;
+}

@@ -1,18 +1,55 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
-import { Button } from '@/components/ui';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
+import { Button, Panel } from '@/components/ui';
 import { GameThisOrThat } from '@/games/game-this-or-that';
 
-export default function GameThisOrThatPage() {
-  const [feedback, setFeedback] = useState<ResultState>(null);
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: 'Los animales que alimentan a sus crías con leche se llaman…',
+    answers: [
+      { label: 'Mamíferos', state: 'success' },
+      { label: 'Reptiles', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! Los mamíferos alimentan a sus crías con leche.'
+  }
+];
 
-  const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 6,
+  minAnswers: 2,
+  maxAnswers: 2,
+  explanation: true
+};
+
+export default function GameThisOrThatPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'tot');
+  const QUESTIONS = editor.questions;
+  const [feedback, setFeedback] = useState<ResultState>(null);
+  const [lastQuestion, setLastQuestion] = useState(0);
+
+  // Con preguntas nuevas se descarta el modal que estuviera abierto.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setFeedback(null);
+    setLastQuestion(0);
+  }
+
+  const handleResult =
+    (question: number) =>
+    ({ result }: { result: boolean }) => {
+      setLastQuestion(question);
+      setFeedback(result ? 'success' : 'wrong');
+    };
 
   return (
     <GamePage
       link="/juegos/cual-prefieres"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -59,31 +96,45 @@ Pregunta 2: ...`}</pre>
         </ul>
       }
     >
-      <Stage>
-        <GameThisOrThat onResult={handleResult}>
-          <GameThisOrThat.Level
-            question="Los animales que alimentan a sus crías con leche se llaman…"
-            questionNumber={1}
-          >
-            <GameThisOrThat.Radio label="a. Mamíferos" state="success" id="tot-1" name="tot" />
-            <GameThisOrThat.Radio label="b. Reptiles" state="wrong" id="tot-2" name="tot" />
-          </GameThisOrThat.Level>
-          <GameActions>
-            <GameThisOrThat.Button>
-              <Button label="Comprobar" />
-            </GameThisOrThat.Button>
-            <GameThisOrThat.Button type="reset">
-              <Button label="Reintentar" />
-            </GameThisOrThat.Button>
-          </GameActions>
-        </GameThisOrThat>
-      </Stage>
+      <Panel>
+        {QUESTIONS.map((item, q) => (
+          <Panel.Section key={item.id}>
+            <Stage>
+              <GameThisOrThat onResult={handleResult(q)}>
+                <GameThisOrThat.Level question={item.question} questionNumber={q + 1}>
+                  {item.answers.map((answer, index) => (
+                    <GameThisOrThat.Radio
+                      key={answer.label}
+                      label={`${String.fromCharCode(97 + index)}. ${answer.label}`}
+                      state={answer.state}
+                      id={`tot-${q + 1}-${index + 1}`}
+                      name={`tot-${q + 1}`}
+                    />
+                  ))}
+                </GameThisOrThat.Level>
+                <GameActions>
+                  <GameThisOrThat.Button>
+                    <Button label="Comprobar" />
+                  </GameThisOrThat.Button>
+                  <GameThisOrThat.Button type="reset">
+                    <Button label="Reintentar" />
+                  </GameThisOrThat.Button>
+                </GameActions>
+              </GameThisOrThat>
+            </Stage>
+          </Panel.Section>
+        ))}
+      </Panel>
 
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Correcto! Los mamíferos alimentan a sus crías con leche."
-        wrong="Esa no es la opción correcta. Piensa qué animales dan leche y vuelve a intentarlo."
+        success={QUESTIONS[lastQuestion]?.explanation || '¡Correcto! Elegiste la opción acertada.'}
+        wrong={
+          editor.customized
+            ? 'Esa no es la opción correcta. Lee con calma y vuelve a intentarlo.'
+            : 'Esa no es la opción correcta. Piensa qué animales dan leche y vuelve a intentarlo.'
+        }
       />
     </GamePage>
   );

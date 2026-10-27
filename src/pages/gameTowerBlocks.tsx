@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { TowerQuestion } from '@/games/game-tower-blocks';
 import { GameTowerBlocks } from '@/games/game-tower-blocks';
 
-const QUESTIONS: TowerQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'tower-1',
     question: '¿Qué estación del año sigue al invierno?',
@@ -54,7 +53,16 @@ const QUESTIONS: TowerQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameTowerBlocksPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'tower');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameTowerBlocksPage() {
   return (
     <GamePage
       link="/juegos/torre-de-bloques"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

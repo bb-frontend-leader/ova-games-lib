@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { TejoQuestion } from '@/games/game-tejo';
 import { GameTejo } from '@/games/game-tejo';
 
-const QUESTIONS: TejoQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'tejo-1',
     question: '¿Cuál es la capital de Francia?',
@@ -54,7 +53,16 @@ const QUESTIONS: TejoQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameTejoPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'tejo');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameTejoPage() {
   return (
     <GamePage
       link="/juegos/tejo"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

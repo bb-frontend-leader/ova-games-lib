@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage } from '@/components';
 import { Panel } from '@/components/ui';
 import type { JeopardyCategory } from '@/games/game-jeopardy';
 import { GameJeopardy } from '@/games/game-jeopardy';
+import { useGameEditor } from '@/hooks';
 
-const CATEGORIES: JeopardyCategory[] = [
+const DEFAULT_CATEGORIES: JeopardyCategory[] = [
   {
     id: 'geo',
     title: 'Geografía',
@@ -108,7 +109,44 @@ const CATEGORIES: JeopardyCategory[] = [
   }
 ];
 
+// El editor trabaja con una lista plana de preguntas; cada una dice a qué categoría (columna) pertenece.
+const DEFAULT_QUESTIONS: EditableQuestion[] = DEFAULT_CATEGORIES.flatMap((category) =>
+  category.questions.map((item) => ({ question: item.question, category: category.title, answers: item.answers }))
+);
+
+const toCategories = (questions: EditableQuestion[]): JeopardyCategory[] => {
+  const groups = new Map<string, EditableQuestion[]>();
+  for (const item of questions) groups.set(item.category ?? '', [...(groups.get(item.category ?? '') ?? []), item]);
+
+  return [...groups].map(([title, items], c) => ({
+    id: `cat-${c + 1}`,
+    title,
+    questions: items.map((item, q) => ({ id: `cat-${c + 1}-${q + 1}`, question: item.question, answers: item.answers }))
+  }));
+};
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 9,
+  maxQuestions: 30,
+  minAnswers: 3,
+  maxAnswers: 4,
+  category: true,
+  categoryLabel: 'Categoría',
+  categoryMaxLength: 24,
+  note: 'El tablero lleva de 3 a 6 categorías con 3 a 5 preguntas cada una. Las preguntas que tengan la misma categoría quedan en la misma columna, de la más fácil (la primera) a la más difícil (la última), y de 3 a 4 respuestas por pregunta.',
+  validate: (questions) => {
+    const columns = toCategories(questions);
+    if (columns.length < 3 || columns.length > 6) {
+      return `El tablero necesita de 3 a 6 categorías distintas; tienes ${columns.length}.`;
+    }
+    const wrong = columns.find((column) => column.questions.length < 3 || column.questions.length > 5);
+    return wrong ? `La categoría «${wrong.title}» necesita de 3 a 5 preguntas; tiene ${wrong.questions.length}.` : null;
+  }
+};
+
 export default function GameJeopardyPage() {
+  const editor = useGameEditor(DEFAULT_QUESTIONS);
+  const CATEGORIES = useMemo(() => toCategories(editor.content), [editor.content]);
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -116,6 +154,8 @@ export default function GameJeopardyPage() {
   return (
     <GamePage
       link="/juegos/tablero-de-preguntas"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

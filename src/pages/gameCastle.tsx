@@ -1,22 +1,46 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameCastle } from '@/games/game-castle';
 
-const QUESTION = {
-  question: '¿Cuál es el planeta más cercano al Sol?',
-  answers: ['Venus', 'Mercurio', 'Marte', 'Júpiter'],
-  correct: 'Mercurio'
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: '¿Cuál es el planeta más cercano al Sol?',
+    answers: [
+      { label: 'Venus', state: 'wrong' },
+      { label: 'Mercurio', state: 'success' },
+      { label: 'Marte', state: 'wrong' },
+      { label: 'Júpiter', state: 'wrong' }
+    ],
+    explanation: '¡Correcto! Mercurio es el planeta más cercano al Sol y la puerta del castillo se abre.'
+  }
+];
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 1,
+  minAnswers: 3,
+  maxAnswers: 4,
+  explanation: true
 };
 
 export default function GameCastlePage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'castle');
+  const [item] = editor.questions;
+  const QUESTION = {
+    question: item.question,
+    answers: item.answers.map((answer) => answer.label),
+    correct: item.answers.find((answer) => answer.state === 'success')?.label ?? ''
+  };
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   return (
     <GamePage
       link="/juegos/castillo"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -78,7 +102,9 @@ C) Madrid`}</pre>
         <Panel.Section>
           <Stage size="wide">
             <GameCastle question={QUESTION} onResult={(result) => setFeedback(result ? 'success' : 'wrong')}>
-              <GameCastle.Level alt="Castillo con la puerta cerrada y cuatro bloques con respuestas." />
+              <GameCastle.Level
+                alt={`Castillo con la puerta cerrada y ${QUESTION.answers.length} bloques con respuestas.`}
+              />
               <GameActions>
                 <GameCastle.Button>
                   <Button label="Comprobar" />
@@ -95,8 +121,12 @@ C) Madrid`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Correcto! Mercurio es el planeta más cercano al Sol y la puerta del castillo se abre."
-        wrong="Ese bloque no abre la puerta. Piensa en el planeta que está más cerca del Sol e inténtalo otra vez."
+        success={item.explanation || '¡Correcto! La puerta del castillo se abre.'}
+        wrong={
+          editor.customized
+            ? 'Ese bloque no abre la puerta. Lee la pregunta con calma e inténtalo otra vez.'
+            : 'Ese bloque no abre la puerta. Piensa en el planeta que está más cerca del Sol e inténtalo otra vez.'
+        }
       />
     </GamePage>
   );

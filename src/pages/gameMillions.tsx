@@ -1,13 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameMilions } from '@/games/game-millions';
 
-type Answer = { label: string; state: 'success' | 'wrong' };
-
-const QUESTIONS: { question: string; answers: Answer[]; explanation: string }[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     question: '¿Cuál es la capital de Francia?',
     answers: [
@@ -40,13 +38,34 @@ const QUESTIONS: { question: string; answers: Answer[]; explanation: string }[] 
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 10,
+  minAnswers: 3,
+  maxAnswers: 5,
+  explanation: true
+};
+
 export default function GameMillionsPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'millions');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
   const [current, setCurrent] = useState(0);
   const [money, setMoney] = useState(0);
   const [solved, setSolved] = useState<number[]>([]);
   const [finished, setFinished] = useState(false);
   const [round, setRound] = useState(0);
+
+  // Con preguntas nuevas el concurso empieza de cero.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setCurrent(0);
+    setMoney(0);
+    setSolved([]);
+    setFinished(false);
+    setFeedback(null);
+  }
 
   const isLast = current === QUESTIONS.length - 1;
 
@@ -66,6 +85,8 @@ export default function GameMillionsPage() {
   return (
     <GamePage
       link="/juegos/quien-quiere-ser-millonario"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -171,7 +192,7 @@ Pregunta 2: ...`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success={QUESTIONS[current].explanation}
+        success={QUESTIONS[current]?.explanation || '¡Correcto! Sumas un millón más.'}
         wrong="Esa no es la respuesta. Lee la pregunta con calma y elige otra."
       />
     </GamePage>

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { MountainQuestion } from '@/games/game-mountain-climb';
 import { GameMountainClimb } from '@/games/game-mountain-climb';
 
-const QUESTIONS: MountainQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'mountain-1',
     question: '¿De qué color es el cielo en un día despejado?',
@@ -63,7 +62,16 @@ const QUESTIONS: MountainQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 6,
+  maxQuestions: 10,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameMountainClimbPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'mountain');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -71,6 +79,8 @@ export default function GameMountainClimbPage() {
   return (
     <GamePage
       link="/juegos/escalada"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

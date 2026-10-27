@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { SnakesQuestion } from '@/games/game-snakes-ladders';
 import { GameSnakesLadders } from '@/games/game-snakes-ladders';
 
-const QUESTIONS: SnakesQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'snakes-1',
     question: '¿En qué continente está Colombia?',
@@ -54,7 +53,16 @@ const QUESTIONS: SnakesQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 3,
+  maxAnswers: 4
+};
+
 export default function GameSnakesLaddersPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'snakes');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameSnakesLaddersPage() {
   return (
     <GamePage
       link="/juegos/serpientes-y-escaleras"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

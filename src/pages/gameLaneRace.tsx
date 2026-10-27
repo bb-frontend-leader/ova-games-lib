@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Panel } from '@/components/ui';
-import type { LaneRaceQuestion } from '@/games/game-lane-race';
 import { GameLaneRace } from '@/games/game-lane-race';
 
-const QUESTIONS: LaneRaceQuestion[] = [
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
   {
     id: 'lane-1',
     question: '¿Cuántos lados tiene un triángulo?',
@@ -54,7 +53,16 @@ const QUESTIONS: LaneRaceQuestion[] = [
   }
 ];
 
+const LIMITS: QuestionLimits = {
+  minQuestions: 5,
+  maxQuestions: 8,
+  minAnswers: 2,
+  maxAnswers: 5
+};
+
 export default function GameLaneRacePage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'lane');
+  const QUESTIONS = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -62,6 +70,8 @@ export default function GameLaneRacePage() {
   return (
     <GamePage
       link="/juegos/carrera-de-carriles"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>

@@ -1,6 +1,11 @@
+import { useRef } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 
 import { getCategoryLabel, getGame, getKindSingular } from '@/data/dataGames';
+import type { GameEditor } from '@/hooks';
+
+import { GameEditorBar } from '../game-editor/game-editor-bar';
+import { ScreenshotButton } from '../game-editor/screenshot-button';
 
 import css from './game-page.module.css';
 
@@ -15,11 +20,28 @@ interface Props {
   incorrect: React.ReactNode;
   /** Guía para el docente: mínimo y máximo de preguntas, cómo redactarlas y un ejemplo del formato en que enviarlas. */
   recommendations: React.ReactNode;
+  /** Estado del botón «Agregar preguntas». Sin él, la página no deja que el docente cargue su contenido. */
+  editor?: Pick<GameEditor<unknown>, 'version' | 'customized' | 'open' | 'reset'>;
+  /** Lo que agrega el docente, en plural: «preguntas» por defecto. */
+  editorNoun?: string;
+  /** La ventana del editor; va fuera del juego para que no se reinicie con él. */
+  editorDialog?: React.ReactNode;
   /** El juego o la actividad en funcionamiento (y sus modales). */
   children: React.ReactNode;
 }
 
-export const GamePage: React.FC<Props> = ({ link, description, correct, incorrect, recommendations, children }) => {
+export const GamePage: React.FC<Props> = ({
+  link,
+  description,
+  correct,
+  incorrect,
+  recommendations,
+  editor,
+  editorNoun,
+  editorDialog,
+  children
+}) => {
+  const demoRef = useRef<HTMLElement>(null);
   const game = getGame(link);
 
   if (!game) return <Navigate to="/" replace />;
@@ -42,9 +64,18 @@ export const GamePage: React.FC<Props> = ({ link, description, correct, incorrec
         <p className={css.header__summary}>{game.description}</p>
       </header>
 
-      <section className={css.demo} aria-label={`${kindLabel}: ${game.title}`}>
+      {editor && (
+        <GameEditorBar editor={editor} noun={editorNoun}>
+          <ScreenshotButton targetRef={demoRef} filename={link.split('/').filter(Boolean).pop() ?? 'captura'} />
+        </GameEditorBar>
+      )}
+
+      {/* La `key` reinicia el juego cuando el docente carga su contenido. */}
+      <section ref={demoRef} key={editor?.version ?? 0} className={css.demo} aria-label={`${kindLabel}: ${game.title}`}>
         {children}
       </section>
+
+      {editorDialog}
 
       <section className={css.info} aria-labelledby="how-it-works">
         <h2 id="how-it-works" className={css.info__title}>

@@ -1,18 +1,57 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button, Panel } from '@/components/ui';
 import { GameSpace } from '@/games/game-space';
 
-export default function GameSpacePage() {
-  const [feedback, setFeedback] = useState<ResultState>(null);
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: '¿Cuál es el planeta más cercano al Sol?',
+    answers: [
+      { label: 'Mercurio', state: 'success' },
+      { label: 'Venus', state: 'wrong' },
+      { label: 'La Tierra', state: 'wrong' },
+      { label: 'Marte', state: 'wrong' }
+    ],
+    explanation: '¡Misión cumplida! Mercurio es el planeta más cercano al Sol.'
+  }
+];
 
-  const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 5,
+  minAnswers: 2,
+  maxAnswers: 4,
+  explanation: true
+};
+
+export default function GameSpacePage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'space');
+  const QUESTIONS = editor.questions;
+  const [feedback, setFeedback] = useState<ResultState>(null);
+  const [lastQuestion, setLastQuestion] = useState(0);
+
+  // Con preguntas nuevas se descarta el modal que estuviera abierto.
+  const [seenVersion, setSeenVersion] = useState(editor.version);
+  if (seenVersion !== editor.version) {
+    setSeenVersion(editor.version);
+    setFeedback(null);
+    setLastQuestion(0);
+  }
+
+  const handleResult =
+    (question: number) =>
+    ({ result }: { result: boolean }) => {
+      setLastQuestion(question);
+      setFeedback(result ? 'success' : 'wrong');
+    };
 
   return (
     <GamePage
       link="/juegos/mision-espacial"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -67,33 +106,40 @@ D) Marte`}</pre>
           </Stage>
         </Panel.Section>
 
-        <Panel.Section>
-          <Stage center>
-            <p className="u-font-bold">Viaja por la galaxia hasta la respuesta correcta.</p>
-            <GameSpace onResult={handleResult}>
-              <GameSpace.Galaxy question="¿Cuál es el planeta más cercano al Sol?" universeType="1">
-                <GameSpace.Radio label="Mercurio" state="success" id="space-1" name="space" />
-                <GameSpace.Radio label="Venus" state="wrong" id="space-2" name="space" />
-                <GameSpace.Radio label="La Tierra" state="wrong" id="space-3" name="space" />
-                <GameSpace.Radio label="Marte" state="wrong" id="space-4" name="space" />
-              </GameSpace.Galaxy>
-              <GameActions>
-                <GameSpace.Button>
-                  <Button label="Comprobar" />
-                </GameSpace.Button>
-                <GameSpace.Button type="reset">
-                  <Button label="Reintentar" />
-                </GameSpace.Button>
-              </GameActions>
-            </GameSpace>
-          </Stage>
-        </Panel.Section>
+        {QUESTIONS.map((item, q) => (
+          <Panel.Section key={item.id}>
+            <Stage center>
+              <p className="u-font-bold">Viaja por la galaxia hasta la respuesta correcta.</p>
+              <GameSpace onResult={handleResult(q)}>
+                <GameSpace.Galaxy question={item.question} universeType="1">
+                  {item.answers.map((answer, index) => (
+                    <GameSpace.Radio
+                      key={answer.label}
+                      label={answer.label}
+                      state={answer.state}
+                      id={`space-${q + 1}-${index + 1}`}
+                      name={`space-${q + 1}`}
+                    />
+                  ))}
+                </GameSpace.Galaxy>
+                <GameActions>
+                  <GameSpace.Button>
+                    <Button label="Comprobar" />
+                  </GameSpace.Button>
+                  <GameSpace.Button type="reset">
+                    <Button label="Reintentar" />
+                  </GameSpace.Button>
+                </GameActions>
+              </GameSpace>
+            </Stage>
+          </Panel.Section>
+        ))}
       </Panel>
 
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Misión cumplida! Mercurio es el planeta más cercano al Sol."
+        success={QUESTIONS[lastQuestion]?.explanation || '¡Misión cumplida! Llegaste al planeta correcto.'}
         wrong="Ese no es el planeta correcto. ¡Vuelve a intentarlo!"
       />
     </GamePage>

@@ -1,11 +1,35 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { EditableQuestion, QuestionLimits, ResultState } from '@/components';
+import { GameActions, GamePage, QuestionsEditor, ResultModals, Stage, useQuestionsEditor } from '@/components';
 import { Button } from '@/components/ui';
 import { GameQuestion } from '@/games/game-question';
 
+// La página muestra una sola pregunta; `explanation` es el texto del modal de acierto.
+const DEFAULT_QUESTIONS: EditableQuestion[] = [
+  {
+    question: 'Si tengo 15 manzanas y le doy 7 a mi amigo, me quedan ______ manzanas.',
+    answers: [
+      { label: '5', state: 'wrong' },
+      { label: '10', state: 'wrong' },
+      { label: '7', state: 'wrong' },
+      { label: '8', state: 'success' }
+    ],
+    explanation: '¡Correcto! 15 − 7 = 8, así que te quedan 8 manzanas.'
+  }
+];
+
+const LIMITS: QuestionLimits = {
+  minQuestions: 1,
+  maxQuestions: 1,
+  minAnswers: 3,
+  maxAnswers: 4,
+  explanation: true
+};
+
 export default function GameQuestionPage() {
+  const editor = useQuestionsEditor(DEFAULT_QUESTIONS, 'question');
+  const [item] = editor.questions;
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = ({ result }: { result: boolean }) => setFeedback(result ? 'success' : 'wrong');
@@ -13,6 +37,8 @@ export default function GameQuestionPage() {
   return (
     <GamePage
       link="/juegos/desafio-de-conocimiento"
+      editor={editor}
+      editorDialog={<QuestionsEditor editor={editor} limits={LIMITS} />}
       description={
         <>
           <p>
@@ -64,14 +90,16 @@ C) Madrid`}</pre>
     >
       <Stage>
         <GameQuestion onResult={handleResult}>
-          <GameQuestion.Card
-            question="Si tengo 15 manzanas y le doy 7 a mi amigo, me quedan ______ manzanas."
-            questionNumber="1"
-          >
-            <GameQuestion.Radio label="5" state="wrong" id="question-1" name="question" />
-            <GameQuestion.Radio label="10" state="wrong" id="question-2" name="question" />
-            <GameQuestion.Radio label="7" state="wrong" id="question-3" name="question" />
-            <GameQuestion.Radio label="8" state="success" id="question-4" name="question" />
+          <GameQuestion.Card question={item.question} questionNumber="1">
+            {item.answers.map((answer, index) => (
+              <GameQuestion.Radio
+                key={answer.label}
+                label={answer.label}
+                state={answer.state}
+                id={`question-${index + 1}`}
+                name="question"
+              />
+            ))}
           </GameQuestion.Card>
           <GameActions>
             <GameQuestion.Button>
@@ -87,8 +115,12 @@ C) Madrid`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Correcto! 15 − 7 = 8, así que te quedan 8 manzanas."
-        wrong="Esa no es la respuesta. Haz la resta con calma e inténtalo otra vez."
+        success={item.explanation || '¡Correcto! Elegiste la respuesta acertada.'}
+        wrong={
+          editor.customized
+            ? 'Esa no es la respuesta. Léela con calma e inténtalo otra vez.'
+            : 'Esa no es la respuesta. Haz la resta con calma e inténtalo otra vez.'
+        }
       />
     </GamePage>
   );

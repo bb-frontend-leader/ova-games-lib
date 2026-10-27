@@ -1,19 +1,39 @@
 import { useState } from 'react';
 
-import type { ResultState } from '@/components';
-import { GameActions, GamePage, ResultModals, Stage } from '@/components';
+import type { FieldsConfig, FieldsItem, ResultState } from '@/components';
+import { FieldsEditor, GameActions, GamePage, ResultModals, Stage } from '@/components';
 import { Button } from '@/components/ui';
 import { MemoryCardActivity } from '@/games/game-memory-card';
+import { useGameEditor } from '@/hooks';
 
-// Cada pareja son dos tarjetas con el mismo `id`: un país y su capital.
-const PAIRS = [
-  { id: 1, cards: ['Colombia', 'Bogotá'] },
-  { id: 2, cards: ['Francia', 'París'] },
-  { id: 3, cards: ['Italia', 'Roma'] },
-  { id: 4, cards: ['España', 'Madrid'] }
+// Cada pareja son dos tarjetas que se completan entre sí: un país y su capital.
+const DEFAULT_PAIRS: FieldsItem[] = [
+  { first: 'Colombia', second: 'Bogotá' },
+  { first: 'Francia', second: 'París' },
+  { first: 'Italia', second: 'Roma' },
+  { first: 'España', second: 'Madrid' }
 ];
 
+const CONFIG: FieldsConfig = {
+  noun: 'pareja',
+  min: 4,
+  max: 4,
+  intro: 'Cada pareja son dos tarjetas que se completan entre sí (país y capital, palabra y definición corta…).',
+  fields: [
+    { key: 'first', label: 'Primera tarjeta', hint: 'Una o dos palabras.', maxLength: 24 },
+    { key: 'second', label: 'Su pareja', hint: 'Una o dos palabras.', maxLength: 24 }
+  ],
+  validate: (items) => {
+    const texts = items.flatMap((item) => [item.first, item.second]).map((text) => text.toLowerCase());
+    return new Set(texts).size === texts.length
+      ? null
+      : 'Hay tarjetas con el mismo texto: cada tarjeta debe ser distinta.';
+  }
+};
+
 export default function GameMemoryCardPage() {
+  const editor = useGameEditor(DEFAULT_PAIRS);
+  const PAIRS = editor.content.map((item, index) => ({ id: index + 1, cards: [item.first, item.second] }));
   const [feedback, setFeedback] = useState<ResultState>(null);
 
   const handleResult = (result: boolean) => setFeedback(result ? 'success' : 'wrong');
@@ -21,6 +41,9 @@ export default function GameMemoryCardPage() {
   return (
     <GamePage
       link="/juegos/memoria"
+      editor={editor}
+      editorNoun="parejas"
+      editorDialog={<FieldsEditor editor={editor} config={CONFIG} />}
       description={
         <>
           <p>
@@ -95,7 +118,11 @@ Pareja 4: ...`}</pre>
       <ResultModals
         open={feedback}
         onClose={() => setFeedback(null)}
-        success="¡Genial! Encontraste todas las parejas de países y capitales."
+        success={
+          editor.customized
+            ? '¡Genial! Encontraste todas las parejas.'
+            : '¡Genial! Encontraste todas las parejas de países y capitales.'
+        }
         wrong="Todavía faltan parejas por encontrar. ¡Vuelve a intentarlo!"
       />
     </GamePage>
